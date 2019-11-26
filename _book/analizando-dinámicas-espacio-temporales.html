@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Capítulo 4 Analizando dinámicas espacio-temporales | Analítica Urbana</title>
+  <meta name="description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Capítulo 4 Analizando dinámicas espacio-temporales | Analítica Urbana" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Capítulo 4 Analizando dinámicas espacio-temporales | Analítica Urbana" />
+  
+  <meta name="twitter:description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  
+
+<meta name="author" content="Antonio Vazquez Brust" />
+
+
+<meta name="date" content="2019-11-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="geoprocesamiento.html"/>
+<link rel="next" href="analizando-movimiento-el-flujo-de-viajes-urbanos.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.3/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.3/leaflet-providers-plugin.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Analítica Urbana</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>¿Para quién es esto?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#antes-de-empezar"><i class="fa fa-check"></i>Antes de empezar</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#sobre-la-análitica-urbana"><i class="fa fa-check"></i><b>1.1</b> Sobre la análitica urbana</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#qué-es"><i class="fa fa-check"></i><b>1.1.1</b> ¿Qué es?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#para-qué-se-usa"><i class="fa fa-check"></i><b>1.1.2</b> ¿Para qué se usa?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="intro.html"><a href="intro.html#quizas-algun-item-mas"><i class="fa fa-check"></i><b>1.1.3</b> QUIZAS ALGUN ITEM MAS</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><i class="fa fa-check"></i><b>2</b> Acceso a información urbana georeferenciada en repositorios <em>online</em></a><ul>
+<li class="chapter" data-level="2.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#openstreetmap-desde-r"><i class="fa fa-check"></i><b>2.1</b> OpenStreetMap desde R</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#definiendo-el-lugar"><i class="fa fa-check"></i><b>2.1.1</b> Definiendo el lugar</a></li>
+<li class="chapter" data-level="2.1.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#extrayendo-información-de-osm"><i class="fa fa-check"></i><b>2.1.2</b> Extrayendo información de OSM</a></li>
+<li class="chapter" data-level="2.1.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#visualizando-los-resultados"><i class="fa fa-check"></i><b>2.1.3</b> Visualizando los resultados</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#un-ejercicio-más-bares-en-el-barrio"><i class="fa fa-check"></i><b>2.2</b> Un ejercicio más: ¡Bares en el barrio!</a></li>
+<li class="chapter" data-level="2.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#obteniendo-y-analizando-datos-de-redes-sociales"><i class="fa fa-check"></i><b>2.3</b> Obteniendo y analizando datos de redes sociales</a></li>
+<li class="chapter" data-level="2.4" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#investigando-con-social-media"><i class="fa fa-check"></i><b>2.4</b> Investigando con social media</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#los-desafíos-de-trabajar-con-información-de-repositorios-sociales"><i class="fa fa-check"></i><b>2.4.1</b> Los desafíos de trabajar con información de repositorios sociales</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#conectando-r-a-twitter"><i class="fa fa-check"></i><b>2.5</b> Conectando R a Twitter</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#obteniendo-autorización"><i class="fa fa-check"></i><b>2.5.1</b> Obteniendo autorización</a></li>
+<li class="chapter" data-level="2.5.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#acceso-a-twitter-via-r-el-paquete-rtweet"><i class="fa fa-check"></i><b>2.5.2</b> Acceso a Twitter via R: el paquete <em>rtweet</em></a></li>
+<li class="chapter" data-level="2.5.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#usuarios-más-populares"><i class="fa fa-check"></i><b>2.5.3</b> Usuarios más populares</a></li>
+<li class="chapter" data-level="2.5.4" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#tweets-más-populares"><i class="fa fa-check"></i><b>2.5.4</b> Tweets más populares</a></li>
+<li class="chapter" data-level="2.5.5" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#la-hora-del-día-a-la-que-se-producen-los-tweets"><i class="fa fa-check"></i><b>2.5.5</b> La hora del día a la que se producen los tweets</a></li>
+<li class="chapter" data-level="2.5.6" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#procedencia-de-los-usuarios"><i class="fa fa-check"></i><b>2.5.6</b> Procedencia de los usuarios</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#escuchando-tweets-en-tiempo-real"><i class="fa fa-check"></i><b>2.6</b> Escuchando tweets en tiempo real</a></li>
+<li class="chapter" data-level="2.7" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#capturando-tweets-por-períodos-prolongados"><i class="fa fa-check"></i><b>2.7</b> Capturando tweets por períodos prolongados</a></li>
+<li class="chapter" data-level="2.8" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#capturando-tweets-en-zonas-específicas"><i class="fa fa-check"></i><b>2.8</b> Capturando tweets en zonas específicas</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#extraer-las-coordenadas"><i class="fa fa-check"></i><b>2.8.1</b> Extraer las coordenadas</a></li>
+<li class="chapter" data-level="2.8.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#visualizando-los-datos-georeferenciados-en-un-mapa-interactivo"><i class="fa fa-check"></i><b>2.8.2</b> Visualizando los datos georeferenciados en un mapa interactivo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.9" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#mapas-estáticos-con-ggmap"><i class="fa fa-check"></i><b>2.9</b> Mapas estáticos con ggmap</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#mapas-interactivos-con-leaflet"><i class="fa fa-check"></i><b>2.9.1</b> Mapas interactivos con leaflet</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html"><i class="fa fa-check"></i><b>3</b> Geoprocesamiento</a><ul>
+<li class="chapter" data-level="3.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>3.1</b> Cruces espaciales</a></li>
+<li class="chapter" data-level="3.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>3.2</b> Dataframes tradicionales y dataframes espaciales</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>3.2.1</b> Combinando datasets con información espacial</a></li>
+<li class="chapter" data-level="3.2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>3.2.2</b> Coropletas</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>3.3</b> Uniones</a></li>
+<li class="chapter" data-level="3.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>3.4</b> Intersecciones</a></li>
+<li class="chapter" data-level="3.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>3.5</b> Distancias</a></li>
+<li class="chapter" data-level="3.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>3.6</b> Cálculo de extensión (longitud, área)</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html"><i class="fa fa-check"></i><b>4</b> Analizando dinámicas espacio-temporales</a><ul>
+<li class="chapter" data-level="4.0.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#trabajando-con-fechas"><i class="fa fa-check"></i><b>4.0.1</b> Trabajando con fechas</a></li>
+<li class="chapter" data-level="4.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#mirando-al-espacio"><i class="fa fa-check"></i><b>4.1</b> Mirando al espacio</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#obteniendo-un-mapa-base"><i class="fa fa-check"></i><b>4.1.1</b> Obteniendo un mapa base</a></li>
+<li class="chapter" data-level="4.1.2" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#de-coordenadas-al-mapa"><i class="fa fa-check"></i><b>4.1.2</b> De coordenadas al mapa</a></li>
+<li class="chapter" data-level="4.1.3" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#mapas-de-densidad"><i class="fa fa-check"></i><b>4.1.3</b> Mapas de densidad</a></li>
+<li class="chapter" data-level="4.1.4" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#visualizando-multiples-categorías"><i class="fa fa-check"></i><b>4.1.4</b> Visualizando multiples categorías</a></li>
+<li class="chapter" data-level="4.1.5" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#combinando-espacio-y-tiempo"><i class="fa fa-check"></i><b>4.1.5</b> Combinando espacio y tiempo</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><i class="fa fa-check"></i><b>5</b> Analizando movimiento: el flujo de viajes urbanos</a><ul>
+<li class="chapter" data-level="5.1" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#estimando-rutas"><i class="fa fa-check"></i><b>5.1</b> Estimando rutas</a></li>
+<li class="chapter" data-level="5.2" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#cuantificando-interacción"><i class="fa fa-check"></i><b>5.2</b> Cuantificando interacción</a></li>
+<li class="chapter" data-level="5.3" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#estimando-rutas-1"><i class="fa fa-check"></i><b>5.3</b> Estimando rutas</a></li>
+<li class="chapter" data-level="5.4" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#extra-cómo-obtener-las-rutas-de-todos-los-recorridos"><i class="fa fa-check"></i><b>5.4</b> EXTRA: Cómo obtener las rutas de todos los recorridos</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html"><i class="fa fa-check"></i><b>6</b> Machine Learning (en una aplicación urbana)</a><ul>
+<li class="chapter" data-level="6.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-0-cargar-paquetes"><i class="fa fa-check"></i><b>6.1</b> Paso 0: Cargar paquetes</a></li>
+<li class="chapter" data-level="6.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-1-cargar-los-datos"><i class="fa fa-check"></i><b>6.2</b> Paso 1: Cargar los datos</a></li>
+<li class="chapter" data-level="6.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-2-examinar-los-datos"><i class="fa fa-check"></i><b>6.3</b> Paso 2: Examinar los datos</a></li>
+<li class="chapter" data-level="6.4" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-3-limpiar-los-datos"><i class="fa fa-check"></i><b>6.4</b> Paso 3: Limpiar los datos</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#imputar-valores-faltantes"><i class="fa fa-check"></i><b>6.4.1</b> Imputar valores faltantes</a></li>
+<li class="chapter" data-level="6.4.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#normalizar-variables"><i class="fa fa-check"></i><b>6.4.2</b> Normalizar variables</a></li>
+<li class="chapter" data-level="6.4.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#codificar-variables-categóricas"><i class="fa fa-check"></i><b>6.4.3</b> Codificar variables categóricas</a></li>
+<li class="chapter" data-level="6.4.4" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#unificar-la-escala-de-las-variables-numéricas"><i class="fa fa-check"></i><b>6.4.4</b> Unificar la escala de las variables numéricas</a></li>
+<li class="chapter" data-level="6.4.5" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#consolidar-todas-las-variables-generadas-ad-hoc-en-un-sólo-dataframe"><i class="fa fa-check"></i><b>6.4.5</b> Consolidar todas las variables generadas ad-hoc en un sólo dataframe</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-4-crear-sets-de-entrenamiento-y-de-testeo"><i class="fa fa-check"></i><b>6.5</b> Paso 4: Crear sets de entrenamiento y de testeo</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-5-entrenar-y-testear-un-modelo"><i class="fa fa-check"></i><b>6.5.1</b> Paso 5: Entrenar y testear un modelo</a></li>
+<li class="chapter" data-level="6.5.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#midiendo-la-performance-del-modelo-contra-datos-que-no-conoce"><i class="fa fa-check"></i><b>6.5.2</b> Midiendo la performance del modelo contra datos que no conoce</a></li>
+<li class="chapter" data-level="6.5.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#comparando-performance"><i class="fa fa-check"></i><b>6.5.3</b> Comparando performance</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publicado con bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analítica Urbana</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="analizando-dinámicas-espacio-temporales" class="section level1">
+<h1><span class="header-section-number">Capítulo 4</span> Analizando dinámicas espacio-temporales</h1>
+<p>Para entender datasets con datos en gran volumen que poseen atributos de posición y tiempo, es útil visualizar el ritmo en el que ocurren (diario, mensual, anual, etc) y la forma en la que se disrtibuyen en el espacio.</p>
+<p>Para prácticar, trabajaremos con un dataset de delitos registrados en la Ciudad de Buenos Aires. Los datos fueron publicados por el Gobierno de la Ciudad como parte de <a href="http://mapa.seguridadciudad.gob.ar/" class="uri">http://mapa.seguridadciudad.gob.ar/</a>, y recopilados en un repositorio descargable por <span class="citation">(<span class="citeproc-not-found" data-reference-id="orramiro"><strong>???</strong></span>)</span> en <a href="https://github.com/ramadis/delitos-caba" class="uri">https://github.com/ramadis/delitos-caba</a>.</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1">delitos &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://bitsandbricks.github.io/data/crimenydelito.csv&quot;</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>Chequeamos un resumen del contenido del dataset:</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="kw">summary</span>(delitos)</a></code></pre></div>
+<pre><code>##        id            comuna             barrio             latitud      
+##  Min.   :     1   Length:184879      Length:184879      Min.   :-34.71  
+##  1st Qu.: 46220   Class :character   Class :character   1st Qu.:-34.63  
+##  Median : 92440   Mode  :character   Mode  :character   Median :-34.61  
+##  Mean   : 92440                                         Mean   :-34.59  
+##  3rd Qu.:138660                                         3rd Qu.:-34.59  
+##  Max.   :184879                                         Max.   :  0.00  
+##     longitud         fecha               hora             uso_arma        
+##  Min.   :-58.53   Length:184879      Length:184879      Length:184879     
+##  1st Qu.:-58.47   Class :character   Class :character   Class :character  
+##  Median :-58.44   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   :-58.40                                                           
+##  3rd Qu.:-58.40                                                           
+##  Max.   :  0.00                                                           
+##    uso_moto            lugar           origen_dato    tipo_delito       
+##  Length:184879      Length:184879      Mode:logical   Length:184879     
+##  Class :character   Class :character   NA&#39;s:184879    Class :character  
+##  Mode  :character   Mode  :character                  Mode  :character  
+##                                                                         
+##                                                                         
+##                                                                         
+##  cantidad_vehiculos cantidad_victimas 
+##  Min.   : 0.0000    Min.   :0.000000  
+##  1st Qu.: 0.0000    1st Qu.:0.000000  
+##  Median : 0.0000    Median :0.000000  
+##  Mean   : 0.2081    Mean   :0.001168  
+##  3rd Qu.: 0.0000    3rd Qu.:0.000000  
+##  Max.   :12.0000    Max.   :2.000000</code></pre>
+<p>Mirando el resumen nos enteramos de que la hora más habitual para un delito son las 8 de la noche, que el delito más frecuente es el hurto sin violencia, y que el lugar más habitual donde ocurren los incidentes es en la vía pública, entre otras cosas.</p>
+<div id="trabajando-con-fechas" class="section level3">
+<h3><span class="header-section-number">4.0.1</span> Trabajando con fechas</h3>
+<p>La fecha es un tipo de dato que puede ser expresado de muchas maneras, dependiendo de que nos interese teer en cuenta el día de la semana al que corresponde, el mes, el año, etc. El paquete <code>lubridate</code> hace facil extraer de fechas en cualquier formato (por ejemplo “20/07/2018”) el atributo relacionado que deseemos (como “viernes” o “Julio”).</p>
+<p>Para empezar, convertimos el campo “fecha” al tipo de dato especializado que se llama… fecha (<em>date</em>). Aquí tenemos que prestar atención al formato en que aparecen, en general algo como “2018-07-21” (mes, día y año) o “2018-07-21 12:14:24” (mes, día, año y hora, minutos, segundos). Con nuestros datos se da el primer caso, por lo cual la función para convertir ese campo en fecha es <code>ymd()</code>; para el segundo caso, seria <code>ymd_hms()</code></p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb99-2" data-line-number="2"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb99-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb99-4" data-line-number="4">delitos &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">fecha =</span> <span class="kw">ymd</span>(fecha))</a></code></pre></div>
+<p>Repasemos algunas de los nuevos trucos que podemos hacer con el tiempo. Tomemos cinco fechas elegidas al azar:</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="st">&quot;99&quot;</span>)</a>
+<a class="sourceLine" id="cb100-2" data-line-number="2">muestra_de_fechas &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb100-3" data-line-number="3"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">fecha_hora =</span> <span class="kw">paste</span>(fecha, hora)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb100-4" data-line-number="4"><span class="st">    </span><span class="kw">sample_n</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb100-5" data-line-number="5"><span class="st">    </span><span class="kw">pull</span>(fecha_hora)</a>
+<a class="sourceLine" id="cb100-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb100-7" data-line-number="7">muestra_de_fechas</a></code></pre></div>
+<pre><code>## [1] &quot;2016-07-07 20:00:00&quot; &quot;2016-09-07 13:25:00&quot; &quot;2016-04-09 15:00:00&quot;
+## [4] &quot;2016-08-12 00:00:00&quot; &quot;2016-01-24 00:00:00&quot;</code></pre>
+<p>Mediante las funciones diponibles en lubridate, podemos extraer:</p>
+<ul>
+<li>El día de la semana al que corresponde cada fecha:</li>
+</ul>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="kw">wday</span>(muestra_de_fechas)</a></code></pre></div>
+<pre><code>## [1] 5 4 7 6 1</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="kw">wday</span>(muestra_de_fechas, <span class="dt">label =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] jue mié sáb vie dom
+## Levels: dom &lt; lun &lt; mar &lt; mié &lt; jue &lt; vie &lt; sáb</code></pre>
+<ul>
+<li>El mes:</li>
+</ul>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1"><span class="kw">month</span>(muestra_de_fechas)</a></code></pre></div>
+<pre><code>## [1] 7 9 4 8 1</code></pre>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb108-1" data-line-number="1"><span class="kw">month</span>(muestra_de_fechas, <span class="dt">label =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] jul sep abr ago ene
+## 12 Levels: ene &lt; feb &lt; mar &lt; abr &lt; may &lt; jun &lt; jul &lt; ago &lt; sep &lt; ... &lt; dic</code></pre>
+<ul>
+<li>El año:</li>
+</ul>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1"><span class="kw">year</span>(muestra_de_fechas)</a></code></pre></div>
+<pre><code>## [1] 2016 2016 2016 2016 2016</code></pre>
+<p>Y varias opciones más, que se pueden repasar en <a href="https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html" class="uri">https://cran.r-project.org/web/packages/lubridate/vignettes/lubridate.html</a></p>
+<p>Con lo visto hasta aquí, tenemos suficiente para mostrar patrones temporales en los datos.</p>
+<p>Delitos registrados por año:</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" data-line-number="1"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb112-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb112-3" data-line-number="3"><span class="kw">ggplot</span>(delitos) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb112-4" data-line-number="4"><span class="st">    </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">year</span>(fecha)))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-96-1.png" width="672" /></p>
+<p>Los resultados no permiten comparar entre años, ya que el dataset tiene apenas un puñado de registros en el 2015, y sólo llega a mediados del 2017. Lección: quedémonos sólo con el 2016 y miremos dentro.</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1">delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb113-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb113-3" data-line-number="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb113-4" data-line-number="4"><span class="st">        </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">month</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>)))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-97-1.png" width="672" /></p>
+<p>Se ve bastante parejo! Quizás haya que examinar los delitos por tipo, para ver si hay algunos que muestran altibajos según la estación. Veamos el top 5 de delitos por frecuencia.</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" data-line-number="1">delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb114-2" data-line-number="2"><span class="st">    </span><span class="kw">count</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb114-3" data-line-number="3"><span class="st">    </span><span class="kw">top_n</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb114-4" data-line-number="4"><span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
+<pre><code>## # A tibble: 5 x 2
+##   tipo_delito               n
+##   &lt;chr&gt;                 &lt;int&gt;
+## 1 Robo (Con violencia)  90393
+## 2 Hurto (Sin violencia) 41205
+## 3 Lesiones Seg Vial     12791
+## 4 Hurto De Rueda         9904
+## 5 Hurto Automotor        9144</code></pre>
+<p>Luce razonable. Guardamos la lista de delitos más frecuentes para referenciar luego.</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1">delitos_frecuentes &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-2" data-line-number="2"><span class="st">    </span><span class="kw">count</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-3" data-line-number="3"><span class="st">    </span><span class="kw">top_n</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-4" data-line-number="4"><span class="st">    </span><span class="kw">pull</span>(tipo_delito)</a></code></pre></div>
+<p>Y ahora los comparamos. En gráfico de barras “apilado”:</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1">delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb117-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>,</a>
+<a class="sourceLine" id="cb117-3" data-line-number="3">           tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb117-4" data-line-number="4"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb117-5" data-line-number="5"><span class="st">        </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">month</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>), <span class="dt">fill =</span> tipo_delito))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-100-1.png" width="672" /></p>
+<p>… y sin apilar</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1">delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb118-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>,</a>
+<a class="sourceLine" id="cb118-3" data-line-number="3">           tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb118-4" data-line-number="4"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb118-5" data-line-number="5"><span class="st">        </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">month</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>), <span class="dt">fill =</span> tipo_delito),</a>
+<a class="sourceLine" id="cb118-6" data-line-number="6">                 <span class="dt">position =</span> <span class="st">&quot;dodge&quot;</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-101-1.png" width="672" /></p>
+<p>O como líneas:</p>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1"><span class="co"># Primero realizamos un conteo de delitos por tipo y por mes del año</span></a>
+<a class="sourceLine" id="cb119-2" data-line-number="2">conteo &lt;-<span class="st">  </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb119-3" data-line-number="3"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>,</a>
+<a class="sourceLine" id="cb119-4" data-line-number="4">           tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb119-5" data-line-number="5"><span class="st">    </span><span class="kw">count</span>(tipo_delito, <span class="dt">mes =</span> <span class="kw">month</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb119-6" data-line-number="6">   </a>
+<a class="sourceLine" id="cb119-7" data-line-number="7"><span class="co"># Y ahora a mostras las cantidades mensuales como líneas </span></a>
+<a class="sourceLine" id="cb119-8" data-line-number="8"><span class="kw">ggplot</span>(conteo) <span class="op">+</span></a>
+<a class="sourceLine" id="cb119-9" data-line-number="9"><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mes, <span class="dt">y =</span> n, <span class="dt">group =</span> tipo_delito, <span class="dt">color =</span> tipo_delito))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-102-1.png" width="672" /></p>
+<p>Ésta última opción es sin dudas la más clara, tanto para mostrar la diferencia relativa en el volumen de incidentes, como para indicar si existen fluctuaciones.</p>
+<p>Intentémoslo otra vez, ahora con el día de la semana:</p>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" data-line-number="1"><span class="co"># Primero realizamos un conteo de delitos por tipo y por día de la semana</span></a>
+<a class="sourceLine" id="cb120-2" data-line-number="2">conteo &lt;-<span class="st">  </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb120-3" data-line-number="3"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>,</a>
+<a class="sourceLine" id="cb120-4" data-line-number="4">           tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb120-5" data-line-number="5"><span class="st">    </span><span class="kw">count</span>(tipo_delito, <span class="dt">diasemana =</span> <span class="kw">wday</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb120-6" data-line-number="6">   </a>
+<a class="sourceLine" id="cb120-7" data-line-number="7"><span class="co"># Y ahora a mostras las cantidades mensuales como líneas </span></a>
+<a class="sourceLine" id="cb120-8" data-line-number="8"><span class="kw">ggplot</span>(conteo) <span class="op">+</span></a>
+<a class="sourceLine" id="cb120-9" data-line-number="9"><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> diasemana, <span class="dt">y =</span> n, <span class="dt">group =</span> tipo_delito, <span class="dt">color =</span> tipo_delito))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-103-1.png" width="672" /></p>
+<p>Como algunas categorías están mucho menos representadas, y quedan “aplastadas” en el gráfico con lo que se dificulta su legibilidad. Vamos a comparar porcentajes en lugar de valores absolutos.</p>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" data-line-number="1">conteo &lt;-<span class="st">  </span>conteo  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb121-2" data-line-number="2"><span class="st">    </span><span class="kw">group_by</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb121-3" data-line-number="3"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">pct =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb121-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb121-5" data-line-number="5"><span class="kw">ggplot</span>(conteo) <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-6" data-line-number="6"><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> diasemana, <span class="dt">y =</span> pct, <span class="dt">group =</span> tipo_delito, <span class="dt">color =</span> tipo_delito))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-104-1.png" width="672" /></p>
+<p>La diferencia de volumen según el día parece drástica, pero es engañosa: el eje de las <span class="math inline">\(y\)</span> no empieza en 0, lo cual hace que las diferencias se perciban mayores de lo que son. Forzamos al gráfico a comenzar desde 0 el eje <span class="math inline">\(y\)</span>:</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" data-line-number="1"><span class="kw">ggplot</span>(conteo) <span class="op">+</span></a>
+<a class="sourceLine" id="cb122-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> diasemana, <span class="dt">y =</span> pct, <span class="dt">group =</span> tipo_delito, <span class="dt">color =</span> tipo_delito))<span class="op">+</span></a>
+<a class="sourceLine" id="cb122-3" data-line-number="3"><span class="st">    </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="dv">0</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-105-1.png" width="672" /></p>
+<p>Sin dudas, los domingos son el día en que el delito descansa un poco… excepto pra quienes deciden llevarse un auto o al menos una rueda ajena. El pico de delitos reportados ocurre los viernes, con la excepción del hurto de rueda, que crece de domingo a miércoles y luego decae.</p>
+<p>Recordando que los homicidios suelen tener un contexto muy distinto al de los robos, agreguemos la categoría “Homicidio Doloso” para comparar con las demás.</p>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1">conteo_homicidios &lt;-<span class="st">  </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb123-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>,</a>
+<a class="sourceLine" id="cb123-3" data-line-number="3">           tipo_delito <span class="op">==</span><span class="st"> &quot;Homicidio Doloso&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb123-4" data-line-number="4"><span class="st">    </span><span class="kw">count</span>(tipo_delito, <span class="dt">diasemana =</span> <span class="kw">wday</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb123-5" data-line-number="5"><span class="st">    </span><span class="kw">group_by</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb123-6" data-line-number="6"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">pct =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n) <span class="op">*</span><span class="dv">100</span>)</a></code></pre></div>
+<p>Sumamos la nueva categoría:</p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb124-1" data-line-number="1"><span class="kw">ggplot</span>(conteo) <span class="op">+</span></a>
+<a class="sourceLine" id="cb124-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> diasemana, <span class="dt">y =</span> pct, <span class="dt">group =</span> tipo_delito, <span class="dt">color =</span> tipo_delito)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb124-3" data-line-number="3"><span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">data =</span> conteo_homicidios,</a>
+<a class="sourceLine" id="cb124-4" data-line-number="4">              <span class="kw">aes</span>(<span class="dt">x =</span> diasemana, <span class="dt">y =</span> pct, <span class="dt">group =</span> tipo_delito)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb124-5" data-line-number="5"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribución diaria por tipo de delito&quot;</span>,</a>
+<a class="sourceLine" id="cb124-6" data-line-number="6">         <span class="dt">subtitle =</span> <span class="st">&quot;La línea negra representa homicidios&quot;</span>,</a>
+<a class="sourceLine" id="cb124-7" data-line-number="7">         <span class="dt">x =</span> <span class="st">&quot;día&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;%&quot;</span>,</a>
+<a class="sourceLine" id="cb124-8" data-line-number="8">         <span class="dt">color =</span> <span class="st">&quot;Delitos más frecuentes&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb124-9" data-line-number="9"><span class="st">    </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="dv">0</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-107-1.png" width="672" /></p>
+<p>La categoría homicidio muestra un ritmo inverso al de los otros delitos: es más frecuente durante el fin de semana, decayendo en los días hábiles.</p>
+<p>También podemos evaluar el ritmo según la hora del día. Para ello necesitamos pasar a formato temporal la columna “hora”, que en éste dataset tiene el formato “hh:mm:ss” (por ejemplo, “14:55:00”). La función correspondiente para interpretar ese formato es <code>hms()</code>. Usamos una combinacion de <code>hms()</code> para interpretar el texto en “hora” como una variable de tipo tiempo, y <code>hour()</code> para extraer la hora base -por ejemplo, para “19:55:00” la hora base es 19.</p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" data-line-number="1">por_hora &lt;-<span class="st">  </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb125-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">year</span>(fecha) <span class="op">==</span><span class="st"> </span><span class="dv">2016</span>,</a>
+<a class="sourceLine" id="cb125-3" data-line-number="3">           tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb125-4" data-line-number="4"><span class="st">    </span><span class="kw">count</span>(tipo_delito, <span class="dt">hora_base =</span> <span class="kw">hour</span>(<span class="kw">hms</span>(hora))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb125-5" data-line-number="5"><span class="st">    </span><span class="kw">group_by</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb125-6" data-line-number="6"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">pct =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n) <span class="op">*</span><span class="dv">100</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb126-1" data-line-number="1"><span class="kw">ggplot</span>(por_hora) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> hora_base, <span class="dt">y =</span> pct, <span class="dt">group =</span> tipo_delito, <span class="dt">color =</span> tipo_delito)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-3" data-line-number="3"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribución horaria por tipo de delito&quot;</span>,</a>
+<a class="sourceLine" id="cb126-4" data-line-number="4">         <span class="dt">x =</span> <span class="st">&quot;hora&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;%&quot;</span>,</a>
+<a class="sourceLine" id="cb126-5" data-line-number="5">         <span class="dt">color =</span> <span class="st">&quot;Delitos más frecuentes&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-6" data-line-number="6"><span class="st">    </span><span class="kw">expand_limits</span>(<span class="dt">y =</span> <span class="dv">0</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-7" data-line-number="7"><span class="st">    </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">23</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-109-1.png" width="672" /></p>
+<p>Para los delitos relacionados con automóviles, el “prime time” es como el de la TV, de 20 a 22. Los robos violentos tienen su apogeo durante las 20. Las lesiones viales comparten su hora pico con el tráfico. Los hurtos tienen su momento cúlmine a la hora del almuerzo, y a la de salida de la oficina.</p>
+</div>
+<div id="mirando-al-espacio" class="section level2">
+<h2><span class="header-section-number">4.1</span> Mirando al espacio</h2>
+<p>Pasemos a hora al análisis espacial de nuestros datos. Para facilitar la visualización vamos a usar el paquete <code>ggmap</code>, que incluye varias funciones que facilitan la creación de mapas.</p>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb127-1" data-line-number="1"><span class="kw">library</span>(ggmap)</a></code></pre></div>
+<div id="obteniendo-un-mapa-base" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Obteniendo un mapa base</h3>
+<p>Para obtener un mapa de fondo, obtenemos el “bounding box” de nuestros datos, y luego se los pasamos a <code>get_stamenmap()</code>. Para más detalles sobre la descarga de mapas base, ver <a href="http://rpubs.com/HAVB/mapeo_tweets" class="uri">http://rpubs.com/HAVB/mapeo_tweets</a>.</p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb128-1" data-line-number="1">delitos &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb128-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(latitud <span class="op">&lt;</span><span class="dv">0</span>, longitud <span class="op">&lt;</span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb128-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb128-4" data-line-number="4">bbox &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">min</span>(delitos<span class="op">$</span>longitud, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb128-5" data-line-number="5">          <span class="kw">min</span>(delitos<span class="op">$</span>latitud, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb128-6" data-line-number="6">          <span class="kw">max</span>(delitos<span class="op">$</span>longitud, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb128-7" data-line-number="7">          <span class="kw">max</span>(delitos<span class="op">$</span>latitud, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb128-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb128-9" data-line-number="9">CABA &lt;-<span class="st"> </span><span class="kw">get_stamenmap</span>(<span class="dt">bbox =</span> bbox, </a>
+<a class="sourceLine" id="cb128-10" data-line-number="10">                      <span class="dt">maptype =</span> <span class="st">&quot;toner-lite&quot;</span>)</a></code></pre></div>
+<p>Para verlo:</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb129-1" data-line-number="1"><span class="kw">ggmap</span>(CABA)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-112-1.png" width="1050" /></p>
+</div>
+<div id="de-coordenadas-al-mapa" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> De coordenadas al mapa</h3>
+<p>De aquí en más podemos suporponer nuestros datos en distintas capas, con la misma sintaxis que conocemos de ggplot. Para mapear las ubicaciones de los delitos en el dataset, usamos <code>geom_point()</code> y los campos de longitud y latitud para los ejes <span class="math inline">\(x\)</span> e <span class="math inline">\(y\)</span>:</p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb130-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb130-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> delitos, <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-113-1.png" width="1050" /></p>
+<p>Aquí nos topamos con un problema, habitual al trabajar con grandes volúmenes de datos. Hay tantos puntos proyectados sobre el mapa, que se hace imposible interepretar donde existen más o menos. Hacemos algunso ajustes: un color más llamativo, un tamaño de punto más pequeño, y aplicación de una ligera transparencia, vía los atributos “color”, “size” y “alpha”. ¿Cuál es el valor ideal para cada uno? En general, no queda otra que recurrir a la prueba y error para encontrar la receta justa.</p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> delitos, <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud),</a>
+<a class="sourceLine" id="cb131-3" data-line-number="3">               <span class="dt">color =</span> <span class="st">&quot;orange&quot;</span>, <span class="dt">size =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-114-1.png" width="1050" /></p>
+<p>Ahora si aparecen ciertos patrones, por ejemplo la afinidad del delito con las grandes vías de circulación de la ciudad. Aún así, se hace dificil identificar de un golpe de vsta las “zonas calientes”, los puntos de máxima concentración.</p>
+</div>
+<div id="mapas-de-densidad" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Mapas de densidad</h3>
+<p>Una solución práctica para el problema de la cantidad de puntos es una técnica llamada “binning”: dividir el espacio en una grilla de celdas, contar cuantos puntos caen dentro de cada una, y visualizar las cantidades agregadas. Hacerlo es muy fácil vía <code>geom_bind2d()</code>.</p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_bin2d</span>(<span class="dt">data =</span> delitos, </a>
+<a class="sourceLine" id="cb132-3" data-line-number="3">               <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-115-1.png" width="1050" /></p>
+<p>Ahora si, resaltan las áreas de mayor concentración de incidentes. Se puede mejorar un poco el gráfico usando una mayot cantidad de celdas para aumentar la resolución. También empleando una escala de colores diseñada para ayudar a detectar diferencias por tonalidad, como viridis.</p>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb133-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_bin2d</span>(<span class="dt">data =</span> delitos, <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud), <span class="dt">bins =</span> <span class="dv">100</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb133-3" data-line-number="3"><span class="st">    </span><span class="kw">scale_fill_viridis_c</span>()</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-116-1.png" width="1050" /></p>
+<p>Una alternativa al <em>binning</em> es la llamada <em>kernel density estimation</em>, muy utilizada en aplicaciones GIS para estimar la intensidad de una determinada variable en cualquier punto del área analizada, incluso en aquellos donde no hay observaciones. La idea es asumir que los valores observados corresponden a una distribución continua sobre el espacio, y determinar cual es la más probable en base a los puntos con datos. No hace falta realizar ningún cálculo matemático, sólo usar <code>geom_density2d</code> así:</p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb134-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb134-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_density2d</span>(<span class="dt">data =</span> delitos, <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud, <span class="dt">color =</span> <span class="kw">stat</span>(level))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb134-3" data-line-number="3"><span class="st">    </span><span class="kw">scale_color_viridis_c</span>()</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-117-1.png" width="1050" /></p>
+</div>
+<div id="visualizando-multiples-categorías" class="section level3">
+<h3><span class="header-section-number">4.1.4</span> Visualizando multiples categorías</h3>
+<p>Hasta aquí hemos analizado la distribución espacil del delito en su totalidad, sin diferenciar su tipo. Veamos ahora las difrencias por categoría. Podemos reintentar el mapa de puntos, esta vez filtrando los tipos de delito para incluir sólo los más frecuentes, y diferenciándolos por color.</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb135-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb135-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">filter</span>(delitos, tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes), </a>
+<a class="sourceLine" id="cb135-3" data-line-number="3">               <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud, <span class="dt">color =</span> tipo_delito),</a>
+<a class="sourceLine" id="cb135-4" data-line-number="4">               <span class="dt">size =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-118-1.png" width="1050" /></p>
+<p>Aquí tenemos dos problemas:</p>
+<ul>
+<li><p>La leyenda (“tipo_delito”) es difícil de leer, dado que muestra los puntos tal como los definimos: pequeños y con mucha transparencia. Esos atributos son útiles en el mapa, donde tenemos cientos de miles de puntos, pero muy poco prácticos para la leyenda, donde sólo hay uno por etiqueta.</p></li>
+<li><p>Los puntos sobre el mapa se superponen en tal medida que es dificil discenir patrones espaciales distintos según su categoría.</p></li>
+</ul>
+<p>El primer problema se resuelve fijando “a mano” los atributos de la lyenda, asi:</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb136-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">filter</span>(delitos, tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes), </a>
+<a class="sourceLine" id="cb136-3" data-line-number="3">               <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud, <span class="dt">color =</span> tipo_delito),</a>
+<a class="sourceLine" id="cb136-4" data-line-number="4">               <span class="dt">size =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb136-5" data-line-number="5"><span class="st">    </span><span class="kw">guides</span>(<span class="dt">color =</span> <span class="kw">guide_legend</span>(<span class="dt">override.aes =</span> <span class="kw">list</span>(<span class="dt">size=</span><span class="dv">2</span>, <span class="dt">alpha =</span> <span class="dv">1</span>))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb136-6" data-line-number="6"><span class="st">    </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-119-1.png" width="1050" /></p>
+<p>El segundo, usando facetado para mostrar en su propio mapa a cada categoría:</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb137-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">filter</span>(delitos, tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes), </a>
+<a class="sourceLine" id="cb137-3" data-line-number="3">               <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud, <span class="dt">color =</span> tipo_delito),</a>
+<a class="sourceLine" id="cb137-4" data-line-number="4">               <span class="dt">size =</span> <span class="fl">0.1</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-5" data-line-number="5"><span class="st">    </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Set1&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-6" data-line-number="6"><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>tipo_delito)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-120-1.png" width="1050" /></p>
+<p>El facetado ayuda. Se hacie evidente, por ejemplo, que el patrón espacial de las lesiones en seguridad vial es muy distinto al de hurto automotor.</p>
+<p>Para hacer las diferencias aún mas nítidas, podemos facetar una estimación de densidad:</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" data-line-number="1"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_density2d</span>(<span class="dt">data =</span> <span class="kw">filter</span>(delitos, tipo_delito <span class="op">%in%</span><span class="st"> </span>delitos_frecuentes), <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud, <span class="dt">color =</span> <span class="kw">stat</span>(level))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-3" data-line-number="3"><span class="st">    </span><span class="kw">scale_color_viridis_c</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-4" data-line-number="4"><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>tipo_delito)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-121-1.png" width="1050" /></p>
+</div>
+<div id="combinando-espacio-y-tiempo" class="section level3">
+<h3><span class="header-section-number">4.1.5</span> Combinando espacio y tiempo</h3>
+<p>El facetado también nos permite visualizar el cambio de posición a través del tiempo.</p>
+<p>Por ejemplo, podemos comparar dos tipos de delito (hurto sin violencia y hurto de rueda) mostrando dónde ocuren en cada día de la semana.</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" data-line-number="1">delitos &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb139-2" data-line-number="2"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">dia_semana =</span> <span class="kw">wday</span>(fecha, <span class="dt">label =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb139-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb139-4" data-line-number="4"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-5" data-line-number="5"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">filter</span>(delitos, </a>
+<a class="sourceLine" id="cb139-6" data-line-number="6">                             tipo_delito <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Hurto (Sin violencia)&quot;</span>, <span class="st">&quot;Hurto De Rueda&quot;</span>)),</a>
+<a class="sourceLine" id="cb139-7" data-line-number="7">               <span class="kw">aes</span>(<span class="dt">x =</span> longitud, <span class="dt">y =</span> latitud, <span class="dt">color =</span> tipo_delito), <span class="dt">alpha =</span> <span class="fl">.5</span>, <span class="dt">size =</span> <span class="fl">.2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-8" data-line-number="8"><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>dia_semana)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-122-1.png" width="1050" /></p>
+<p>O concentrarnos en un tipo de delito en particular, y evaluar en que zonas se concentra de acuerdo a la hora del día:</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" data-line-number="1">delitos &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb140-2" data-line-number="2"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">hora_base =</span> <span class="kw">hour</span>(<span class="kw">hms</span>(hora)))</a>
+<a class="sourceLine" id="cb140-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb140-4" data-line-number="4"><span class="kw">ggmap</span>(CABA) <span class="op">+</span></a>
+<a class="sourceLine" id="cb140-5" data-line-number="5"><span class="st">    </span><span class="kw">geom_density2d</span>(<span class="dt">data =</span> <span class="kw">filter</span>(delitos, </a>
+<a class="sourceLine" id="cb140-6" data-line-number="6">                                 tipo_delito <span class="op">==</span><span class="st"> &quot;Hurto (Sin violencia)&quot;</span>,</a>
+<a class="sourceLine" id="cb140-7" data-line-number="7">                                 <span class="op">!</span>(<span class="kw">wday</span>(fecha) <span class="op">%in%</span><span class="st"> </span><span class="dv">2</span><span class="op">:</span><span class="dv">5</span>) ),</a>
+<a class="sourceLine" id="cb140-8" data-line-number="8">                   <span class="kw">aes</span>(<span class="dt">x =</span> longitud, </a>
+<a class="sourceLine" id="cb140-9" data-line-number="9">                       <span class="dt">y =</span> latitud, </a>
+<a class="sourceLine" id="cb140-10" data-line-number="10">                       <span class="dt">color =</span> <span class="kw">stat</span>(level))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb140-11" data-line-number="11"><span class="st">    </span><span class="kw">scale_color_viridis_c</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb140-12" data-line-number="12"><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>hora_base, <span class="dt">nrow =</span> <span class="dv">4</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb140-13" data-line-number="13"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Concentración espacial de hurtos&quot;</span>,</a>
+<a class="sourceLine" id="cb140-14" data-line-number="14">         <span class="dt">subtitle =</span> <span class="st">&quot;según hora del día&quot;</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-123-1.png" width="1050" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="geoprocesamiento.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["analitica_urbana.pdf", "analitica_urbana.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

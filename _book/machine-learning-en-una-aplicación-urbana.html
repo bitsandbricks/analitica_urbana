@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Capítulo 6 Machine Learning (en una aplicación urbana) | Analítica Urbana</title>
+  <meta name="description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Capítulo 6 Machine Learning (en una aplicación urbana) | Analítica Urbana" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Capítulo 6 Machine Learning (en una aplicación urbana) | Analítica Urbana" />
+  
+  <meta name="twitter:description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  
+
+<meta name="author" content="Antonio Vazquez Brust" />
+
+
+<meta name="date" content="2019-11-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="analizando-movimiento-el-flujo-de-viajes-urbanos.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.3/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.3/leaflet-providers-plugin.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Analítica Urbana</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>¿Para quién es esto?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#antes-de-empezar"><i class="fa fa-check"></i>Antes de empezar</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#sobre-la-análitica-urbana"><i class="fa fa-check"></i><b>1.1</b> Sobre la análitica urbana</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#qué-es"><i class="fa fa-check"></i><b>1.1.1</b> ¿Qué es?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#para-qué-se-usa"><i class="fa fa-check"></i><b>1.1.2</b> ¿Para qué se usa?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="intro.html"><a href="intro.html#quizas-algun-item-mas"><i class="fa fa-check"></i><b>1.1.3</b> QUIZAS ALGUN ITEM MAS</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><i class="fa fa-check"></i><b>2</b> Acceso a información urbana georeferenciada en repositorios <em>online</em></a><ul>
+<li class="chapter" data-level="2.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#openstreetmap-desde-r"><i class="fa fa-check"></i><b>2.1</b> OpenStreetMap desde R</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#definiendo-el-lugar"><i class="fa fa-check"></i><b>2.1.1</b> Definiendo el lugar</a></li>
+<li class="chapter" data-level="2.1.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#extrayendo-información-de-osm"><i class="fa fa-check"></i><b>2.1.2</b> Extrayendo información de OSM</a></li>
+<li class="chapter" data-level="2.1.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#visualizando-los-resultados"><i class="fa fa-check"></i><b>2.1.3</b> Visualizando los resultados</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#un-ejercicio-más-bares-en-el-barrio"><i class="fa fa-check"></i><b>2.2</b> Un ejercicio más: ¡Bares en el barrio!</a></li>
+<li class="chapter" data-level="2.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#obteniendo-y-analizando-datos-de-redes-sociales"><i class="fa fa-check"></i><b>2.3</b> Obteniendo y analizando datos de redes sociales</a></li>
+<li class="chapter" data-level="2.4" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#investigando-con-social-media"><i class="fa fa-check"></i><b>2.4</b> Investigando con social media</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#los-desafíos-de-trabajar-con-información-de-repositorios-sociales"><i class="fa fa-check"></i><b>2.4.1</b> Los desafíos de trabajar con información de repositorios sociales</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#conectando-r-a-twitter"><i class="fa fa-check"></i><b>2.5</b> Conectando R a Twitter</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#obteniendo-autorización"><i class="fa fa-check"></i><b>2.5.1</b> Obteniendo autorización</a></li>
+<li class="chapter" data-level="2.5.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#acceso-a-twitter-via-r-el-paquete-rtweet"><i class="fa fa-check"></i><b>2.5.2</b> Acceso a Twitter via R: el paquete <em>rtweet</em></a></li>
+<li class="chapter" data-level="2.5.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#usuarios-más-populares"><i class="fa fa-check"></i><b>2.5.3</b> Usuarios más populares</a></li>
+<li class="chapter" data-level="2.5.4" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#tweets-más-populares"><i class="fa fa-check"></i><b>2.5.4</b> Tweets más populares</a></li>
+<li class="chapter" data-level="2.5.5" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#la-hora-del-día-a-la-que-se-producen-los-tweets"><i class="fa fa-check"></i><b>2.5.5</b> La hora del día a la que se producen los tweets</a></li>
+<li class="chapter" data-level="2.5.6" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#procedencia-de-los-usuarios"><i class="fa fa-check"></i><b>2.5.6</b> Procedencia de los usuarios</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#escuchando-tweets-en-tiempo-real"><i class="fa fa-check"></i><b>2.6</b> Escuchando tweets en tiempo real</a></li>
+<li class="chapter" data-level="2.7" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#capturando-tweets-por-períodos-prolongados"><i class="fa fa-check"></i><b>2.7</b> Capturando tweets por períodos prolongados</a></li>
+<li class="chapter" data-level="2.8" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#capturando-tweets-en-zonas-específicas"><i class="fa fa-check"></i><b>2.8</b> Capturando tweets en zonas específicas</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#extraer-las-coordenadas"><i class="fa fa-check"></i><b>2.8.1</b> Extraer las coordenadas</a></li>
+<li class="chapter" data-level="2.8.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#visualizando-los-datos-georeferenciados-en-un-mapa-interactivo"><i class="fa fa-check"></i><b>2.8.2</b> Visualizando los datos georeferenciados en un mapa interactivo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.9" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#mapas-estáticos-con-ggmap"><i class="fa fa-check"></i><b>2.9</b> Mapas estáticos con ggmap</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#mapas-interactivos-con-leaflet"><i class="fa fa-check"></i><b>2.9.1</b> Mapas interactivos con leaflet</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html"><i class="fa fa-check"></i><b>3</b> Geoprocesamiento</a><ul>
+<li class="chapter" data-level="3.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>3.1</b> Cruces espaciales</a></li>
+<li class="chapter" data-level="3.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>3.2</b> Dataframes tradicionales y dataframes espaciales</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>3.2.1</b> Combinando datasets con información espacial</a></li>
+<li class="chapter" data-level="3.2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>3.2.2</b> Coropletas</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>3.3</b> Uniones</a></li>
+<li class="chapter" data-level="3.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>3.4</b> Intersecciones</a></li>
+<li class="chapter" data-level="3.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>3.5</b> Distancias</a></li>
+<li class="chapter" data-level="3.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>3.6</b> Cálculo de extensión (longitud, área)</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html"><i class="fa fa-check"></i><b>4</b> Analizando dinámicas espacio-temporales</a><ul>
+<li class="chapter" data-level="4.0.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#trabajando-con-fechas"><i class="fa fa-check"></i><b>4.0.1</b> Trabajando con fechas</a></li>
+<li class="chapter" data-level="4.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#mirando-al-espacio"><i class="fa fa-check"></i><b>4.1</b> Mirando al espacio</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#obteniendo-un-mapa-base"><i class="fa fa-check"></i><b>4.1.1</b> Obteniendo un mapa base</a></li>
+<li class="chapter" data-level="4.1.2" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#de-coordenadas-al-mapa"><i class="fa fa-check"></i><b>4.1.2</b> De coordenadas al mapa</a></li>
+<li class="chapter" data-level="4.1.3" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#mapas-de-densidad"><i class="fa fa-check"></i><b>4.1.3</b> Mapas de densidad</a></li>
+<li class="chapter" data-level="4.1.4" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#visualizando-multiples-categorías"><i class="fa fa-check"></i><b>4.1.4</b> Visualizando multiples categorías</a></li>
+<li class="chapter" data-level="4.1.5" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#combinando-espacio-y-tiempo"><i class="fa fa-check"></i><b>4.1.5</b> Combinando espacio y tiempo</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><i class="fa fa-check"></i><b>5</b> Analizando movimiento: el flujo de viajes urbanos</a><ul>
+<li class="chapter" data-level="5.1" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#estimando-rutas"><i class="fa fa-check"></i><b>5.1</b> Estimando rutas</a></li>
+<li class="chapter" data-level="5.2" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#cuantificando-interacción"><i class="fa fa-check"></i><b>5.2</b> Cuantificando interacción</a></li>
+<li class="chapter" data-level="5.3" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#estimando-rutas-1"><i class="fa fa-check"></i><b>5.3</b> Estimando rutas</a></li>
+<li class="chapter" data-level="5.4" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#extra-cómo-obtener-las-rutas-de-todos-los-recorridos"><i class="fa fa-check"></i><b>5.4</b> EXTRA: Cómo obtener las rutas de todos los recorridos</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html"><i class="fa fa-check"></i><b>6</b> Machine Learning (en una aplicación urbana)</a><ul>
+<li class="chapter" data-level="6.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-0-cargar-paquetes"><i class="fa fa-check"></i><b>6.1</b> Paso 0: Cargar paquetes</a></li>
+<li class="chapter" data-level="6.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-1-cargar-los-datos"><i class="fa fa-check"></i><b>6.2</b> Paso 1: Cargar los datos</a></li>
+<li class="chapter" data-level="6.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-2-examinar-los-datos"><i class="fa fa-check"></i><b>6.3</b> Paso 2: Examinar los datos</a></li>
+<li class="chapter" data-level="6.4" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-3-limpiar-los-datos"><i class="fa fa-check"></i><b>6.4</b> Paso 3: Limpiar los datos</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#imputar-valores-faltantes"><i class="fa fa-check"></i><b>6.4.1</b> Imputar valores faltantes</a></li>
+<li class="chapter" data-level="6.4.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#normalizar-variables"><i class="fa fa-check"></i><b>6.4.2</b> Normalizar variables</a></li>
+<li class="chapter" data-level="6.4.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#codificar-variables-categóricas"><i class="fa fa-check"></i><b>6.4.3</b> Codificar variables categóricas</a></li>
+<li class="chapter" data-level="6.4.4" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#unificar-la-escala-de-las-variables-numéricas"><i class="fa fa-check"></i><b>6.4.4</b> Unificar la escala de las variables numéricas</a></li>
+<li class="chapter" data-level="6.4.5" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#consolidar-todas-las-variables-generadas-ad-hoc-en-un-sólo-dataframe"><i class="fa fa-check"></i><b>6.4.5</b> Consolidar todas las variables generadas ad-hoc en un sólo dataframe</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-4-crear-sets-de-entrenamiento-y-de-testeo"><i class="fa fa-check"></i><b>6.5</b> Paso 4: Crear sets de entrenamiento y de testeo</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-5-entrenar-y-testear-un-modelo"><i class="fa fa-check"></i><b>6.5.1</b> Paso 5: Entrenar y testear un modelo</a></li>
+<li class="chapter" data-level="6.5.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#midiendo-la-performance-del-modelo-contra-datos-que-no-conoce"><i class="fa fa-check"></i><b>6.5.2</b> Midiendo la performance del modelo contra datos que no conoce</a></li>
+<li class="chapter" data-level="6.5.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#comparando-performance"><i class="fa fa-check"></i><b>6.5.3</b> Comparando performance</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publicado con bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analítica Urbana</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="machine-learning-en-una-aplicación-urbana" class="section level1">
+<h1><span class="header-section-number">Capítulo 6</span> Machine Learning (en una aplicación urbana)</h1>
+<p>El asíi llamado <em>machine learning</em> consiste el empleo de aprendizaje estadístico automatizado para identificar patrones en grandes volúmenes de datos. El machine learning (de aquí en más ML) es utilizado en infinidad de campos debido a su creciente facilidad de uso y capacidad -en ciertos contextos- para predecir resultados con alta precisión.</p>
+<p>Veremos como se aplica en la práctica con un ejercicio adaptado del <a href="https://www.kaggle.com/camnugent/introduction-to-machine-learning-in-r-tutorial">tutorial realizado por Cam Nugent</a>. Utiliza como fuente datos un <a href="https://www.kaggle.com/camnugent/california-housing-prices/version/1">dataset</a> que contiene el valor mediano de las viviendas en California, EEUU, de acuerdo a un censo de 1990. ¡Es casi información arqueológica!</p>
+<p><img src="https://bitsandbricks.github.io/ciencia_de_datos_gente_sociable/imagenes/90210.jpg" /></p>
+<p><em>Habitantes de California en los ’90 con sus vestimentas nativas</em></p>
+<p>A pesar de no contener datos de factura reciente, el dataset ha aparecido en varios textos introductorios debido a que no contiene información sensible, es de dominio público, y sus variables son auto-explicativas. Además, su tamaño resulta adecuado: suficiente para no ser considerado “de juguete”, pero no tan grande como para ser engorroso.</p>
+<p>Cada fila representa un conjunto de manzanas, o “Census block groups”. Por comodidad, nosotros les llamaremos distritos. El objetivo del ejercicio es predecir el valor medio de las viviendas de cada distrito en función de sus otros atributos conocidos: cuánta gente vive allí, donde esta localizado, si queda cerca del mar, la antigüedad de sus casas, etc.</p>
+<p>Allá vamos.</p>
+<div id="paso-0-cargar-paquetes" class="section level2">
+<h2><span class="header-section-number">6.1</span> Paso 0: Cargar paquetes</h2>
+<p>Además de las funciones de R “base”, vamos a usar las del paquete <code>tidyverse</code> para procesar y visualizar nuestros datos, y las de <code>randomForest</code>, para aplicar el algoritmo de ML homónimo, que es relativamente simple y a la vez efectivo.</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" data-line-number="1"><span class="co">#install.packages(&quot;tidyverse&quot;)</span></a>
+<a class="sourceLine" id="cb185-2" data-line-number="2"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb185-3" data-line-number="3"><span class="co">#install.packages(&quot;randomForest&quot;)</span></a>
+<a class="sourceLine" id="cb185-4" data-line-number="4"><span class="kw">library</span>(randomForest)</a></code></pre></div>
+</div>
+<div id="paso-1-cargar-los-datos" class="section level2">
+<h2><span class="header-section-number">6.2</span> Paso 1: Cargar los datos</h2>
+<p>Descargamos el dataset del siguiente modo:</p>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb186-1" data-line-number="1">vivienda &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;http://bitsandbricks.github.io/data/housing.csv&quot;</span>)</a></code></pre></div>
+</div>
+<div id="paso-2-examinar-los-datos" class="section level2">
+<h2><span class="header-section-number">6.3</span> Paso 2: Examinar los datos</h2>
+<p>Echamos un vistazo a las primeras filas,</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb187-1" data-line-number="1"><span class="kw">head</span>(vivienda)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 10
+##   longitud latitud mediana_antigue… total_habitacio… total_dormitori… poblacion
+##      &lt;dbl&gt;   &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+## 1    -122.    37.9               41              880              129       322
+## 2    -122.    37.9               21             7099             1106      2401
+## 3    -122.    37.8               52             1467              190       496
+## 4    -122.    37.8               52             1274              235       558
+## 5    -122.    37.8               52             1627              280       565
+## 6    -122.    37.8               52              919              213       413
+## # … with 4 more variables: hogares &lt;dbl&gt;, mediana_ingresos &lt;dbl&gt;,
+## #   mediana_valor_vivienda &lt;dbl&gt;, proximidad_oceano &lt;chr&gt;</code></pre>
+<p>Y extraemos un resumen del contenido</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb189-1" data-line-number="1"><span class="kw">summary</span>(vivienda)</a></code></pre></div>
+<pre><code>##     longitud         latitud      mediana_antiguedad_viviendas
+##  Min.   :-124.3   Min.   :32.54   Min.   : 1.00               
+##  1st Qu.:-121.8   1st Qu.:33.93   1st Qu.:18.00               
+##  Median :-118.5   Median :34.26   Median :29.00               
+##  Mean   :-119.6   Mean   :35.63   Mean   :28.64               
+##  3rd Qu.:-118.0   3rd Qu.:37.71   3rd Qu.:37.00               
+##  Max.   :-114.3   Max.   :41.95   Max.   :52.00               
+##                                                               
+##  total_habitaciones total_dormitorios   poblacion        hogares      
+##  Min.   :    2      Min.   :   1.0    Min.   :    3   Min.   :   1.0  
+##  1st Qu.: 1448      1st Qu.: 296.0    1st Qu.:  787   1st Qu.: 280.0  
+##  Median : 2127      Median : 435.0    Median : 1166   Median : 409.0  
+##  Mean   : 2636      Mean   : 537.9    Mean   : 1425   Mean   : 499.5  
+##  3rd Qu.: 3148      3rd Qu.: 647.0    3rd Qu.: 1725   3rd Qu.: 605.0  
+##  Max.   :39320      Max.   :6445.0    Max.   :35682   Max.   :6082.0  
+##                     NA&#39;s   :207                                       
+##  mediana_ingresos  mediana_valor_vivienda proximidad_oceano 
+##  Min.   : 0.4999   Min.   : 14999         Length:20640      
+##  1st Qu.: 2.5634   1st Qu.:119600         Class :character  
+##  Median : 3.5348   Median :179700         Mode  :character  
+##  Mean   : 3.8707   Mean   :206856                           
+##  3rd Qu.: 4.7432   3rd Qu.:264725                           
+##  Max.   :15.0001   Max.   :500001                           
+## </code></pre>
+<p>Obsérvese que la variable “total_dormitorios” exhibe 207 datos faltantes, representados con <code>NA</code>. Luego volveremos a éste tema.</p>
+<p>Y espiemos la distribución de algunas variables, como</p>
+<p>ingresos:</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb191-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> mediana_ingresos))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-160-1.png" width="672" /></p>
+<p>antigüedad de las viviendas:</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb192-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb192-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> mediana_antiguedad_viviendas))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-161-1.png" width="672" /></p>
+<p>población:</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb193-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> poblacion))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-162-1.png" width="672" /></p>
+<p>… o proximidad al océano (dado que se trata de una variable categórica en lugar de continua, usamos un gráfico de barras en lugar de un histograma):</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb194-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb194-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_bar</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> proximidad_oceano))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-163-1.png" width="672" /></p>
+</div>
+<div id="paso-3-limpiar-los-datos" class="section level2">
+<h2><span class="header-section-number">6.4</span> Paso 3: Limpiar los datos</h2>
+<div id="imputar-valores-faltantes" class="section level3">
+<h3><span class="header-section-number">6.4.1</span> Imputar valores faltantes</h3>
+<p>Es habitual que los algoritmos empleados para ML no acepten datos faltantes. Es por eso que la limpieza básica de un dataset casi siempre incluye la imputación de datos no disponibles, evitando descartar por incompletas filas que contienen información valiosa en sus campos si disponibles.</p>
+<p>Habíamos notado que la variable “total_dormitorios” tiene faltantes en 207 filas. Para esos casos, usaremos una de las técnicas de imputación mas <em>naif</em> que hay: donde haya un valor desconocido, lo reemplazaremos por la mediana de los valores generales.</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb195-1" data-line-number="1">vivienda &lt;-<span class="st"> </span>vivienda <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb195-2" data-line-number="2"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">total_dormitorios =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(total_dormitorios),</a>
+<a class="sourceLine" id="cb195-3" data-line-number="3">                                       <span class="kw">median</span>(total_dormitorios, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb195-4" data-line-number="4">                                       total_dormitorios))</a>
+<a class="sourceLine" id="cb195-5" data-line-number="5">    </a>
+<a class="sourceLine" id="cb195-6" data-line-number="6"><span class="kw">summary</span>(vivienda)</a></code></pre></div>
+<pre><code>##     longitud         latitud      mediana_antiguedad_viviendas
+##  Min.   :-124.3   Min.   :32.54   Min.   : 1.00               
+##  1st Qu.:-121.8   1st Qu.:33.93   1st Qu.:18.00               
+##  Median :-118.5   Median :34.26   Median :29.00               
+##  Mean   :-119.6   Mean   :35.63   Mean   :28.64               
+##  3rd Qu.:-118.0   3rd Qu.:37.71   3rd Qu.:37.00               
+##  Max.   :-114.3   Max.   :41.95   Max.   :52.00               
+##  total_habitaciones total_dormitorios   poblacion        hogares      
+##  Min.   :    2      Min.   :   1.0    Min.   :    3   Min.   :   1.0  
+##  1st Qu.: 1448      1st Qu.: 297.0    1st Qu.:  787   1st Qu.: 280.0  
+##  Median : 2127      Median : 435.0    Median : 1166   Median : 409.0  
+##  Mean   : 2636      Mean   : 536.8    Mean   : 1425   Mean   : 499.5  
+##  3rd Qu.: 3148      3rd Qu.: 643.2    3rd Qu.: 1725   3rd Qu.: 605.0  
+##  Max.   :39320      Max.   :6445.0    Max.   :35682   Max.   :6082.0  
+##  mediana_ingresos  mediana_valor_vivienda proximidad_oceano 
+##  Min.   : 0.4999   Min.   : 14999         Length:20640      
+##  1st Qu.: 2.5634   1st Qu.:119600         Class :character  
+##  Median : 3.5348   Median :179700         Mode  :character  
+##  Mean   : 3.8707   Mean   :206856                           
+##  3rd Qu.: 4.7432   3rd Qu.:264725                           
+##  Max.   :15.0001   Max.   :500001</code></pre>
+<p>Nos hemos librado de los <code>NA</code>.</p>
+</div>
+<div id="normalizar-variables" class="section level3">
+<h3><span class="header-section-number">6.4.2</span> Normalizar variables</h3>
+<p>También deberíamos evaluar si algunas variables requieren ser normalizadas. En este caso las candidatas son “total_habitaciones” y “total_dormitorios”, ya que es de esperarse que sean mayores donde hay más casas -naturalmente- pero eso no nos indica si las casas tienden a ser más o menos grandes que la media. Lo que haremos entonces es dividir la cantidad total de habitaciones por la cantidad de viviendas en cada distrito, y nos quedaremos con esas métricas en lugar de las originales:</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb197-1" data-line-number="1">vivienda &lt;-<span class="st"> </span>vivienda <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb197-2" data-line-number="2"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">promedio_habitaciones =</span> total_habitaciones<span class="op">/</span>hogares,</a>
+<a class="sourceLine" id="cb197-3" data-line-number="3">           <span class="dt">promedio_dormitorios =</span> total_dormitorios<span class="op">/</span>hogares) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb197-4" data-line-number="4"><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>total_habitaciones, <span class="op">-</span>total_dormitorios)</a>
+<a class="sourceLine" id="cb197-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb197-6" data-line-number="6"><span class="kw">head</span>(vivienda)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 10
+##   longitud latitud mediana_antigue… poblacion hogares mediana_ingresos
+##      &lt;dbl&gt;   &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;            &lt;dbl&gt;
+## 1    -122.    37.9               41       322     126             8.33
+## 2    -122.    37.9               21      2401    1138             8.30
+## 3    -122.    37.8               52       496     177             7.26
+## 4    -122.    37.8               52       558     219             5.64
+## 5    -122.    37.8               52       565     259             3.85
+## 6    -122.    37.8               52       413     193             4.04
+## # … with 4 more variables: mediana_valor_vivienda &lt;dbl&gt;,
+## #   proximidad_oceano &lt;chr&gt;, promedio_habitaciones &lt;dbl&gt;,
+## #   promedio_dormitorios &lt;dbl&gt;</code></pre>
+<p>Del mismo modo sería mejor tener densidad de población en lugar de población total, pero sin saber el área que ocupa cada distrito no vamos a poder obtener la densidad.</p>
+</div>
+<div id="codificar-variables-categóricas" class="section level3">
+<h3><span class="header-section-number">6.4.3</span> Codificar variables categóricas</h3>
+<p>Ahora nos encargaremos de las variables categóricas, aquí representadas por “proximidad_oceano”. Rara vez es posible utilizar columnas categóricas en modelos estadísticos, pero por suerte podemos recurrir a la alternativa de reemplazar una columna de datos categóricos por una serie de variables binarias, o “dummy”.</p>
+<p>Es decir, en lugar de…</p>
+<table>
+<thead>
+<tr class="header">
+<th>caso</th>
+<th>proximidad_oceano</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>CERCANO A BAHIA</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>ALEJADO DEL OCEANO</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>CERCANO A OCEANO</td>
+</tr>
+</tbody>
+</table>
+<p>… tendríamos algo así como:</p>
+<table>
+<thead>
+<tr class="header">
+<th>caso</th>
+<th>CERCANO A BAHIA</th>
+<th>ALEJADO DEL OCEANO</th>
+<th>ALEJADO DEL OCEANO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Como buen lenguaje creado por y para practicantes del análisis estadístico, <code>R</code> trae una función específica para realizar ésta tarea, <code>model.matrix()</code>. Se usa así:</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb199-1" data-line-number="1">matriz_categorias_oceano &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="dt">data =</span> vivienda, <span class="op">~</span><span class="st"> </span>proximidad_oceano <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a></code></pre></div>
+<p>y el resultado es, ni más ni menos, una matriz de variables binarias que representan las categorías originales:</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb200-1" data-line-number="1"><span class="kw">head</span>(matriz_categorias_oceano)</a></code></pre></div>
+<pre><code>##   proximidad_oceanoALEJADO_DEL_OCEANO proximidad_oceanoCERCANO_A_BAHIA
+## 1                                   0                                1
+## 2                                   0                                1
+## 3                                   0                                1
+## 4                                   0                                1
+## 5                                   0                                1
+## 6                                   0                                1
+##   proximidad_oceanoCERCANO_A_OCEANO proximidad_oceanoISLA
+## 1                                 0                     0
+## 2                                 0                     0
+## 3                                 0                     0
+## 4                                 0                     0
+## 5                                 0                     0
+## 6                                 0                     0
+##   proximidad_oceanoMENOS_1H_VIAJE
+## 1                               0
+## 2                               0
+## 3                               0
+## 4                               0
+## 5                               0
+## 6                               0</code></pre>
+<p>Pronto agregaremos la matriz a nuestro dataframe, pero antes terminemos con otros ajustes pendientes.</p>
+</div>
+<div id="unificar-la-escala-de-las-variables-numéricas" class="section level3">
+<h3><span class="header-section-number">6.4.4</span> Unificar la escala de las variables numéricas</h3>
+<p>Éste paso siempre es necesario cuando estamos trabajando con variables que utilizan distintas unidades de medida. Aquí tenemos personas, hogares, habitaciones, dormitorios, años de antigüedad… de todo. Muchos algoritmos asumen que todas las variables tienen escalas comparables, lo cual genera problemas con las que alcanzan valores relativamente muy altos (como población, que llegar a decenas de miles) versus las que tienen rangos mucho menores (como antigüedad en años mediana, que “sólo” llega a 52). Si las dejásemos así, varias de las técnicas habituales del ML adjudicarían mucho más peso a las variables con números grandes, “despreciando” a las que por su naturaleza se mueven en rango más reducidos.</p>
+<p>En todo caso, no importa lo disimiles que sean las unidades de medida, la solución es simple: convertimos todas las variables a la famosa “distribución Z”, o función de estandarización, que convierte variables a una escala sin unidad de medida, que expresa cada valor como la cantidad de desvíos estándar que lo alejan de la media. Expresar todas las variables numéricas en forma de “z scores”, o “valores z”, las hace directamente comparables entre sí.</p>
+<p>En <code>R</code> disponemos de la función <code>scale()</code>, que obtiene los z-scores. Tomaremos entonces nuestro dataframe y usaremos <code>mutate_all()</code> para aplicar una función a todas las columnas restantes de un tirón. Eso si, quitando antes ciertas variables: las variables categóricas (que no tiene sentido pasar a z-scores porque no son variables numéricas), y la variable que estamos intentando predecir, ya que su escala no afecta los modelos y podemos dejarla en su formato original fácil de interpretar.</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb202-1" data-line-number="1">vivienda &lt;-<span class="st"> </span>vivienda <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb202-2" data-line-number="2"><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>proximidad_oceano, <span class="op">-</span>mediana_valor_vivienda) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb202-3" data-line-number="3"><span class="st">    </span><span class="kw">mutate_all</span>(<span class="kw">funs</span>(scale)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb202-4" data-line-number="4"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">mediana_valor_vivienda =</span> vivienda<span class="op">$</span>mediana_valor_vivienda)</a></code></pre></div>
+<p>Y obsérvese que <code>scale()</code> mediante, ahora todas las variables tienen promedio igual a 0, y se mueven en el mismo rango</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb203-1" data-line-number="1"><span class="kw">summary</span>(vivienda)</a></code></pre></div>
+<pre><code>##      longitud.V1           latitud.V1      mediana_antiguedad_viviendas.V1
+##  Min.   :-2.3859345   Min.   :-1.4475329   Min.   :-2.1961273             
+##  1st Qu.:-1.1131820   1st Qu.:-0.7967694   1st Qu.:-0.8453727             
+##  Median : 0.5389006   Median :-0.6422715   Median : 0.0286450             
+##  Mean   : 0.0000000   Mean   : 0.0000000   Mean   : 0.0000000             
+##  3rd Qu.: 0.7784775   3rd Qu.: 0.9729330   3rd Qu.: 0.6642943             
+##  Max.   : 2.6252165   Max.   : 2.9579960   Max.   : 1.8561366             
+##     poblacion.V1         hogares.V1      mediana_ingresos.V1
+##  Min.   :-1.256092   Min.   :-1.303952   Min.   :-1.774256  
+##  1st Qu.:-0.563795   1st Qu.:-0.574216   1st Qu.:-0.688102  
+##  Median :-0.229126   Median :-0.236810   Median :-0.176791  
+##  Mean   : 0.000000   Mean   : 0.000000   Mean   : 0.000000  
+##  3rd Qu.: 0.264489   3rd Qu.: 0.275836   3rd Qu.: 0.459295  
+##  Max.   :30.249597   Max.   :14.601166   Max.   : 5.858144  
+##  promedio_habitaciones.V1 promedio_dormitorios.V1 mediana_valor_vivienda
+##  Min.   :-1.85227         Min.   :-1.88710        Min.   : 14999        
+##  1st Qu.:-0.39944         1st Qu.:-0.18373        1st Qu.:119600        
+##  Median :-0.08078         Median :-0.10026        Median :179700        
+##  Mean   : 0.00000         Mean   : 0.00000        Mean   :206856        
+##  3rd Qu.: 0.25196         3rd Qu.:-0.00172        3rd Qu.:264725        
+##  Max.   :55.16190         Max.   :63.49837        Max.   :500001</code></pre>
+<p>… y sin que esto haya cambiado la forma de las distribuciones. Compárense ahora con las que examinamos al inicio,</p>
+<p>ingresos:</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb205-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb205-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> mediana_ingresos))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-170-1.png" width="672" /></p>
+<p>antigüedad de las viviendas:</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb206-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> mediana_antiguedad_viviendas))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-171-1.png" width="672" /></p>
+<p>población:</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb207-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb207-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">data =</span> vivienda, <span class="kw">aes</span>(<span class="dt">x =</span> poblacion))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-172-1.png" width="672" /></p>
+<p>¡las formas son iguales! no hemos hemos perdido “información” respecto a que tan típico o extremo es cada valor, y hemos ganado la posibilidad de comparar en forma directa todas las variables: si un distrito tiene un valor cercano a cero en población, y -digamos- más de 4 en ingresos, sabemos automáticamente que su población es parecida a la media de todos los distritos, pero sus ingresos son altísimos.</p>
+</div>
+<div id="consolidar-todas-las-variables-generadas-ad-hoc-en-un-sólo-dataframe" class="section level3">
+<h3><span class="header-section-number">6.4.5</span> Consolidar todas las variables generadas ad-hoc en un sólo dataframe</h3>
+<p>Nos ha quedado por un lado un dataframe de variables numéricas estandarizadas, y por otro una matriz que representa la pertenencia de cada distrito a su categoría respecto a “proximidad al océano”.</p>
+<p>Primero convertimos la matriz en dataframe (paso simple ya éstas estructura de datos son muy similares entre si), y luego unimos las columnas de ambos con la función <code>cbind()</code>:</p>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb208-1" data-line-number="1">matriz_categorias_oceano &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(matriz_categorias_oceano)</a>
+<a class="sourceLine" id="cb208-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb208-3" data-line-number="3">vivienda &lt;-<span class="st"> </span>vivienda <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb208-4" data-line-number="4"><span class="st">    </span><span class="kw">cbind</span>(matriz_categorias_oceano)</a></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb209-1" data-line-number="1"><span class="kw">head</span>(vivienda)</a></code></pre></div>
+<pre><code>##    longitud  latitud mediana_antiguedad_viviendas  poblacion    hogares
+## 1 -1.327803 1.052523                    0.9821189 -0.9744050 -0.9770092
+## 2 -1.322812 1.043159                   -0.6070042  0.8614180  1.6699206
+## 3 -1.332794 1.038478                    1.8561366 -0.8207575 -0.8436165
+## 4 -1.337785 1.038478                    1.8561366 -0.7660095 -0.7337637
+## 5 -1.337785 1.038478                    1.8561366 -0.7598283 -0.6291419
+## 6 -1.337785 1.038478                    1.8561366 -0.8940491 -0.8017678
+##   mediana_ingresos promedio_habitaciones promedio_dormitorios
+## 1       2.34470896             0.6285442         -0.148510661
+## 2       2.33218146             0.3270334         -0.248535936
+## 3       1.78265622             1.1555925         -0.052900657
+## 4       0.93294491             0.1569623         -0.053646030
+## 5      -0.01288068             0.3447024         -0.038194658
+## 6       0.08744452            -0.2697231          0.005232996
+##   mediana_valor_vivienda proximidad_oceanoALEJADO_DEL_OCEANO
+## 1                 452600                                   0
+## 2                 358500                                   0
+## 3                 352100                                   0
+## 4                 341300                                   0
+## 5                 342200                                   0
+## 6                 269700                                   0
+##   proximidad_oceanoCERCANO_A_BAHIA proximidad_oceanoCERCANO_A_OCEANO
+## 1                                1                                 0
+## 2                                1                                 0
+## 3                                1                                 0
+## 4                                1                                 0
+## 5                                1                                 0
+## 6                                1                                 0
+##   proximidad_oceanoISLA proximidad_oceanoMENOS_1H_VIAJE
+## 1                     0                               0
+## 2                     0                               0
+## 3                     0                               0
+## 4                     0                               0
+## 5                     0                               0
+## 6                     0                               0</code></pre>
+<p>Ya tenemos tenemos los datos limpios y en orden.</p>
+</div>
+</div>
+<div id="paso-4-crear-sets-de-entrenamiento-y-de-testeo" class="section level2">
+<h2><span class="header-section-number">6.5</span> Paso 4: Crear sets de entrenamiento y de testeo</h2>
+<p>Para poder evaluar la calidad de un modelo predictivo, es práctica común dividir los datos disponibles en dos porciones. Una parte será utilizada para “entrenar” el modelo de ML, es decir se le permitirá al algoritmo acceder a esos datos para establecer la forma en que cada variable predictora incide en la que se quiere predecir. El resto será preservado y utilizado para “tomarle examen” al modelo: se le mostraran sólo las variables predictoras de esos datos, pidiendo al modelo una predicción del valor a estimar para cada una. Por último, contrastando aciertos y errores, se podrá establecer el grado de precisión del modelo.</p>
+<p>Incluso podríamos tener varios modelos distintos, obtenidos con distintas técnicas de ML. No es difícil, ya que una vez que los datos han sido obtenidos y preparados, nada impide usarlos como insumo de distintos algoritmos. En ese caso, se puede comparar la performance de los distintos modelos evaluando cual acierta mejor con la data de testeo.</p>
+<p>Definamos entonces cuales filas van al set de entrenamiento, y cuáles al de testeo, eligiéndolas al azar. De acuerdo a distintas recetas, a veces se separa el 90% de los datos para entrenamiento y el resto para testeo, otras veces es mitad y mitad… ya que siempre es más o menos arbitrario, aquí usaremos el 80% para entrenar, y el 20% para testear.</p>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" data-line-number="1"><span class="co">#definimos a mano la &quot;semilla&quot; de aleatorización para obtener resultados reproducibles</span></a>
+<a class="sourceLine" id="cb211-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1810</span>)</a></code></pre></div>
+<p>Tomamos al azar el 80% de las posiciones entre 1 y la cantidad total de filas de nuestro dataset</p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" data-line-number="1">seleccion &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(vivienda), <span class="dt">size =</span> <span class="kw">nrow</span>(vivienda) <span class="op">*</span><span class="st"> </span><span class="fl">0.8</span>)</a>
+<a class="sourceLine" id="cb212-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb212-3" data-line-number="3">entrenamiento &lt;-<span class="st"> </span>vivienda <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb212-4" data-line-number="4"><span class="st">    </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span>seleccion)</a>
+<a class="sourceLine" id="cb212-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb212-6" data-line-number="6"><span class="co"># el testeo es el set opuesto - aquellas filas cuya posición no está entre las seleccionadas</span></a>
+<a class="sourceLine" id="cb212-7" data-line-number="7"><span class="co"># el operador ! convierte una proposición en negativa </span></a>
+<a class="sourceLine" id="cb212-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb212-9" data-line-number="9">testeo &lt;-<span class="st"> </span>vivienda <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb212-10" data-line-number="10"><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span>seleccion))</a></code></pre></div>
+<p>Ahora si, por fin, apliquemos un poco de machine learning.</p>
+<div id="paso-5-entrenar-y-testear-un-modelo" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> Paso 5: Entrenar y testear un modelo</h3>
+<p>Random Forest, una implementación de árboles de decisión como los ilustrados en <a href="http://www.r2d3.us/una-introduccion-visual-al-machine-learning-1/">“Una introducción visual al machine learning”</a>:</p>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb213-1" data-line-number="1">modelo_RF &lt;-<span class="st"> </span><span class="kw">randomForest</span>(<span class="dt">data =</span> entrenamiento, mediana_valor_vivienda <span class="op">~</span><span class="st"> </span>.,</a>
+<a class="sourceLine" id="cb213-2" data-line-number="2">                         <span class="dt">ntree =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb213-3" data-line-number="3">                         <span class="dt">importance =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb213-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb213-5" data-line-number="5"><span class="co"># el parámetro &quot;importance&quot;: Define si el modelo estimará la importancia relativa de cada predictor en la calidad de la predicción -es decir, cuales variables son más importantes para predecir</span></a>
+<a class="sourceLine" id="cb213-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb213-7" data-line-number="7"><span class="co"># resultados:</span></a>
+<a class="sourceLine" id="cb213-8" data-line-number="8">modelo_RF</a></code></pre></div>
+<pre><code>## 
+## Call:
+##  randomForest(formula = mediana_valor_vivienda ~ ., data = entrenamiento,      ntree = 500, importance = TRUE) 
+##                Type of random forest: regression
+##                      Number of trees: 500
+## No. of variables tried at each split: 4
+## 
+##           Mean of squared residuals: 2457430763
+##                     % Var explained: 81.57</code></pre>
+<p>Según dice allí, el modelo puede explicar más del 80% de la varianza de valores encontrada entre los distritos californianos en base a las variables predictoras que empleamos.</p>
+<p>¿Qué tiene dentro el modelo?</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" data-line-number="1"><span class="kw">summary</span>(modelo_RF)</a></code></pre></div>
+<pre><code>##                 Length Class  Mode     
+## call                5  -none- call     
+## type                1  -none- character
+## predicted       16512  -none- numeric  
+## mse               500  -none- numeric  
+## rsq               500  -none- numeric  
+## oob.times       16512  -none- numeric  
+## importance         26  -none- numeric  
+## importanceSD       13  -none- numeric  
+## localImportance     0  -none- NULL     
+## proximity           0  -none- NULL     
+## ntree               1  -none- numeric  
+## mtry                1  -none- numeric  
+## forest             11  -none- list     
+## coefs               0  -none- NULL     
+## y               16512  -none- numeric  
+## test                0  -none- NULL     
+## inbag               0  -none- NULL     
+## terms               3  terms  call</code></pre>
+<p>De todo! Por ejemplo, “type” nos emite confirmar qué tipo de análisis realizó: Fue de regresión en este caso, peor podría haber sido otro, como clasificación (cuando se predice un atributo categórico en lugar de una variable continua):</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" data-line-number="1">modelo_RF<span class="op">$</span>type</a></code></pre></div>
+<pre><code>## [1] &quot;regression&quot;</code></pre>
+<p>O “importance”, que contiene un ranking con la importancia relativa de cada predictor, es decir cuáles son los que más ayudan a estimar el valor a predecir:</p>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" data-line-number="1">modelo_RF<span class="op">$</span>importance</a></code></pre></div>
+<pre><code>##                                        %IncMSE  IncNodePurity
+## longitud                            6562596634 25070784033090
+## latitud                             5307845606 22051021929618
+## mediana_antiguedad_viviendas        1126272280  9996509720803
+## poblacion                           1047763842  7549644306606
+## hogares                             1172196457  7995806290426
+## mediana_ingresos                    8630114201 74655227623067
+## promedio_habitaciones               1867232899 20313356921354
+## promedio_dormitorios                 429802972  7674805540175
+## proximidad_oceanoALEJADO_DEL_OCEANO 3906233140 30433692420455
+## proximidad_oceanoCERCANO_A_BAHIA     391425489  1329375324196
+## proximidad_oceanoCERCANO_A_OCEANO    479630868  2170890590160
+## proximidad_oceanoISLA                   258890    47758537781
+## proximidad_oceanoMENOS_1H_VIAJE     1649914818  4476848186152</code></pre>
+<p>La columna “%IncMSE” representa el porcentaje de error promedio, la magnitud en la que el valor predicho por el modelo difiere del valor observado, cuando cada predictor se retira del modelo (es decir, cuanto peor sería la predicción si no se usara). Por eso los números mayores están asociados a los predictores de más peso, que en este caso son “mediana_ingresos”, y luego longitud y latitud. Además de encontrar la correlación esperable entre nivel de ingresos de una población y el valor de sus viviendas, nuestro modelo ha encontrado que la ubicación es la clave del valor de la propiedad… y sin saber nada de geografía ni urbanismo.</p>
+<p>En “predicted” tenemos la mediana del valor de la vivienda predicha para cada distrito:</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" data-line-number="1"><span class="kw">head</span>(modelo_RF<span class="op">$</span>predicted)</a></code></pre></div>
+<pre><code>##        1        2        3        4        5        6 
+## 424089.7 402434.9 421956.7 332392.9 234152.2 223307.9</code></pre>
+<p>Aprovechando que dentro del modelo, “y” contiene los valores observados, evaluemos en forma gráfica cuánto se aproximan las predicciones de cada distrito al valor real (el observado) :</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb223-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> modelo_RF<span class="op">$</span>predicted, <span class="dt">y =</span> modelo_RF<span class="op">$</span>y), <span class="dt">alpha =</span> <span class="fl">0.3</span>) </a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-182-1.png" width="672" /></p>
+<p>Se ajusta bastante bien. Luego veremos una manera de cuantificar la precisión del modelo.</p>
+</div>
+<div id="midiendo-la-performance-del-modelo-contra-datos-que-no-conoce" class="section level3">
+<h3><span class="header-section-number">6.5.2</span> Midiendo la performance del modelo contra datos que no conoce</h3>
+<p>Veamos ahora como se comporta nuestro modelo cuando debe predecir valores de distritos que no se han utilizado para el entrenamiento, los que reservamos para el set de testeo.</p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb224-1" data-line-number="1">predicciones_test &lt;-<span class="st"> </span><span class="kw">predict</span>(modelo_RF, <span class="dt">newdata =</span> testeo)</a>
+<a class="sourceLine" id="cb224-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb224-3" data-line-number="3"><span class="kw">head</span>(predicciones_test)</a></code></pre></div>
+<pre><code>##        1        2        3        4        5        6 
+## 241927.4 228608.7 136310.6 128209.6 161684.6 234114.8</code></pre>
+<p>En un gráfico:</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb226-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb226-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> predicciones_test, <span class="dt">y =</span> testeo<span class="op">$</span>mediana_valor_vivienda), <span class="dt">alpha =</span> <span class="fl">0.3</span>) </a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-184-1.png" width="672" /></p>
+<p>Luce incluso mejor que el ajuste con los datos conocidos.</p>
+</div>
+<div id="comparando-performance" class="section level3">
+<h3><span class="header-section-number">6.5.3</span> Comparando performance</h3>
+<p>Es práctico obtener un sólo número, un indicador simple que nos diga que tan bien predice el modelo, y así poder comparar distintos modelos entre si (o distintos datasets contra el mismo modelo) utilizando esa medida. En estadística es común el uso del RMSE como indicador de grado de ajuste, o “Root Mean Square Error” - la raíz cuadrada de la media de los errores al cuadrado.</p>
+<p>El modelo incluye el MSE (o sea la suma de los errores al cuadrado) que surge de comparar predicciones con valores observados. Y en el caso de un random forest, que intenta muchos árboles distintos, varios MSEs resultantes: 500 en nuestro caso, uno por cada árbol trazado.</p>
+<p>Tomamos la media de todos los MSE para obtener un valor general, y luego tomamos la raíz cuadrada para obtener el RMSE:</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" data-line-number="1">RMSE &lt;-<span class="st"> </span>modelo_RF<span class="op">$</span>mse <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb227-2" data-line-number="2"><span class="st">    </span><span class="kw">mean</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb227-3" data-line-number="3"><span class="st">    </span><span class="kw">sqrt</span>()</a>
+<a class="sourceLine" id="cb227-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb227-5" data-line-number="5">RMSE</a></code></pre></div>
+<pre><code>## [1] 50506.37</code></pre>
+<p>Eso significa que la diferencia promedio entre valor esperado y valor hallado para cada distrito fue de 50506.3682926 dólares.</p>
+<p>Y en comparación, ¿qué tan bueno resultó el modelo cuando se aplicó a datos que no conocía?</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb229-1" data-line-number="1">RMSE_test &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">mean</span>((predicciones_test <span class="op">-</span><span class="st"> </span>testeo<span class="op">$</span>mediana_valor_vivienda)<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb229-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb229-3" data-line-number="3">RMSE_test</a></code></pre></div>
+<pre><code>## [1] 46875.33</code></pre>
+<p>Con un valor medio de error de 46875.3285413 dólares, el modelo ha funcionado muy bien con datos desconocidos, incluso mejorando levemente su performance respecto al set de <em>training</em>.</p>
+<p>Esto indica que no sufre de “overfitting”, la condición de estar excesivamente ajustado a los datos con los que fue entrenado. Por eso el modelo no pierde precisión cuando lidia con datos nuevos.</p>
+<p>Como despedida, volvamos al examen visual. Representamos en un gráfico cada valor predicho y cada valor observado para los datos de entrenamiento:</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb231-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(predicciones_test), <span class="dt">y =</span> predicciones_test), </a>
+<a class="sourceLine" id="cb231-3" data-line-number="3">               <span class="dt">color =</span> <span class="st">&quot;salmon&quot;</span>,</a>
+<a class="sourceLine" id="cb231-4" data-line-number="4">               <span class="dt">alpha =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb231-5" data-line-number="5">               <span class="dt">size =</span> <span class="fl">.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb231-6" data-line-number="6"><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(testeo), <span class="dt">y =</span> testeo<span class="op">$</span>mediana_valor_vivienda), </a>
+<a class="sourceLine" id="cb231-7" data-line-number="7">               <span class="dt">color =</span> <span class="st">&quot;lightblue&quot;</span>,</a>
+<a class="sourceLine" id="cb231-8" data-line-number="8">               <span class="dt">alpha =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb231-9" data-line-number="9">               <span class="dt">size =</span> <span class="fl">.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb231-10" data-line-number="10"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;valores predichos&quot;</span>,</a>
+<a class="sourceLine" id="cb231-11" data-line-number="11">         <span class="dt">y =</span> <span class="st">&quot;valores observados&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb231-12" data-line-number="12"><span class="st">    </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-187-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["analitica_urbana.pdf", "analitica_urbana.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

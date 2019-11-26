@@ -1,0 +1,359 @@
+# Analizando movimiento: el flujo de viajes urbanos
+
+Los sistemas urbanos se caracterizan por dinámicas continuas de flujo, como el viaje de las personas entre su lugar de trabajo y de residencia. Estas dinámicas son capturadas en diversas bases de datos con creciente grado de granularidad espacio-temporal. La disponibilidad de coordenadas precisas de origen y destino, combinada con la posibilidad de acceder a sistemas de ruteo en calles, nos permite estimar los trayectos realizado por personas y vehículos representados en bases de datos.
+
+## Estimando rutas
+
+En general, los datos de flujo disponibles en datasets a escala metropolitana (en contraste con los datos personales como los de GPS) son simples pares origen/destino. Una ejemplo de datos abiertos de este tipo, es el de la ubicación y intercambio entre estaciones de sistemas de bicicletas compartidas.
+
+Por ejemplo, el portal de datos abiertos de la [Ciudad de Buenos Aires ofrece datasets con los trayectos realizados por los usuarios del sistema de bicicletas públicas, así como la ubicación de las estaciones](https://data.buenosaires.gob.ar/datasets?query=bicicletas).
+
+
+Si no lo hemos hecho aún, carguemos las librerías que vamos a necesitar.
+
+```{r}
+library(tidyverse)
+library(ggmap)
+```
+
+Utilizaremos una porción de todos los trayectos disponibles, los que representan viajes en bicicletas públicas realizados durante el mes de abril de 2017:
+
+
+```{r}
+viajes <- read_csv("https://bitsandbricks.github.io/data/viajes_BA_bici_abril_2017.csv")
+
+viajes
+```
+
+También descargamos un archivo de información geográfica con la posición de cada estación de bicicletas públicas:
+
+```{r}
+estaciones <- read.csv("https://bitsandbricks.github.io/data/estaciones_BA_bici.csv")
+
+estaciones
+```
+
+Ahora, las visualizamos. 
+
+Como preparativo obtenemos una "bounding box", la caja de coordenadas que contiene todos los puntos:
+
+```{r}
+bbox <- make_bbox(estaciones$X, estaciones$Y)
+
+bbox
+```
+
+Ahora descargamos un mapa que abarca el rectángulo de nuestra bounding box
+
+```{r}
+
+mapa_base <- get_stamenmap(bbox, color = "bw", zoom = 12)
+
+ggmap(mapa_base) +
+    geom_point(data = estaciones, aes(x = X, y = Y), color = "limegreen")
+
+```
+
+Podemos ver que las estaciones del sistema se concentran en el centro económico de la ciudad y sus zonas aledañas. No tenemos un campo con la fecha de inauguración que nos permita saber el orden en que se desplegaron las estaciones, pero podemos usar el número que les fue asignado (asumiendo que respetan un orden cronológico) para aproximarlo:
+
+```{r}
+ggmap(mapa_base) +
+    geom_point(data = estaciones, aes(x = X, y = Y, color = NRO_EST)) +
+    scale_color_distiller(type = "div")
+```
+
+Si el número de estación refleja la antigüedad, pareciera que primero de desplegó un corredor desde el _downtown_ hacia el noroeste, que luego se fue complementando con expansión radial.
+
+## Cuantificando interacción 
+
+A partir de ahora, agreguemos `theme_nothing()` para retirar todos los componentes auxiliares (como escalas y leyendas) y quedarnos solo con el mapa.
+
+```{r}
+ggmap(mapa_base) +
+    geom_point(data = estaciones, aes(x = X, y = Y), color = "limegreen", size = 2) + 
+    theme_nothing()
+```
+
+
+A continuación, realizamos un conteo de trayectos entre pares de estaciones
+
+```{r}
+conteo <- viajes %>% 
+    group_by(ORIGEN_ESTACION, DESTINO_ESTACION) %>% 
+    summarise(total = sum(TOTAL))
+```
+
+
+Podemos evaluar el grado de interconexión haciendo un _heatmap_, un mapa de calor que muestre la cantidad de viajes entre pares de estaciones. Hacemos uso de `geom_tile()` una geometría de `ggplot()` que genera rectángulos.
+
+```{r}
+ggplot() + 
+    geom_tile(data = conteo, aes(x = ORIGEN_ESTACION, y = DESTINO_ESTACION, fill = total)) +
+    scale_fill_distiller(palette = "Spectral")
+
+```
+
+El gráfico revela una característica de los datos: la numeración de la estaciones es discontinua. Crece secuencialmente hasta casi 200, pero por alguna hay un par de estaciones numeradas por encima de 500. Lo verificamos:
+
+```{r}
+unique(conteo$ORIGEN_ESTACION)
+```
+
+Podemos evitar el hueco que aparece en el mapa de calor tratando a las estaciones como una variable categórica (un factor) en lugar de numérica
+
+```{r}
+ggplot() + 
+    geom_tile(data = conteo, 
+              aes(x = as.factor(ORIGEN_ESTACION),
+                  y = as.factor(DESTINO_ESTACION),
+                  fill = total)) +
+    scale_fill_distiller(palette = "Spectral")
+```
+
+La visualización es difícil de leer, pero aún así revela patrones. El tipo de viaje más popular es el de tomar y dejar la bicicleta en la misma estación, sugiriendo la prevalencia del uso recreativo. La interacción entre estaciones más alta se da entre las que tienen los primeros números, que como hemos visto se localizan en el centro de la ciudad. Las cantidad de combinaciones posibles crece rapidísimo con el número de nodos, por eso las interacción en redes grandes es difícil de visualizar.
+
+Para continuar, tomemos sólo los 10 trayectos más frecuentes, descartando los viajes "circulares" (con el mismo origen y destino):
+
+```{r}
+top10 <- conteo %>% 
+    ungroup() %>% 
+    filter(ORIGEN_ESTACION != DESTINO_ESTACION) %>% 
+    top_n(10)
+
+top10
+    
+```
+
+```{r}
+ggplot() + 
+    geom_tile(data = top10, 
+              aes(x = as.factor(ORIGEN_ESTACION),
+                  y = as.factor(DESTINO_ESTACION),
+                  fill = total)) +
+    scale_fill_distiller(palette = "Spectral")
+```
+
+
+Como se vislumbra en el heatmap completo, la interacción entre las estaciones 1 y 2 es con diferencia la más frecuente.
+
+## Estimando rutas
+
+Para trazar los trayectos de los usuarios al viajar de una estación a otra, no tendría sentido tender líneas rectas entre origen y destino. Para visualizar el tránsito, necesitamos tener en cuenta la ubicación de las calles y la dirección de tráfico que permiten. Lo ideal sería poder representar la ruta exacta de cada trayecto, sabiendo cuáles fueron las calles transitadas para realizar el viaje. Cuando no disponemos de información con ese nivel de detalle, lo que podemos hacer es estimar los recorridos utilizando un servicio de ruteo como el de Google Maps, o el del proyecto [OSRM](http://map.project-osrm.org/). 
+
+En R contamos con paquetes especializados para conectar con estos servicios y trabajar con información de ruteo. El paquete `googleway()` permite conectar R con la API de Google Maps, y `osrm` hace lo propio con OSRM.
+
+Vamos con OSRM. Si no tenemos el paquete necesario, lo instalamos.
+
+```{r eval=FALSE}
+install.packages("osrm")
+```
+
+Y lo activamos:
+
+```{r}
+library(osrm)
+```
+
+Para poder recibir información de ruteo desde los servidores de Google, la compañía exige el uso de una _API key_, una clave de autorización. Tal como con Twitter, el proceso de adquirir una clave es instantáneo, pero desde mediados de 2018 Google entrega API key sólo a usuarios que brinden información de una tarjeta de crédito, para cobrar el uso que supere ciertos umbrales. 
+
+Para quienes deseen hacer uso de las múltiples funciones que Google ofrece a través de sus APIs, la molestia vale la pena, y puede seguir éstos pasos:  https://developers.google.com/maps/documentation/directions/get-api-key.
+
+Para resolver el problema del ejercicio, nosotros optaremos por el ruteo vía OSRM que no requiere permiso ni tarjetas de crédito. 
+
+Para encontrar una ruta, usamos la función `osrmRoute`, que requiere origen y destino en forma de vectores conteniendo un identificador (nombre del lugar o posición), longitud y latitud. Por ejemplo, para rutear entre dos lugares en Buenos Aires como Parque centenario y la estación Retiro:
+
+```{r}
+pcentenario <- c(nombre = "Parque Centenario",
+                 lon = -58.435609,
+                 lat = -34.606411)
+
+eretiro <- c(nombre = "Estación Retiro",
+             lon = -58.374873,
+             lat = -34.591394)
+
+centenario_a_retiro <- osrmRoute(src = pcentenario, 
+                                 dst = eretiro, 
+                                 returnclass =  "sf", 
+                                 overview = "full")
+
+```
+
+La opción `returnclass = "sf"` permite obtener un dataframe espacial como resultado, que podemos proyectar luego sobre un mapa. `overview = "full"` hace que `osrmRoute` calcule la ruta precisa (con posiciones exactas) en lugar de un aproximado; de nuevo, solicitamos esto para luego poder visualizar el camino exacto en un mapa.
+
+`osrmRoute` también estima la duración (en minutos) y la distancia (en kilómetros) del trayecto, como se ve en los campos "duration" y "distance":
+
+```{r}
+centenario_a_retiro
+```
+
+Podemos revisar rápidamente la ruta hallada usando `leaflet`:
+
+```{r eval=FALSE}
+library(leaflet)
+
+leaflet(centenario_a_retiro) %>% 
+    addTiles() %>% 
+    addPolylines(color = "red")
+```
+
+```{r echo=FALSE}
+library(leaflet)
+
+leaflet(centenario_a_retiro) %>% 
+    addProviderTiles(providers$OpenStreetMap) %>%
+    addPolylines(color = "red")
+```
+
+
+Ahora, lo intentamos con los datos de viajes en bicicleta. Hacemos un _join_ del dataframe con el conteo de viajes contra el de posición de estaciones, para agregar las coordenadas.
+
+De origen:
+
+```{r}
+top10 <- top10 %>% 
+    left_join(estaciones[c("X", "Y", "NOMBRE", "NRO_EST")], 
+              by = c("ORIGEN_ESTACION" = "NRO_EST")) %>% 
+    rename(ORIGEN_X = X,
+           ORIGEN_Y = Y,
+           ORIGEN_NOMBRE = NOMBRE)
+
+top10
+
+```
+
+Y además las de destino:
+
+```{r}
+top10 <- top10 %>% 
+    left_join(estaciones[c("X", "Y", "NOMBRE", "NRO_EST")], 
+              by = c("DESTINO_ESTACION" = "NRO_EST")) %>% 
+    rename(DESTINO_X = X,
+           DESTINO_Y = Y,
+           DESTINO_NOMBRE = NOMBRE)
+
+top10
+```
+
+
+Probemos rutear el trayecto más popular, el de Facultad de Derecho a Retiro:
+
+```{r}
+viaje <- top10[1,]
+
+fderecho_a_retiro <- osrmRoute(src = c(viaje$ORIGEN_NOMBRE, viaje$ORIGEN_X, viaje$ORIGEN_Y), 
+                                 dst = c(viaje$DESTINO_NOMBRE, viaje$DESTINO_X, viaje$DESTINO_Y), 
+                                 returnclass = "sf", 
+                                 overview = "full")
+
+fderecho_a_retiro
+```
+
+```{r eval=FALSE}
+leaflet(fderecho_a_retiro) %>% 
+    addTiles() %>% 
+    addPolylines(color = "red")
+```
+
+```{r echo=FALSE}
+leaflet(fderecho_a_retiro) %>% 
+    addProviderTiles(providers$OpenStreetMap) %>%
+    addPolylines(color = "red")
+```
+
+
+Si queremos ver el trayecto en un mapa estático, podemos usar `ggmap()` con `geom_sf()`:
+
+```{r}
+ggmap(mapa_base) +
+    geom_point(data = estaciones, aes(x = X, y = Y), color = "limegreen", size = 2) +
+    geom_sf(data = fderecho_a_retiro, color = "red", inherit.aes = FALSE) +
+    theme_nothing()
+
+```
+
+Calcular todos los recorridos y juntarlos en un sólo dataframe puede ser muy fácil o bastante engorroso, dependiendo de cuanta práctica tengamos en la automatización de tareas repetitivas. Por lo pronto, podemos descargar un dataset ya calculado con los recorridos detallados entre todas las estaciones de nuestro top 10:
+
+```{r}
+recorridos <- st_read("https://bitsandbricks.github.io/data/recorridos_BA_bici.geojson")
+
+recorridos
+```
+
+
+Los que quieran espiar un método para compilar los recorrido por su cuenta, puede verlo al final del documento.
+
+
+Para poder asignar un color a cada recorrido, creamos un identificador único para diferenciarlos
+
+```{r}
+recorridos <- recorridos %>% 
+    mutate(ID = paste(ORIGEN_ESTACION, "-", DESTINO_ESTACION))
+```
+
+Y ahora, al mapa:
+
+```{r}
+ggmap(mapa_base) +
+    geom_sf(data = recorridos, aes(color = ID), inherit.aes = FALSE) +
+    theme_nothing()
+```
+
+
+Si queremos que el grosor de la línea represente la cantidad de veces que se realizó cada recorrido, primero agregamos la cantidad de viajes por recorrido, mediante el cruce con los datos que calculamos en "conteo": 
+
+
+```{r}
+recorridos <- recorridos %>% 
+    left_join(conteo)
+```
+
+Y luego los usamos en el mapa:
+
+```{r}
+ggmap(mapa_base) +
+    geom_sf(data = recorridos, aes(color = ID, size = total), alpha = 0.7, inherit.aes = FALSE) +
+    theme_nothing()
+```
+
+También podemos usar el color para indicar el volumen de viajes:
+
+```{r}
+ggmap(mapa_base, darken = 0.7) +
+    geom_sf(data = recorridos, aes(color = total, group = ID), 
+              inherit.aes = FALSE,
+              alpha = 0.7, size = 1.5) +
+    scale_color_viridis_c(option = "inferno") +
+    theme_nothing() 
+```
+
+
+
+## EXTRA: Cómo obtener las rutas de todos los recorridos
+
+Tras leer el capítulo de 21 de R for Data Science, ["iteration"](http://r4ds.had.co.nz/iteration.html), ésto debería tener sentido:
+
+```{r eval=FALSE}
+obtener_recorrido <- function(o_nombre, o_x, o_y, d_nombre, d_x, d_y) {
+    
+    ruta <- osrmRoute(src = c(o_nombre, o_x, o_y),
+                      dst = c(d_nombre, d_x, d_y),
+                      returnclass = "sf")
+    
+    cbind(ORIGEN_ESTACION = o_nombre, DESTINO_ESTACION = d_nombre, ruta)
+    
+}
+
+
+argumentos <- list(top10$ORIGEN_ESTACION, top10$ORIGEN_X, top10$ORIGEN_Y,
+                  top10$DESTINO_ESTACION, top10$DESTINO_X, top10$DESTINO_Y)
+
+recorridos <- pmap(argumentos, obtener_recorrido)
+
+recorridos <- reduce(recorridos, rbind)
+```
+
+```{r ultmo_chunk_analisis_movimiento}
+recorridos
+```
+
+

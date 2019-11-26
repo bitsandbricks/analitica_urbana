@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Capítulo 3 Geoprocesamiento | Analítica Urbana</title>
+  <meta name="description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Capítulo 3 Geoprocesamiento | Analítica Urbana" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Capítulo 3 Geoprocesamiento | Analítica Urbana" />
+  
+  <meta name="twitter:description" content="Un manual para la obtención, procesamiento, análisis y visualización de datos urbanos" />
+  
+
+<meta name="author" content="Antonio Vazquez Brust" />
+
+
+<meta name="date" content="2019-11-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"/>
+<link rel="next" href="analizando-dinámicas-espacio-temporales.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="libs/leaflet-binding-2.0.3/leaflet.js"></script>
+<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="libs/leaflet-providers-plugin-2.0.3/leaflet-providers-plugin.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Analítica Urbana</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>¿Para quién es esto?</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#antes-de-empezar"><i class="fa fa-check"></i>Antes de empezar</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a><ul>
+<li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#sobre-la-análitica-urbana"><i class="fa fa-check"></i><b>1.1</b> Sobre la análitica urbana</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="intro.html"><a href="intro.html#qué-es"><i class="fa fa-check"></i><b>1.1.1</b> ¿Qué es?</a></li>
+<li class="chapter" data-level="1.1.2" data-path="intro.html"><a href="intro.html#para-qué-se-usa"><i class="fa fa-check"></i><b>1.1.2</b> ¿Para qué se usa?</a></li>
+<li class="chapter" data-level="1.1.3" data-path="intro.html"><a href="intro.html#quizas-algun-item-mas"><i class="fa fa-check"></i><b>1.1.3</b> QUIZAS ALGUN ITEM MAS</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><i class="fa fa-check"></i><b>2</b> Acceso a información urbana georeferenciada en repositorios <em>online</em></a><ul>
+<li class="chapter" data-level="2.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#openstreetmap-desde-r"><i class="fa fa-check"></i><b>2.1</b> OpenStreetMap desde R</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#definiendo-el-lugar"><i class="fa fa-check"></i><b>2.1.1</b> Definiendo el lugar</a></li>
+<li class="chapter" data-level="2.1.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#extrayendo-información-de-osm"><i class="fa fa-check"></i><b>2.1.2</b> Extrayendo información de OSM</a></li>
+<li class="chapter" data-level="2.1.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#visualizando-los-resultados"><i class="fa fa-check"></i><b>2.1.3</b> Visualizando los resultados</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#un-ejercicio-más-bares-en-el-barrio"><i class="fa fa-check"></i><b>2.2</b> Un ejercicio más: ¡Bares en el barrio!</a></li>
+<li class="chapter" data-level="2.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#obteniendo-y-analizando-datos-de-redes-sociales"><i class="fa fa-check"></i><b>2.3</b> Obteniendo y analizando datos de redes sociales</a></li>
+<li class="chapter" data-level="2.4" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#investigando-con-social-media"><i class="fa fa-check"></i><b>2.4</b> Investigando con social media</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#los-desafíos-de-trabajar-con-información-de-repositorios-sociales"><i class="fa fa-check"></i><b>2.4.1</b> Los desafíos de trabajar con información de repositorios sociales</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#conectando-r-a-twitter"><i class="fa fa-check"></i><b>2.5</b> Conectando R a Twitter</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#obteniendo-autorización"><i class="fa fa-check"></i><b>2.5.1</b> Obteniendo autorización</a></li>
+<li class="chapter" data-level="2.5.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#acceso-a-twitter-via-r-el-paquete-rtweet"><i class="fa fa-check"></i><b>2.5.2</b> Acceso a Twitter via R: el paquete <em>rtweet</em></a></li>
+<li class="chapter" data-level="2.5.3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#usuarios-más-populares"><i class="fa fa-check"></i><b>2.5.3</b> Usuarios más populares</a></li>
+<li class="chapter" data-level="2.5.4" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#tweets-más-populares"><i class="fa fa-check"></i><b>2.5.4</b> Tweets más populares</a></li>
+<li class="chapter" data-level="2.5.5" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#la-hora-del-día-a-la-que-se-producen-los-tweets"><i class="fa fa-check"></i><b>2.5.5</b> La hora del día a la que se producen los tweets</a></li>
+<li class="chapter" data-level="2.5.6" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#procedencia-de-los-usuarios"><i class="fa fa-check"></i><b>2.5.6</b> Procedencia de los usuarios</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#escuchando-tweets-en-tiempo-real"><i class="fa fa-check"></i><b>2.6</b> Escuchando tweets en tiempo real</a></li>
+<li class="chapter" data-level="2.7" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#capturando-tweets-por-períodos-prolongados"><i class="fa fa-check"></i><b>2.7</b> Capturando tweets por períodos prolongados</a></li>
+<li class="chapter" data-level="2.8" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#capturando-tweets-en-zonas-específicas"><i class="fa fa-check"></i><b>2.8</b> Capturando tweets en zonas específicas</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#extraer-las-coordenadas"><i class="fa fa-check"></i><b>2.8.1</b> Extraer las coordenadas</a></li>
+<li class="chapter" data-level="2.8.2" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#visualizando-los-datos-georeferenciados-en-un-mapa-interactivo"><i class="fa fa-check"></i><b>2.8.2</b> Visualizando los datos georeferenciados en un mapa interactivo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.9" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#mapas-estáticos-con-ggmap"><i class="fa fa-check"></i><b>2.9</b> Mapas estáticos con ggmap</a><ul>
+<li class="chapter" data-level="2.9.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#mapas-interactivos-con-leaflet"><i class="fa fa-check"></i><b>2.9.1</b> Mapas interactivos con leaflet</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html"><i class="fa fa-check"></i><b>3</b> Geoprocesamiento</a><ul>
+<li class="chapter" data-level="3.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>3.1</b> Cruces espaciales</a></li>
+<li class="chapter" data-level="3.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>3.2</b> Dataframes tradicionales y dataframes espaciales</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>3.2.1</b> Combinando datasets con información espacial</a></li>
+<li class="chapter" data-level="3.2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>3.2.2</b> Coropletas</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>3.3</b> Uniones</a></li>
+<li class="chapter" data-level="3.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>3.4</b> Intersecciones</a></li>
+<li class="chapter" data-level="3.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>3.5</b> Distancias</a></li>
+<li class="chapter" data-level="3.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>3.6</b> Cálculo de extensión (longitud, área)</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html"><i class="fa fa-check"></i><b>4</b> Analizando dinámicas espacio-temporales</a><ul>
+<li class="chapter" data-level="4.0.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#trabajando-con-fechas"><i class="fa fa-check"></i><b>4.0.1</b> Trabajando con fechas</a></li>
+<li class="chapter" data-level="4.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#mirando-al-espacio"><i class="fa fa-check"></i><b>4.1</b> Mirando al espacio</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#obteniendo-un-mapa-base"><i class="fa fa-check"></i><b>4.1.1</b> Obteniendo un mapa base</a></li>
+<li class="chapter" data-level="4.1.2" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#de-coordenadas-al-mapa"><i class="fa fa-check"></i><b>4.1.2</b> De coordenadas al mapa</a></li>
+<li class="chapter" data-level="4.1.3" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#mapas-de-densidad"><i class="fa fa-check"></i><b>4.1.3</b> Mapas de densidad</a></li>
+<li class="chapter" data-level="4.1.4" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#visualizando-multiples-categorías"><i class="fa fa-check"></i><b>4.1.4</b> Visualizando multiples categorías</a></li>
+<li class="chapter" data-level="4.1.5" data-path="analizando-dinámicas-espacio-temporales.html"><a href="analizando-dinámicas-espacio-temporales.html#combinando-espacio-y-tiempo"><i class="fa fa-check"></i><b>4.1.5</b> Combinando espacio y tiempo</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><i class="fa fa-check"></i><b>5</b> Analizando movimiento: el flujo de viajes urbanos</a><ul>
+<li class="chapter" data-level="5.1" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#estimando-rutas"><i class="fa fa-check"></i><b>5.1</b> Estimando rutas</a></li>
+<li class="chapter" data-level="5.2" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#cuantificando-interacción"><i class="fa fa-check"></i><b>5.2</b> Cuantificando interacción</a></li>
+<li class="chapter" data-level="5.3" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#estimando-rutas-1"><i class="fa fa-check"></i><b>5.3</b> Estimando rutas</a></li>
+<li class="chapter" data-level="5.4" data-path="analizando-movimiento-el-flujo-de-viajes-urbanos.html"><a href="analizando-movimiento-el-flujo-de-viajes-urbanos.html#extra-cómo-obtener-las-rutas-de-todos-los-recorridos"><i class="fa fa-check"></i><b>5.4</b> EXTRA: Cómo obtener las rutas de todos los recorridos</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html"><i class="fa fa-check"></i><b>6</b> Machine Learning (en una aplicación urbana)</a><ul>
+<li class="chapter" data-level="6.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-0-cargar-paquetes"><i class="fa fa-check"></i><b>6.1</b> Paso 0: Cargar paquetes</a></li>
+<li class="chapter" data-level="6.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-1-cargar-los-datos"><i class="fa fa-check"></i><b>6.2</b> Paso 1: Cargar los datos</a></li>
+<li class="chapter" data-level="6.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-2-examinar-los-datos"><i class="fa fa-check"></i><b>6.3</b> Paso 2: Examinar los datos</a></li>
+<li class="chapter" data-level="6.4" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-3-limpiar-los-datos"><i class="fa fa-check"></i><b>6.4</b> Paso 3: Limpiar los datos</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#imputar-valores-faltantes"><i class="fa fa-check"></i><b>6.4.1</b> Imputar valores faltantes</a></li>
+<li class="chapter" data-level="6.4.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#normalizar-variables"><i class="fa fa-check"></i><b>6.4.2</b> Normalizar variables</a></li>
+<li class="chapter" data-level="6.4.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#codificar-variables-categóricas"><i class="fa fa-check"></i><b>6.4.3</b> Codificar variables categóricas</a></li>
+<li class="chapter" data-level="6.4.4" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#unificar-la-escala-de-las-variables-numéricas"><i class="fa fa-check"></i><b>6.4.4</b> Unificar la escala de las variables numéricas</a></li>
+<li class="chapter" data-level="6.4.5" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#consolidar-todas-las-variables-generadas-ad-hoc-en-un-sólo-dataframe"><i class="fa fa-check"></i><b>6.4.5</b> Consolidar todas las variables generadas ad-hoc en un sólo dataframe</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-4-crear-sets-de-entrenamiento-y-de-testeo"><i class="fa fa-check"></i><b>6.5</b> Paso 4: Crear sets de entrenamiento y de testeo</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#paso-5-entrenar-y-testear-un-modelo"><i class="fa fa-check"></i><b>6.5.1</b> Paso 5: Entrenar y testear un modelo</a></li>
+<li class="chapter" data-level="6.5.2" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#midiendo-la-performance-del-modelo-contra-datos-que-no-conoce"><i class="fa fa-check"></i><b>6.5.2</b> Midiendo la performance del modelo contra datos que no conoce</a></li>
+<li class="chapter" data-level="6.5.3" data-path="machine-learning-en-una-aplicación-urbana.html"><a href="machine-learning-en-una-aplicación-urbana.html#comparando-performance"><i class="fa fa-check"></i><b>6.5.3</b> Comparando performance</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publicado con bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analítica Urbana</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="geoprocesamiento" class="section level1">
+<h1><span class="header-section-number">Capítulo 3</span> Geoprocesamiento</h1>
+<p>ESCRIBIR INTRO</p>
+<div id="cruces-espaciales" class="section level2">
+<h2><span class="header-section-number">3.1</span> Cruces espaciales</h2>
+<p>Hay ocasiones en que necesitamos cruzar datos de fuentes distintas en base a su ubicación geográfica. Es decir, un “join” que cruce registros en base a sus coordenadas espaciales, en lugar de otros atributos.</p>
+<p>Aquí va un ejemplo como guía para realizar el spatial join, o join espacial, que sólo puede ser realizado entre dataframes de tipo espacial.</p>
+<p>Paquetes que vamos a usar:</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb80-2" data-line-number="2"><span class="kw">library</span>(sf)</a></code></pre></div>
+</div>
+<div id="dataframes-tradicionales-y-dataframes-espaciales" class="section level2">
+<h2><span class="header-section-number">3.2</span> Dataframes tradicionales y dataframes espaciales</h2>
+<p>Vamos a trabajar con dos datasets.</p>
+<p>Uno contiene los alojamientos ofrecidos por Airbnb en Buenos Aires en Julio 2017.</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1">airbnb &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://query.data.world/s/55amvafrknrgkeyeiu54yb2c6u6brc&quot;</span>,</a>
+<a class="sourceLine" id="cb81-2" data-line-number="2">                   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb81-3" data-line-number="3"><span class="kw">names</span>(airbnb)</a></code></pre></div>
+<pre><code>##  [1] &quot;room_id&quot;              &quot;host_id&quot;              &quot;room_type&quot;           
+##  [4] &quot;country&quot;              &quot;city&quot;                 &quot;neighborhood&quot;        
+##  [7] &quot;address&quot;              &quot;reviews&quot;              &quot;overall_satisfaction&quot;
+## [10] &quot;accommodates&quot;         &quot;bedrooms&quot;             &quot;bathrooms&quot;           
+## [13] &quot;price&quot;                &quot;deleted&quot;              &quot;minstay&quot;             
+## [16] &quot;last_modified&quot;        &quot;latitude&quot;             &quot;longitude&quot;           
+## [19] &quot;survey_id&quot;            &quot;location&quot;             &quot;coworker_hosted&quot;     
+## [22] &quot;extra_host_languages&quot; &quot;name&quot;                 &quot;property_type&quot;       
+## [25] &quot;currency&quot;             &quot;rate_type&quot;</code></pre>
+<p>Y el otro contiene los polígonos de las comunas porteñas:</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1">comunas &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&#39;https://bitsandbricks.github.io/data/CABA_comunas.geojson&#39;</span>)</a></code></pre></div>
+<pre><code>## Reading layer `CABA_comunas&#39; from data source `https://bitsandbricks.github.io/data/CABA_comunas.geojson&#39; using driver `GeoJSON&#39;
+## Simple feature collection with 15 features and 4 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -58.53152 ymin: -34.70529 xmax: -58.33514 ymax: -34.52754
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs</code></pre>
+<p>Notemos que tenemos dos tipos de dataframe distintos. El de Airbnb es un dataframe “tradicional”, dado que todas sus columnas contiene valores simples: un número, un texto, un factor, etc.</p>
+<p>El dataframe de comunas es especial porque es “espacial”. Contiene una columna distinta a las demás, llamada “geometry” que en lugar de una observación simple contiene una lista con múltiples posiciones. Estas posiciones son los vértices que definen el polígono de cada comuna, y permiten la proyección en mapas y el cálculo de estadísticas espaciales.</p>
+<div id="combinando-datasets-con-información-espacial" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Combinando datasets con información espacial</h3>
+<p>Si lo único que queremos es visualizar en forma combinada la información que contienen, no hay problema en que un dataframe sea espacial y otro no, siempre y cuando éste último incluya una columna con latitud y otra con longitud para identificar la posición de cada registro.</p>
+<p>Dado que los datos de Airbnb incluyen lat/long, es fácil visualizarlos en conjunto con el dataframe espacial de las comunas:</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> comunas) <span class="op">+</span></a>
+<a class="sourceLine" id="cb85-3" data-line-number="3"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> airbnb, </a>
+<a class="sourceLine" id="cb85-4" data-line-number="4">               <span class="kw">aes</span>(<span class="dt">x =</span> longitude, <span class="dt">y =</span> latitude),</a>
+<a class="sourceLine" id="cb85-5" data-line-number="5">               <span class="dt">alpha =</span> <span class="fl">.3</span>, </a>
+<a class="sourceLine" id="cb85-6" data-line-number="6">               <span class="dt">color =</span> <span class="st">&quot;orange&quot;</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-80-1.png" width="672" /></p>
+<p>Dicho esto, si lo que queremos es combinar la información para su análisis cuantitativo, no nos alcanza con la visualización. Lo que tenemos que hacer es un “join espacial”, la técnica que permite cruzar datasets en base a sus atributos de ubicación geográfica.</p>
+<p>Sólo es posible hacer joins espaciales entre dataframes espaciales. Es por eso que los datos de Airbnb, así como están, no sirven para un join. ¡Pero! una vez más, dado que incluyen columnas de latitud y longitud, la solución es fácil. Podemos usar las columnas de lat/long para convertirlo en un dataset espacial hecho y derecho, así:</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1">airbnb &lt;-<span class="st"> </span>airbnb <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-2" data-line-number="2"><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(latitude), <span class="op">!</span><span class="kw">is.na</span>(longitude)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-3" data-line-number="3"><span class="st">    </span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;longitude&quot;</span>, <span class="st">&quot;latitude&quot;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>)</a></code></pre></div>
+<p>Tres cosas importantes a tener en cuenta:</p>
+<ol style="list-style-type: decimal">
+<li>Un dataframe espacial no permite filas sin posición (sin coordenadas). Por eso antes de la conversión usamos filter(!is.na(latitude), !is.na(longitude)) para descartar los registros sin coordenadas del dataset de origen si los hubiera.</li>
+<li>La función st_as_sf() es la que toma un dataframe común y lo transforma en uno espacial. Con el parámetro coords = c(“longitude”, “latitude”) le definimos como se llaman las columnas de longitud y latitud, en ese orden. Obsérvese que toma los nombres entre comillas.</li>
+<li>El último parámetro, “crs”, es obligatorio y requiere el identificador del sistema de referencia de las coordenadas. Cuando se trata de datos capturados en internet (como aquí, por scraping del sitio de Airbnb), el crs siempre es 4326.
+Ahora que ambos dataframes son de tipo espacial, ambos se grafican con geom_sf()</li>
+</ol>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb87-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> comunas) <span class="op">+</span></a>
+<a class="sourceLine" id="cb87-3" data-line-number="3"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> airbnb, <span class="dt">color =</span> <span class="st">&quot;orange&quot;</span>, <span class="dt">alpha =</span> <span class="fl">.3</span>)</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-82-1.png" width="672" /></p>
+<p>y más importante aún, se pueden combinar con un join espacial. La versión más simple, que combina atributos de las filas cuyas posiciones coinciden en el espacio, es así:</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1">airbnb_con_comunas &lt;-<span class="st"> </span><span class="kw">st_join</span>(airbnb, comunas)</a></code></pre></div>
+<p>El resultado es un dataframe con datos de Airbnb, que en cada fila incluye los datos de la comuna con la que coincide el alojamiento:</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="kw">head</span>(airbnb_con_comunas)</a></code></pre></div>
+<pre><code>## Simple feature collection with 6 features and 28 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -58.41829 ymin: -34.62068 xmax: -58.37914 ymax: -34.59101
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##    room_id   host_id    room_type country city neighborhood
+## 1 15125458  95870458 Private room      NA   NA           NA
+## 2  1691316   3380366 Private room      NA   NA           NA
+## 3 16069975 104686791 Private room      NA   NA           NA
+## 4  4470484   2034113 Private room      NA   NA           NA
+## 5  3564816  17949594 Private room      NA   NA           NA
+## 6  4479962   8875440 Private room      NA   NA           NA
+##                     address reviews overall_satisfaction accommodates bedrooms
+## 1    Recoleta, Buenos Aires      23                  4.5            1        1
+## 2     Palermo, Buenos Aires     106                  5.0            2        1
+## 3    Recoleta, Buenos Aires       5                  5.0            1        1
+## 4              Buenos Aires     102                  4.5            2        1
+## 5 San Nicolás, Buenos Aires      20                  4.5            1        1
+## 6   Balvanera, Буэнос-Айрес     102                  4.5            2        1
+##   bathrooms price deleted minstay        last_modified survey_id
+## 1        NA   339       0      NA 2017-07-03T17:52:23Z         1
+## 2        NA   559       0      NA 2017-07-03T17:52:26Z         1
+## 3        NA   254       0      NA 2017-07-03T17:52:26Z         1
+## 4        NA   441       0      NA 2017-07-03T17:52:26Z         1
+## 5        NA   390       0      NA 2017-07-03T17:52:26Z         1
+## 6        NA   424       0      NA 2017-07-03T17:52:26Z         1
+##                                             location coworker_hosted
+## 1 0101000020E61000000FB743C362324DC0B1DEA815A64B41C0              NA
+## 2 0101000020E6100000780E65A88A354DC08A027D224F4C41C0              NA
+## 3 0101000020E610000002D4D4B2B5324DC0B5C2F4BD864C41C0              NA
+## 4 0101000020E6100000187C9A9317314DC04293C492724F41C0              NA
+## 5 0101000020E61000004FC939B187304DC03D29931ADA4C41C0              NA
+## 6 0101000020E6100000A6272CF180324DC0A88FC01F7E4E41C0              NA
+##   extra_host_languages                                name property_type
+## 1                 {en}      Habitacion privada en Recoleta     Apartment
+## 2                 {en} Palermo Cozy room wprivate bathroom         House
+## 3                 {en}        Habitacion Recoleta, Confort   Condominium
+## 4                   {} The Flan Room- Palacio Nr San Telmo         House
+## 5                 {en}          &quot;Antique&quot; room @ El Centro     Apartment
+## 6                   {}             Private room - Congreso         House
+##   currency rate_type
+## 1      ARS   nightly
+## 2      ARS   nightly
+## 3      ARS   nightly
+## 4      ARS   nightly
+## 5      ARS   nightly
+## 6      ARS   nightly
+##                                                                        barrios
+## 1                                                                     RECOLETA
+## 2                                                                      PALERMO
+## 3                                                                     RECOLETA
+## 4 CONSTITUCION - MONSERRAT - PUERTO MADERO -  RETIRO - SAN NICOLAS - SAN TELMO
+## 5 CONSTITUCION - MONSERRAT - PUERTO MADERO -  RETIRO - SAN NICOLAS - SAN TELMO
+## 6                                                    BALVANERA - SAN CRISTOBAL
+##   perimetro     area comunas                    geometry
+## 1  21246.61  6140873       2 POINT (-58.39364 -34.59101)
+## 2  21768.07 15772496      14 POINT (-58.41829 -34.59616)
+## 3  21246.61  6140873       2 POINT (-58.39617 -34.59786)
+## 4  35572.65 17802807       1 POINT (-58.38353 -34.62068)
+## 5  35572.65 17802807       1 POINT (-58.37914 -34.60041)
+## 6  10486.26  6385991       3 POINT (-58.39456 -34.61322)</code></pre>
+<p>Con los atributos adicionales, podemos realizar sumarios por comuna de los alojamientos:</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1">airbnb_con_comunas <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb91-2" data-line-number="2"><span class="st">    </span><span class="kw">group_by</span>(comunas) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb91-3" data-line-number="3"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">cantidad =</span> <span class="kw">n</span>())</a></code></pre></div>
+<pre><code>## Simple feature collection with 16 features and 2 fields
+## geometry type:  GEOMETRY
+## dimension:      XY
+## bbox:           xmin: -58.7976 ymin: -34.82524 xmax: -58.18856 ymax: -34.41952
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## # A tibble: 16 x 3
+##    comunas cantidad                                                     geometry
+##  * &lt;fct&gt;      &lt;int&gt;                                               &lt;GEOMETRY [°]&gt;
+##  1 1           2100 MULTIPOINT (-58.39242 -34.60016, -58.39235 -34.60115, -58.3…
+##  2 10            18 MULTIPOINT (-58.52669 -34.62379, -58.52227 -34.61793, -58.5…
+##  3 11            34 MULTIPOINT (-58.52372 -34.60679, -58.51784 -34.61295, -58.5…
+##  4 12           163 MULTIPOINT (-58.51262 -34.58124, -58.50698 -34.56917, -58.5…
+##  5 13           670 MULTIPOINT (-58.47438 -34.53906, -58.47433 -34.55242, -58.4…
+##  6 14          3281 MULTIPOINT (-58.44776 -34.56799, -58.44745 -34.56847, -58.4…
+##  7 15           500 MULTIPOINT (-58.49529 -34.593, -58.48774 -34.58506, -58.486…
+##  8 2           1659 MULTIPOINT (-58.41587 -34.59755, -58.41514 -34.5967, -58.41…
+##  9 3            468 MULTIPOINT (-58.41385 -34.61058, -58.41363 -34.60651, -58.4…
+## 10 4            136 MULTIPOINT (-58.4205 -34.64693, -58.42022 -34.64792, -58.41…
+## 11 5            422 MULTIPOINT (-58.4313 -34.6024, -58.43129 -34.60154, -58.431…
+## 12 6            184 MULTIPOINT (-58.45786 -34.60974, -58.45726 -34.61023, -58.4…
+## 13 7             62 MULTIPOINT (-58.47123 -34.62169, -58.47018 -34.62031, -58.4…
+## 14 8              1                                  POINT (-58.46999 -34.66616)
+## 15 9             15 MULTIPOINT (-58.5287 -34.64678, -58.52213 -34.63636, -58.51…
+## 16 &lt;NA&gt;         210 MULTIPOINT (-58.7976 -34.66354, -58.69091 -34.47598, -58.68…</code></pre>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1">comunas</a></code></pre></div>
+<pre><code>## Simple feature collection with 15 features and 4 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -58.53152 ymin: -34.70529 xmax: -58.33514 ymax: -34.52754
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## First 10 features:
+##                                                                            barrios
+## 1     CONSTITUCION - MONSERRAT - PUERTO MADERO -  RETIRO - SAN NICOLAS - SAN TELMO
+## 2                                                                         RECOLETA
+## 3                                                        BALVANERA - SAN CRISTOBAL
+## 4                               BARRACAS - BOCA - NUEVA POMPEYA - PARQUE PATRICIOS
+## 5                                                                  ALMAGRO - BOEDO
+## 6                                                                        CABALLITO
+## 7                                                        FLORES - PARQUE CHACABUCO
+## 8                                   VILLA LUGANO - VILLA RIACHUELO - VILLA SOLDATI
+## 9                                          LINIERS - MATADEROS - PARQUE AVELLANEDA
+## 10 FLORESTA - MONTE CASTRO - VELEZ SARSFIELD - VERSALLES - VILLA LURO - VILLA REAL
+##    perimetro     area comunas                       geometry
+## 1   35572.65 17802807       1 MULTIPOLYGON (((-58.36854 -...
+## 2   21246.61  6140873       2 MULTIPOLYGON (((-58.39521 -...
+## 3   10486.26  6385991       3 MULTIPOLYGON (((-58.41192 -...
+## 4   36277.44 21701236       4 MULTIPOLYGON (((-58.3552 -3...
+## 5   12323.47  6660526       5 MULTIPOLYGON (((-58.41287 -...
+## 6   10990.96  6851029       6 MULTIPOLYGON (((-58.43061 -...
+## 7   17972.26 12422901       7 MULTIPOLYGON (((-58.452 -34...
+## 8   21028.31 22192611       8 MULTIPOLYGON (((-58.44913 -...
+## 9   21411.74 16505306       9 MULTIPOLYGON (((-58.51925 -...
+## 10  18332.04 12656557      10 MULTIPOLYGON (((-58.48834 -...</code></pre>
+<p>El resultado de un join espacial también es un dataframe espacial, así que podemos visualizarlo de la manera habitual (y ahora tenemos más variables para graficar).</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> comunas) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-3" data-line-number="3"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> airbnb_con_comunas, <span class="kw">aes</span>(<span class="dt">color =</span> comunas))</a></code></pre></div>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-86-1.png" width="672" /></p>
+</div>
+<div id="coropletas" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Coropletas</h3>
+<p>Explicar como usar los conteos de puntos por polígono para mapear en coropletas</p>
+</div>
+</div>
+<div id="uniones" class="section level2">
+<h2><span class="header-section-number">3.3</span> Uniones</h2>
+<p>Dessarrollar</p>
+</div>
+<div id="intersecciones" class="section level2">
+<h2><span class="header-section-number">3.4</span> Intersecciones</h2>
+<p>Desarrollar</p>
+</div>
+<div id="distancias" class="section level2">
+<h2><span class="header-section-number">3.5</span> Distancias</h2>
+<p>Desarrollar</p>
+</div>
+<div id="cálculo-de-extensión-longitud-área" class="section level2">
+<h2><span class="header-section-number">3.6</span> Cálculo de extensión (longitud, área)</h2>
+<p>Desarrollar</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="analizando-dinámicas-espacio-temporales.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["analitica_urbana.pdf", "analitica_urbana.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

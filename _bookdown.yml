@@ -1,0 +1,20 @@
+book_filename: "analitica_urbana"
+repo: https://github.com/bitsandbricks/analitica_urbana
+delete_merged_file: true
+language:
+  ui:
+    chapter_name: "Capítulo "
+  label:
+    fig: 'Figura '
+    tab: 'Tabla '
+    eq: 'Ecuación '
+    thm: 'Theorem '
+    lem: 'Lemma '
+    def: 'Definition '
+    cor: 'Corollary '
+    prp: 'Proposition '
+    exm: 'Ejemplo '
+    exr: 'Ejercicio '
+    proof: 'Proof. '
+    remark: 'Remark. '
+    solution: 'Solución. '    

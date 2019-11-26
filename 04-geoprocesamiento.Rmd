@@ -1,0 +1,132 @@
+# Geoprocesamiento
+
+ESCRIBIR INTRO
+
+## Cruces espaciales 
+
+Hay ocasiones en que necesitamos cruzar datos de fuentes distintas en base a su ubicación geográfica. Es decir, un “join” que cruce registros en base a sus coordenadas espaciales, en lugar de otros atributos.
+
+Aquí va un ejemplo como guía para realizar el spatial join, o join espacial, que sólo puede ser realizado entre dataframes de tipo espacial.
+
+Paquetes que vamos a usar:
+
+
+```{r eval=FALSE}
+library(tidyverse)
+library(sf)
+```
+
+## Dataframes tradicionales y dataframes espaciales
+
+Vamos a trabajar con dos datasets.
+
+Uno contiene los alojamientos ofrecidos por Airbnb en Buenos Aires en Julio 2017.
+
+
+```{r primer_chunk_de_geoproc}
+airbnb <- read.csv("https://query.data.world/s/55amvafrknrgkeyeiu54yb2c6u6brc",
+                   stringsAsFactors = FALSE)
+names(airbnb)
+
+```
+
+Y el otro contiene los polígonos de las comunas porteñas:
+
+```{r}
+comunas <- st_read('https://bitsandbricks.github.io/data/CABA_comunas.geojson')
+```
+
+Notemos que tenemos dos tipos de dataframe distintos. El de Airbnb es un dataframe “tradicional”, dado que todas sus columnas contiene valores simples: un número, un texto, un factor, etc.
+
+El dataframe de comunas es especial porque es “espacial”. Contiene una columna distinta a las demás, llamada “geometry” que en lugar de una observación simple contiene una lista con múltiples posiciones. Estas posiciones son los vértices que definen el polígono de cada comuna, y permiten la proyección en mapas y el cálculo de estadísticas espaciales.
+
+### Combinando datasets con información espacial
+
+Si lo único que queremos es visualizar en forma combinada la información que contienen, no hay problema en que un dataframe sea espacial y otro no, siempre y cuando éste último incluya una columna con latitud y otra con longitud para identificar la posición de cada registro.
+
+Dado que los datos de Airbnb incluyen lat/long, es fácil visualizarlos en conjunto con el dataframe espacial de las comunas:
+
+
+```{r}
+ggplot() +
+    geom_sf(data = comunas) +
+    geom_point(data = airbnb, 
+               aes(x = longitude, y = latitude),
+               alpha = .3, 
+               color = "orange")
+```
+
+
+Dicho esto, si lo que queremos es combinar la información para su análisis cuantitativo, no nos alcanza con la visualización. Lo que tenemos que hacer es un “join espacial”, la técnica que permite cruzar datasets en base a sus atributos de ubicación geográfica.
+
+Sólo es posible hacer joins espaciales entre dataframes espaciales. Es por eso que los datos de Airbnb, así como están, no sirven para un join. ¡Pero! una vez más, dado que incluyen columnas de latitud y longitud, la solución es fácil. Podemos usar las columnas de lat/long para convertirlo en un dataset espacial hecho y derecho, así:
+
+```{r}
+airbnb <- airbnb %>% 
+    filter(!is.na(latitude), !is.na(longitude)) %>% 
+    st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+```
+
+Tres cosas importantes a tener en cuenta:
+
+1. Un dataframe espacial no permite filas sin posición (sin coordenadas). Por eso antes de la conversión usamos filter(!is.na(latitude), !is.na(longitude)) para descartar los registros sin coordenadas del dataset de origen si los hubiera.
+2. La función st_as_sf() es la que toma un dataframe común y lo transforma en uno espacial. Con el parámetro coords = c("longitude", "latitude") le definimos como se llaman las columnas de longitud y latitud, en ese orden. Obsérvese que toma los nombres entre comillas.
+3. El último parámetro, “crs”, es obligatorio y requiere el identificador del sistema de referencia de las coordenadas. Cuando se trata de datos capturados en internet (como aquí, por scraping del sitio de Airbnb), el crs siempre es 4326.
+Ahora que ambos dataframes son de tipo espacial, ambos se grafican con geom_sf()
+
+```{r}
+ggplot() +
+    geom_sf(data = comunas) +
+    geom_sf(data = airbnb, color = "orange", alpha = .3)
+```
+
+
+y más importante aún, se pueden combinar con un join espacial. La versión más simple, que combina atributos de las filas cuyas posiciones coinciden en el espacio, es así:
+
+```{r}
+airbnb_con_comunas <- st_join(airbnb, comunas)
+```
+
+El resultado es un dataframe con datos de Airbnb, que en cada fila incluye los datos de la comuna con la que coincide el alojamiento:
+
+```{r}
+head(airbnb_con_comunas)
+```
+
+Con los atributos adicionales, podemos realizar sumarios por comuna de los alojamientos:
+
+```{r}
+airbnb_con_comunas %>% 
+    group_by(comunas) %>% 
+    summarise(cantidad = n())
+comunas
+```
+
+El resultado de un join espacial también es un dataframe espacial, así que podemos visualizarlo de la manera habitual (y ahora tenemos más variables para graficar).
+
+```{r}
+ggplot() +
+    geom_sf(data = comunas) +
+    geom_sf(data = airbnb_con_comunas, aes(color = comunas))
+```
+
+
+### Coropletas
+
+Explicar como usar los conteos de puntos por polígono para mapear en coropletas
+
+## Uniones
+
+Dessarrollar
+
+## Intersecciones
+
+Desarrollar
+
+## Distancias
+
+Desarrollar
+
+## Cálculo de extensión (longitud, área)
+
+Desarrollar

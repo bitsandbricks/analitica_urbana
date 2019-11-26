@@ -1,0 +1,385 @@
+# Machine Learning (en una aplicación urbana)
+
+
+El asíi llamado _machine learning_ consiste el empleo de aprendizaje estadístico automatizado para identificar patrones en grandes volúmenes de datos. El machine learning (de aquí en más ML) es utilizado en infinidad de campos debido a su creciente facilidad de uso y capacidad -en ciertos contextos- para predecir resultados con alta precisión.
+
+Veremos como se aplica en la práctica con un ejercicio adaptado del [tutorial realizado por Cam Nugent](https://www.kaggle.com/camnugent/introduction-to-machine-learning-in-r-tutorial). Utiliza como fuente datos un [dataset](https://www.kaggle.com/camnugent/california-housing-prices/version/1) que contiene el valor mediano de las viviendas en California, EEUU, de acuerdo a un censo de 1990. ¡Es casi información arqueológica!
+
+![](https://bitsandbricks.github.io/ciencia_de_datos_gente_sociable/imagenes/90210.jpg)
+
+_Habitantes de California en los '90 con sus vestimentas nativas_
+
+
+A pesar de no contener datos de factura reciente, el dataset ha aparecido en varios textos introductorios debido a que no contiene información sensible, es de dominio público, y sus variables son auto-explicativas. Además, su tamaño resulta adecuado: suficiente para no ser considerado "de juguete", pero no tan grande como para ser engorroso.
+
+Cada fila representa un conjunto de manzanas, o "Census block groups". Por comodidad, nosotros les llamaremos distritos. El objetivo del ejercicio es predecir el valor medio de las viviendas de cada distrito en función de sus otros atributos conocidos: cuánta gente vive allí, donde esta localizado, si queda cerca del mar, la antigüedad de sus casas, etc. 
+
+Allá vamos.
+
+## Paso 0: Cargar paquetes
+
+Además de las funciones de R "base", vamos a usar las del paquete `tidyverse` para procesar y visualizar nuestros datos, y las de `randomForest`, para aplicar el algoritmo de ML homónimo, que es relativamente simple y a la vez efectivo. 
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+#install.packages("randomForest")
+library(randomForest)
+```
+
+
+## Paso 1: Cargar los datos
+
+
+Descargamos el dataset del siguiente modo:
+
+```{r}
+vivienda <- read_csv("http://bitsandbricks.github.io/data/housing.csv")
+```
+
+
+## Paso 2: Examinar los datos
+
+Echamos un vistazo a las primeras filas,
+
+```{r}
+head(vivienda)
+```
+
+Y extraemos un resumen del contenido
+
+```{r}
+summary(vivienda)
+```
+
+Obsérvese que la variable "total_dormitorios" exhibe 207 datos faltantes, representados con `NA`. Luego volveremos a éste tema.
+
+Y espiemos la distribución de algunas variables, como
+
+ingresos:
+
+```{r}
+ggplot() +
+    geom_histogram(data = vivienda, aes(x = mediana_ingresos))
+```
+
+antigüedad de las viviendas:
+
+```{r}
+ggplot() +
+    geom_histogram(data = vivienda, aes(x = mediana_antiguedad_viviendas))
+```
+
+población:
+
+```{r}
+ggplot() +
+    geom_histogram(data = vivienda, aes(x = poblacion))
+```
+
+... o proximidad al océano (dado que se trata de una variable categórica en lugar de continua, usamos un gráfico de barras en lugar de un histograma):
+
+```{r}
+ggplot() +
+    geom_bar(data = vivienda, aes(x = proximidad_oceano))
+```
+
+## Paso 3: Limpiar los datos
+
+
+### Imputar valores faltantes
+
+Es habitual que los algoritmos empleados para ML no acepten datos faltantes. Es por eso que la limpieza básica de un dataset casi siempre incluye la imputación de datos no disponibles, evitando descartar por incompletas filas que contienen información valiosa en sus campos si disponibles.
+
+Habíamos notado que la variable "total_dormitorios" tiene faltantes en 207 filas. Para esos casos, usaremos una de las técnicas de imputación mas _naif_ que hay: donde haya un valor desconocido, lo reemplazaremos por la mediana de los valores generales. 
+
+```{r}
+vivienda <- vivienda %>% 
+    mutate(total_dormitorios = ifelse(is.na(total_dormitorios),
+                                       median(total_dormitorios, na.rm = TRUE),
+                                       total_dormitorios))
+    
+summary(vivienda)
+```
+
+Nos hemos librado de los `NA`.
+
+
+### Normalizar variables
+
+También deberíamos evaluar si algunas variables requieren ser normalizadas. En este caso las candidatas son "total_habitaciones" y "total_dormitorios", ya que es de esperarse que sean mayores donde hay más casas -naturalmente- pero eso no nos indica si las casas tienden a ser más o menos grandes que la media. Lo que haremos entonces es dividir la cantidad total de habitaciones por la cantidad de viviendas en cada distrito, y nos quedaremos con esas métricas en lugar de las originales:
+
+```{r}
+vivienda <- vivienda %>% 
+    mutate(promedio_habitaciones = total_habitaciones/hogares,
+           promedio_dormitorios = total_dormitorios/hogares) %>%
+    select(-total_habitaciones, -total_dormitorios)
+
+head(vivienda)
+```
+
+Del mismo modo sería mejor tener densidad de población en lugar de población total, pero sin saber el área que ocupa cada distrito no vamos a poder obtener la densidad. 
+
+
+### Codificar variables categóricas
+
+Ahora nos encargaremos de las variables categóricas, aquí representadas por "proximidad_oceano". Rara vez es posible utilizar columnas categóricas en modelos estadísticos, pero por suerte podemos recurrir a la alternativa de reemplazar una columna de datos categóricos por una serie de variables binarias, o "dummy". 
+
+Es decir, en lugar de...
+
+
+| caso | proximidad_oceano  |
+|------|--------------------|
+| A    | CERCANO A BAHIA    |
+| B    | ALEJADO DEL OCEANO |
+| C    | CERCANO A OCEANO   |
+
+
+... tendríamos algo así como:
+
+
+| caso | CERCANO A BAHIA | ALEJADO DEL OCEANO | ALEJADO DEL OCEANO |
+|------|-----------------|--------------------|--------------------|
+| A    | 1               | 0                  | 0                  |
+| B    | 0               | 1                  | 0                  |
+| C    | 0               | 0                  | 1                  |
+
+
+
+Como buen lenguaje creado por y para practicantes del análisis estadístico, `R` trae una función específica para realizar ésta tarea, `model.matrix()`. Se usa así:
+
+
+```{r}
+matriz_categorias_oceano <- model.matrix(data = vivienda, ~ proximidad_oceano - 1)
+```
+
+y el resultado es, ni más ni menos, una matriz de variables binarias que representan las categorías originales:
+
+```{r}
+head(matriz_categorias_oceano)
+```
+
+Pronto agregaremos la matriz a nuestro dataframe, pero antes terminemos con otros ajustes pendientes.
+
+### Unificar la escala de las variables numéricas
+
+Éste paso siempre es necesario cuando estamos trabajando con variables que utilizan distintas unidades de medida. Aquí tenemos personas, hogares, habitaciones, dormitorios, años de antigüedad... de todo. Muchos algoritmos asumen que todas las variables tienen escalas comparables, lo cual genera problemas con las que alcanzan valores relativamente muy altos (como población, que llegar a decenas de miles) versus las que tienen rangos mucho menores (como antigüedad en años mediana, que "sólo" llega a 52). Si las dejásemos así, varias de las técnicas habituales del ML adjudicarían mucho más peso a las variables con números grandes, "despreciando" a las que por su naturaleza se mueven en rango más reducidos.
+
+En todo caso, no importa lo disimiles que sean las unidades de medida, la solución es simple: convertimos todas las variables a la famosa "distribución Z", o función de estandarización, que convierte variables a una escala sin unidad de medida, que expresa cada valor como la cantidad de desvíos estándar que lo alejan de la media. Expresar todas las variables numéricas en forma de "z scores", o "valores z", las hace directamente comparables entre sí. 
+
+En `R` disponemos de la función `scale()`, que obtiene los z-scores. Tomaremos entonces nuestro dataframe y usaremos `mutate_all()` para aplicar una función a todas las columnas restantes de un tirón. Eso si, quitando antes ciertas variables: las variables categóricas (que no tiene sentido pasar a z-scores porque no son variables numéricas), y la variable que estamos intentando predecir, ya que su escala no afecta los modelos y podemos dejarla en su formato original fácil de interpretar.
+
+```{r}
+vivienda <- vivienda %>% 
+    select(-proximidad_oceano, -mediana_valor_vivienda) %>% 
+    mutate_all(funs(scale)) %>% 
+    mutate(mediana_valor_vivienda = vivienda$mediana_valor_vivienda)
+
+```
+
+Y obsérvese que `scale()` mediante, ahora todas las variables tienen promedio igual a 0, y se mueven en el mismo rango
+
+```{r}
+summary(vivienda)
+```
+
+... y sin que esto haya cambiado la forma de las distribuciones. Compárense ahora con las que examinamos al inicio, 
+
+ingresos:
+
+```{r}
+ggplot() +
+    geom_histogram(data = vivienda, aes(x = mediana_ingresos))
+```
+
+antigüedad de las viviendas:
+
+```{r}
+ggplot() +
+    geom_histogram(data = vivienda, aes(x = mediana_antiguedad_viviendas))
+```
+
+población:
+
+```{r}
+ggplot() +
+    geom_histogram(data = vivienda, aes(x = poblacion))
+```
+
+¡las formas son iguales! no hemos hemos perdido "información" respecto a que tan típico o extremo es cada valor, y hemos ganado la posibilidad de comparar en forma directa todas las variables: si un distrito tiene un valor cercano a cero en población, y  -digamos- más de 4 en ingresos, sabemos automáticamente que su población es parecida a la media de todos los distritos, pero sus ingresos son altísimos.
+
+
+### Consolidar todas las variables generadas ad-hoc en un sólo dataframe 
+
+Nos ha quedado por un lado un dataframe de variables numéricas estandarizadas, y por otro una matriz que representa la pertenencia de cada distrito a su categoría respecto a "proximidad al océano". 
+
+Primero convertimos la matriz en dataframe (paso simple ya éstas estructura de datos son muy similares entre si), y luego unimos las columnas de ambos con la función `cbind()`:
+
+```{r}
+matriz_categorias_oceano <- as.data.frame(matriz_categorias_oceano)
+
+vivienda <- vivienda %>% 
+    cbind(matriz_categorias_oceano)
+```
+
+```{r}
+head(vivienda)
+```
+
+Ya tenemos tenemos los datos limpios y en orden. 
+
+
+## Paso 4: Crear sets de entrenamiento y de testeo
+
+Para poder evaluar la calidad de un modelo predictivo, es práctica común dividir los datos disponibles en dos porciones. Una parte será utilizada para "entrenar" el modelo de ML, es decir se le permitirá al algoritmo acceder a esos datos para establecer la forma en que cada variable predictora incide en la que se quiere predecir. El resto será preservado y utilizado para "tomarle examen" al modelo: se le mostraran sólo las variables predictoras de esos datos, pidiendo al modelo una predicción del valor a estimar para cada una. Por último, contrastando aciertos y errores, se podrá establecer el grado de precisión del modelo. 
+
+Incluso podríamos tener varios modelos distintos, obtenidos con distintas técnicas de ML. No es difícil, ya que una vez que los datos han sido obtenidos y preparados, nada impide usarlos como insumo de distintos algoritmos. En ese caso, se puede comparar la performance de los distintos modelos evaluando cual acierta mejor con la data de testeo.
+
+Definamos entonces cuales filas van al set de entrenamiento, y cuáles al de testeo, eligiéndolas al azar. De acuerdo a distintas recetas, a veces se separa el 90% de los datos para entrenamiento y el resto para testeo, otras veces es mitad y mitad... ya que siempre es más o menos arbitrario, aquí usaremos el 80% para entrenar, y el 20% para testear.
+
+```{r}
+#definimos a mano la "semilla" de aleatorización para obtener resultados reproducibles
+set.seed(1810)
+```
+
+Tomamos al azar el 80% de las posiciones entre 1 y la cantidad total de filas de nuestro dataset
+
+```{r}
+seleccion <- sample(1:nrow(vivienda), size = nrow(vivienda) * 0.8)
+
+entrenamiento <- vivienda %>% 
+    filter(row_number() %in% seleccion)
+
+# el testeo es el set opuesto - aquellas filas cuya posición no está entre las seleccionadas
+# el operador ! convierte una proposición en negativa 
+
+testeo <- vivienda %>% 
+    filter(!(row_number() %in% seleccion))
+
+```
+
+Ahora si, por fin, apliquemos un poco de machine learning.
+
+
+### Paso 5: Entrenar y testear un modelo
+
+Random Forest, una implementación de árboles de decisión como los ilustrados en ["Una introducción visual al machine learning"](http://www.r2d3.us/una-introduccion-visual-al-machine-learning-1/):
+
+```{r}
+modelo_RF <- randomForest(data = entrenamiento, mediana_valor_vivienda ~ .,
+                         ntree = 500,
+                         importance = TRUE)
+
+# el parámetro "importance": Define si el modelo estimará la importancia relativa de cada predictor en la calidad de la predicción -es decir, cuales variables son más importantes para predecir
+
+# resultados:
+modelo_RF
+```
+
+Según dice allí, el modelo puede explicar más del 80% de la varianza de valores encontrada entre los distritos californianos en base a las variables predictoras que empleamos.
+
+
+¿Qué tiene dentro el modelo?
+
+```{r}
+summary(modelo_RF)
+```
+
+De todo! Por ejemplo, "type" nos emite confirmar qué tipo de análisis realizó: Fue de regresión en este caso, peor podría haber sido otro, como clasificación (cuando se predice un atributo categórico en lugar de una variable continua):
+
+```{r}
+modelo_RF$type
+```
+
+O "importance", que contiene un ranking con la importancia relativa de cada predictor, es decir cuáles son los que más ayudan a estimar el valor a predecir:
+
+```{r}
+modelo_RF$importance
+```
+
+La columna "%IncMSE" representa el porcentaje de error promedio, la magnitud en la que el valor predicho por el modelo difiere del valor observado, cuando cada predictor se retira del modelo (es decir, cuanto peor sería la predicción si no se usara). Por eso los números mayores están asociados a los predictores de más peso, que en este caso son "mediana_ingresos", y luego longitud y latitud. Además de encontrar la correlación esperable entre nivel de ingresos de una población y el valor de sus viviendas, nuestro modelo ha encontrado que la ubicación es la clave del valor de la propiedad... y sin saber nada de geografía ni urbanismo.
+
+
+En "predicted" tenemos la mediana del valor de la vivienda predicha para cada distrito:
+
+```{r}
+head(modelo_RF$predicted)
+```
+
+
+Aprovechando que dentro del modelo, "y" contiene los valores observados, evaluemos en forma gráfica cuánto se aproximan las predicciones de cada distrito al valor real (el observado) :
+
+```{r}
+ggplot() +
+    geom_point(aes(x = modelo_RF$predicted, y = modelo_RF$y), alpha = 0.3) 
+```
+
+Se ajusta bastante bien. Luego veremos una manera de cuantificar la precisión del modelo. 
+
+
+### Midiendo la performance del modelo contra datos que no conoce
+
+Veamos ahora como se comporta nuestro modelo cuando debe predecir valores de distritos que no se han utilizado para el entrenamiento, los que reservamos para el set de testeo.
+
+```{r}
+predicciones_test <- predict(modelo_RF, newdata = testeo)
+
+head(predicciones_test)
+```
+
+En un gráfico:
+
+```{r}
+ggplot() +
+    geom_point(aes(x = predicciones_test, y = testeo$mediana_valor_vivienda), alpha = 0.3) 
+```
+
+Luce incluso mejor que el ajuste con los datos conocidos.
+
+### Comparando performance
+
+Es práctico obtener un sólo número, un indicador simple que nos diga que tan bien predice el modelo, y así poder comparar distintos modelos entre si (o distintos datasets contra el mismo modelo) utilizando esa medida. En estadística es común el uso del RMSE como indicador de grado de ajuste, o "Root Mean Square Error" - la raíz cuadrada de la media de los errores al cuadrado.
+
+El modelo incluye el MSE (o sea la suma de los errores al cuadrado) que surge de comparar predicciones con valores observados. Y en el caso de un random forest, que intenta muchos árboles distintos, varios MSEs resultantes: 500 en nuestro caso, uno por cada árbol trazado. 
+
+Tomamos la media de todos los MSE para obtener un valor general, y luego tomamos la raíz cuadrada para obtener el RMSE: 
+
+```{r}
+RMSE <- modelo_RF$mse %>% 
+    mean() %>%
+    sqrt()
+
+RMSE
+```
+
+Eso significa que la diferencia promedio entre valor esperado y valor hallado para cada distrito fue de `r RMSE` dólares.
+
+Y en comparación, ¿qué tan bueno resultó el modelo cuando se aplicó a datos que no conocía?
+
+
+```{r}
+RMSE_test <- sqrt(mean((predicciones_test - testeo$mediana_valor_vivienda)^2))
+
+RMSE_test
+```
+
+Con un valor medio de error de `r RMSE_test` dólares, el modelo ha funcionado muy bien con datos desconocidos, incluso mejorando levemente su performance respecto al set de _training_. 
+
+Esto indica que no sufre de "overfitting", la condición de estar excesivamente ajustado a los datos con los que fue entrenado. Por eso el modelo no pierde precisión cuando lidia con datos nuevos.
+
+Como despedida, volvamos al examen visual. Representamos en un gráfico cada valor predicho y cada valor observado para los datos de entrenamiento:
+
+```{r}
+ggplot() +
+    geom_point(aes(x = 1:length(predicciones_test), y = predicciones_test), 
+               color = "salmon",
+               alpha = .5,
+               size = .5) +
+    geom_point(aes(x = 1:nrow(testeo), y = testeo$mediana_valor_vivienda), 
+               color = "lightblue",
+               alpha = .5,
+               size = .5) +
+    labs(x = "valores predichos",
+         y = "valores observados") +
+    theme_minimal()
+```
