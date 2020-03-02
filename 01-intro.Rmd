@@ -1,11 +1,35 @@
 # Introducción {#intro}
 
-Una bonita introducción
+<div class=text-justify>
+
+En los próximos años, la mayor parte de la población mundial será urbana, lo que supone un aumento exponencial en la demanda de los servicios que las ciudades brindan. Por lo tanto, será necesario que se lleve a cabo una gestión apropiada que permita mantener y/o mejorar la eficiencia y la calidad de estas prestaciones. Pero ¿Cómo podemos hacer frente a esta situación desde nuestro lugar de urbanistas?
+
+Es aquí donde entran en juego los cambios tecnológicos ocurridos en los últimos años, que presentan un gran desafío en términos de gestión y planificación urbana. Hasta ahora, es la primera vez que podemos acceder a tantos datos y que además tenemos la capacidad de procesarlos, comprenderlos y utilizarlos para tomar mejores decisiones.
+
+Hoy en día todas las personas generan datos constantemente a través del uso de nuevas tecnologías. Cuando utilizamos el transporte público con algún sistema de boleto electrónico, cuando interactuamos en las redes sociales, o cuando utilizamos algún dispositivo digital, estamos generando datos masivos que superan ampliamente el volumen, la variedad y la velocidad que existe en los clásicos registros administrativos que los gobiernos utilizan hace años.
+
+Entonces, entendiendo que las ciudades son los sitios donde más personas habitan, es lógico que allí se genere la mayor cantidad de datos urbanos. Contar con estos grandes volúmenes de datos sirve para que los gobiernos tomen decisiones basadas en evidencia y, por ende, mejoren la calidad vida de los ciudadanos. Pero ¿Cómo podemos hacer para aprovechar todos estos datos que se generan de forma masiva y constante? La respuesta es simple: Para comprender el presente y planificar el futuro aprovechando los datos de las ciudades debemos hacer uso de herramientas de **analítica urbana**, las cuales serán desarrolladas a lo largo de este libro. **EN PROCESO (SE PUEDE CAMBIAR)**
+
+</div>
 
 ## Sobre la análitica urbana
 
 ### ¿Qué es?
 
+<div class=text-justify>
+
+La analítica urbana es un campo multidisciplinario que abarca las capacidades técnicas de extraer conocimiento de los datos para describir algo que ya sucedió (estadística descriptiva) y/o realizar predicciones de algo que ocurrirá (modelo predictivo). Poder realizar modelos predictivos es muy útil para la planificación de ciudades ya que, la generación de escenarios futuros nos permite anticiparnos a posibles situaciones. **EN PROCESO (SE PUEDE CAMBIAR)**
+
+</div>
+
 ### ¿Para qué se usa?
+
+<div class=text-justify>
+
+Las herramientas de analítica urbana se utilizan, básicamente, para entender las dinámicas de las ciudades y el comportamiento de sus habitantes a partir de diferentes datos que pueden ser referidos a temas de hábitat, desarrollo urbano, medios de transporte, tráfico, salud, educación, seguridad, entre otros. El uso de este tipo de herramientas resulta de gran utilidad a la hora de estudiar las ciudades y de diseñar y planificar políticas públicas apropiadas.
+
+A lo largo de este libro vamos a aprender algunos ejemplos de casos de aplicación de herramientas. Estas son: acceso a información urbana georreferenciada desde repositorios online, herramientas de geoprocesamiento de datos, análisis de dinámicas espacio-temporales de los datos, análisis de flujos urbanos, y por último, predicción de datos a partir de técnicas de aprendizaje automático o Machine Learning. **EN PROCESO (SE PUEDE CAMBIAR)**
+
+</div>
 
 ### QUIZAS ALGUN ITEM MAS
