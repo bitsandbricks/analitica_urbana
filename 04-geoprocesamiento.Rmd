@@ -1,8 +1,9 @@
 # Geoprocesamiento
 
-Cuando tenemos información geográfica y queremos manipularla para generar nuevos datos que nos permitan hacer análisis espaciales, debemos utilizar diferentes herramientas de geoprocesamiento, las cuales son indispensables para la analítica urbana.
+Cuando tenemos información geográfica y queremos manipularla para generar nuevos datos que nos permitan hacer análisis espaciales, debemos utilizar diferentes herramientas de geoprocesamiento.
 
-Los geoprocesos, que se realizan entre dos o más capas (shapes), pueden ser: unir, recortar, disolver, borrar, fusionar, interseccionar, calcular áreas de influencia (buffer), entre otros. En este capítulo aprenderemos a utilizar las herramientas para geoprocesamiento de datos geográficos incluidas en el paquete `sf`.
+Los geoprocesos, que se realizan entre dos o más capas (shapes), pueden ser: unir, recortar, disolver, borrar, fusionar, interseccionar, calcular áreas de influencia (buffer), entre otros. En este capítulo aprenderemos a utilizar algunas de las herramientas para geoprocesamiento de datos incluidas en el paquete `sf`.
+
 
 ## Cruces espaciales 
 
@@ -11,7 +12,6 @@ Hay ocasiones en que necesitamos cruzar datos de fuentes distintas en base a su 
 Aquí va un ejemplo como guía para realizar el spatial join, o join espacial, que sólo puede ser realizado entre dataframes de tipo espacial.
 
 Paquetes que vamos a usar:
-
 
 ```{r eval=FALSE}
 library(tidyverse)
@@ -101,7 +101,6 @@ Con los atributos adicionales, podemos realizar sumarios por comuna de los aloja
 airbnb_con_comunas %>% 
     group_by(comunas) %>% 
     summarise(cantidad = n())
-comunas
 ```
 
 El resultado de un join espacial también es un dataframe espacial, así que podemos visualizarlo de la manera habitual (y ahora tenemos más variables para graficar).
@@ -117,30 +116,26 @@ ggplot() +
 
 Hasta acá obtuvimos un dataframe espacial con la geometría de puntos proveniente de los datos de Airbnb y generamos una nueva columna que indica a que Comuna pertenece cada registro. Sin embargo, cuando tenemos muchos puntos concentrados en un mapa resulta difícil realizar un análisis visual que nos permita sacar conclusiones de los mismos. Para solucionar esto, sirven los mapas coropléticos, que muestran áreas geográficas (polígonos) coloreadas según alguna de las variables incluidas en el dataset.
 
-Entonces, ¿Cómo podemos hacer un mapa coroplético dándole color a las Comunas según la cantidad de propiedades que se alquilan en cada una? Veamos esto en detalle:
-Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentro de CABA y agruparlas por Comuna realizando un conteo de las observaciones que contienen.
+Entonces, ¿Cómo podemos hacer un mapa coroplético dándole color a las Comunas según la cantidad de propiedades que se alquilan en cada una?
+
+Veamos esto en detalle:
+Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentro de CABA y agruparlas por Comuna calculando la cantidad de observaciones que contienen. Y luego haremos un `left_join()` entre el shape original con los polígonos de las Comunas y los datos que agrupamos:
 
 ```{r}
-airbnb_con_comunas <- airbnb_con_comunas %>%
+comunas <- comunas %>%
+  left_join(airbnb_con_comunas %>%
   filter(!is.na(comunas)) %>%
   group_by(comunas) %>%
   summarise(cantidad=n()) %>%
-  st_set_geometry(NULL)
+  st_set_geometry(NULL),
+  by="comunas")
 ```
 
-Luego debemos hacer un `left_join()` entre el shape con los polígonos de las Comunas y los datos que agrupamos:
-
-```{r}
-airbnb_con_comunas <- comunas %>%
-  left_join(airbnb_con_comunas,
-   by="comunas") 
-```
-
-Y ahora sí, ya estamos en condiciones de hacer nuestro primer mapa coroplético a partir de la unión de datos espaciales y no espaciales:
+Ahora sí, ya estamos en condiciones de hacer nuestro primer mapa coroplético a partir de la unión de datos espaciales y no espaciales:
 
 ```{r}
 ggplot() +
-  geom_sf(data = airbnb_con_comunas, aes(fill=cantidad), color="gray80") +
+  geom_sf(data = comunas, aes(fill=cantidad), color="gray80") +
     labs(title = "Airbnb por Comuna",
          subtitle = "Propiedades publicadas",
          fill = "Cantidad",
@@ -155,7 +150,7 @@ Sin embargo, para que estos datos sean comparables entre las 15 Comunas, lo corr
 
 ```{r}
 ggplot() +
-  geom_sf(data = airbnb_con_comunas, aes(fill=(cantidad/area)*10000), color="gray80") +
+  geom_sf(data = comunas, aes(fill=(cantidad/area)*10000), color="gray80") +
     labs(title = "Airbnb por Comuna",
          subtitle = "Densidad de propiedades publicadas",
          fill = "Cantidad por ha",
@@ -164,16 +159,19 @@ ggplot() +
   theme_light()
 ```
 
-Aquí pudimos ver que los resultados son similares a los del mapa anterior y el corredor norte de la Ciudad sigue siendo la zona con mayor cantidad de observaciones, pero si tenemos en cuenta la superficie total de las Comunas, Recoleta pasa a ser el barrio que más densidad de propiedades publicadas en Airbnb tiene.
-
+Aquí pudimos ver que los resultados son similares a los del primer mapa coroplético ya que el corredor norte de la Ciudad sigue siendo la zona donde se concentra la mayor parte de la oferta. Pero si tenemos en cuenta la superficie total de las Comunas, Recoleta es el barrio que más densidad de observaciones tiene.
 
 ## Uniones
 
-Dessarrollar
+La unión es una herramienta que combina la información de dos capas (polígonos) que se superponen, generando una capa única que contiene los atributos de ambas.
+
+Falta Dessarrollar
 
 ## Intersecciones
 
-Desarrollar
+Hacer una intersección entre capas significa que dos polígonos serán recortados, generando una capa única que contenga solo el área por el que se encuentran superpuestas.
+
+Falta Desarrollar
 
 ## Distancias
 
