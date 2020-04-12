@@ -1,0 +1,288 @@
+# Geoprocesamiento
+
+Cuando tenemos información geográfica y queremos manipularla para generar nuevos datos que nos permitan hacer análisis espaciales, debemos utilizar diferentes herramientas de geoprocesamiento.
+
+Los geoprocesos son operaciones que se con capas geográficas, que para nosotros toman la forma de dataframes espaciales. Algunas de estas operaciones se aplican a una sola capa geográfica (como agregar un área de influencia alrededor de un polígono), y otras a varias (como calcular la interseción entre una línea y in porlígono, o estimar la distancia entre dos puntos). Existen operaciones para unir, recortar, disolver, borrar, fusionar, interseccionar, y calcular áreas de influencia (llamadas _buffers_), entre otras. En este capítulo aprenderemos a usar varias de ellas, incluidas en el paquete `sf`.
+
+## Cruces espaciales 
+
+Hay ocasiones en que necesitamos cruzar datos de fuentes distintas en base a su ubicación geográfica. Es decir, un “join” que cruce registros en base a sus coordenadas espaciales, en lugar de otros atributos.
+
+Aquí va un ejemplo como guía para realizar el spatial join, o join espacial, que sólo puede ser realizado entre dataframes de tipo espacial.
+
+Paquetes que vamos a usar:
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+## Dataframes tradicionales y dataframes espaciales
+
+Vamos a trabajar con dos datasets.
+
+Uno contiene los alojamientos ofrecidos por Airbnb en Buenos Aires en Julio 2017.
+
+```{r primer_chunk_de_geoproc}
+airbnb <- read.csv("https://query.data.world/s/55amvafrknrgkeyeiu54yb2c6u6brc",
+                   stringsAsFactors = FALSE)
+names(airbnb)
+
+```
+
+Y el otro contiene los polígonos de las comunas porteñas:
+
+```{r}
+comunas <- st_read('https://bitsandbricks.github.io/data/CABA_comunas.geojson')
+```
+
+Notemos que tenemos dos tipos de dataframe distintos. El de Airbnb es un dataframe “tradicional”, dado que todas sus columnas contiene valores simples: un número, un texto, un factor, etc.
+
+El dataframe de comunas es especial porque es “espacial”. Contiene una columna distinta a las demás, llamada “geometry” que en lugar de una observación simple contiene una lista con múltiples posiciones. Estas posiciones son los vértices que definen el polígono de cada comuna, y permiten la proyección en mapas y el cálculo de estadísticas espaciales.
+
+### Combinando datasets con información espacial
+
+Si lo único que queremos es visualizar en forma combinada la información que contienen, no hay problema en que un dataframe sea espacial y otro no, siempre y cuando éste último incluya una columna con latitud y otra con longitud para identificar la posición de cada registro.
+
+Dado que los datos de Airbnb incluyen lat/long, es fácil visualizarlos en conjunto con el dataframe espacial de las comunas:
+
+
+```{r}
+ggplot() +
+    geom_sf(data = comunas) +
+    geom_point(data = airbnb, 
+               aes(x = longitude, y = latitude),
+               alpha = .3, 
+               color = "orange")
+```
+
+
+Dicho esto, si lo que queremos es combinar la información para su análisis cuantitativo, no nos alcanza con la visualización. Lo que tenemos que hacer es un “join espacial”, la técnica que permite cruzar datasets en base a sus atributos de ubicación geográfica.
+
+Sólo es posible hacer joins espaciales entre dataframes espaciales. Es por eso que los datos de Airbnb, así como están, no sirven para un join. ¡Pero! una vez más, dado que incluyen columnas de latitud y longitud, la solución es fácil. Podemos usar las columnas de lat/long para convertirlo en un dataset espacial hecho y derecho, así:
+
+```{r}
+airbnb <- airbnb %>% 
+    filter(!is.na(latitude), !is.na(longitude)) %>% 
+    st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+```
+
+Tres cosas importantes a tener en cuenta:
+
+1. Un dataframe espacial no permite filas sin posición (sin coordenadas). Por eso antes de la conversión usamos filter(!is.na(latitude), !is.na(longitude)) para descartar los registros sin coordenadas del dataset de origen si los hubiera.
+2. La función st_as_sf() es la que toma un dataframe común y lo transforma en uno espacial. Con el parámetro coords = c("longitude", "latitude") le definimos como se llaman las columnas de longitud y latitud, en ese orden. Obsérvese que toma los nombres entre comillas.
+3. El último parámetro, “crs”, es obligatorio y requiere el identificador del sistema de referencia de las coordenadas. Cuando se trata de datos capturados en internet (como aquí, por scraping del sitio de Airbnb), el crs siempre es 4326.
+Ahora que ambos dataframes son de tipo espacial, ambos se grafican con geom_sf()
+
+```{r}
+ggplot() +
+    geom_sf(data = comunas) +
+    geom_sf(data = airbnb, color = "orange", alpha = .3)
+```
+
+
+y más importante aún, se pueden combinar con un join espacial. La versión más simple, que combina atributos de las filas cuyas posiciones coinciden en el espacio, es así:
+
+```{r}
+airbnb_con_comunas <- st_join(airbnb, comunas)
+```
+
+El resultado es un dataframe con datos de Airbnb, que en cada fila incluye los datos de la comuna con la que coincide el alojamiento:
+
+```{r}
+head(airbnb_con_comunas)
+```
+
+Con los atributos adicionales, podemos realizar sumarios por comuna de los alojamientos:
+
+```{r}
+airbnb_con_comunas %>% 
+    group_by(comunas) %>% 
+    summarise(cantidad = n())
+```
+
+El resultado de un join espacial también es un dataframe espacial, así que podemos visualizarlo de la manera habitual (y ahora tenemos más variables para graficar).
+
+```{r}
+ggplot() +
+    geom_sf(data = comunas) +
+    geom_sf(data = airbnb_con_comunas, aes(color = comunas))
+```
+
+
+### Coropletas
+
+Hasta acá obtuvimos un dataframe espacial con la geometría de puntos proveniente de los datos de Airbnb y generamos una nueva columna que indica a que Comuna pertenece cada registro. Sin embargo, cuando tenemos muchos puntos concentrados en un mapa resulta difícil realizar un análisis visual que nos permita sacar conclusiones de los mismos. Para estos casoos sirven los mapas coropléticos, que muestran áreas geográficas (polígonos) coloreadas según alguna de las variables incluidas en el dataset.
+
+Entonces, ¿Cómo podemos hacer un mapa coroplético dándole color cada Comunas según la cantidad de propiedades que se alquilan?
+
+Veamos esto en detalle:
+Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentro de CABA y agruparlas por Comuna calculando la cantidad de observaciones que contiene cada una. Luego tenemos que hacer un `left_join()` entre el shape original con los polígonos de las Comunas y los datos que agrupamos:
+
+```{r}
+comunas <- comunas %>%
+  left_join(airbnb_con_comunas %>%
+  filter(!is.na(comunas)) %>%
+  group_by(comunas) %>%
+  summarise(cantidad=n()) %>%
+  st_set_geometry(NULL),
+  by="comunas")
+```
+
+Ahora sí, ya estamos en condiciones de hacer nuestro primer mapa coroplético a partir de la unión de datos espaciales y no espaciales:
+
+```{r}
+ggplot() +
+  geom_sf(data = comunas, aes(fill=cantidad)) +
+    labs(title = "Airbnb por Comuna",
+         subtitle = "Propiedades publicadas",
+         fill = "Cantidad",
+         caption= "Fuente: Airbnb 2017") +
+  scale_fill_gradient(low="khaki2", high="deeppink4")
+```
+
+Tal como se ve en el mapa, la Comuna 14 donde se encuentra solo el barrio de Palermo es la que más cantidad de propiedades tiene publicadas en Airbnb. Esto tiene sentido ya que Airbnb es un servicio orientado a turistas y Palermo es uno de los barrios donde más cantidad de atracciones turísticas hay.
+
+Sin embargo, para que estos datos sean comparables entre las 15 Comunas, lo correcto sería dividir la cantidad de observaciones por la superficie (ha) de cada una.
+
+```{r}
+ggplot() +
+  geom_sf(data = comunas, aes(fill=(cantidad/area)*10000)) +
+    labs(title = "Airbnb por Comuna",
+         subtitle = "Densidad de propiedades publicadas",
+         fill = "Cantidad por ha",
+         caption= "Fuente: Airbnb 2017") +
+  scale_fill_gradient(low="khaki2", high="deeppink4")
+```
+
+Aquí pudimos ver que los resultados son similares a los del primer mapa coroplético ya que el corredor norte de la Ciudad sigue siendo la zona donde se concentra la mayor parte de la oferta. Pero si tenemos en cuenta la superficie total de las Comunas, la 2 (Recoleta) es la que más densidad de observaciones tiene, seguida por la Comuna 1.
+
+## Uniones
+
+Para unir capas de información geográfica utilizaremos `st_union`, que tiene 2 funcionalidades:
+1. Combina la información de dos capas que se superponen, generando una capa única que contiene la suma de los atributos de ambas. **Falta Ejemplo**
+2. Combina registros de una misma capa, generando una única capa con un solo dato. Veamos un ejemplo de esto donde transformaremos el shape de comunas en un shape con un único polígono del contorno de la Ciudad:
+
+```{r}
+caba <- comunas %>%
+  st_union()
+```
+
+```{r}
+ggplot()+
+  geom_sf(data=caba) +
+  geom_sf(data=airbnb_con_comunas, size=0.75, alpha=.3)
+```
+
+En el mapa se ve que ya no aparecen los límites de las comunas (se disolvieron) y quedó un solo polígono con la forma total de la Ciudad.
+
+**Falta Continuar**
+
+## Intersecciones
+
+Hacer una intersección entre capas significa que dos geometrías serán recortadas, generando una capa única que contenga solo las entidades que se encuentran superpuestas. Para esto podemos utilizar `st_intersection`.
+Veamos un ejemplo.
+¿Cómo podríamos, a partir de un geoproceso, filtrar y quedarnos solo las observaciones pertenecientes a CABA, eliminando las de AMBA?
+Podríamos hacer una intersección espacial entre los datos de Airbnb y el shape del contorno de CABA que unimos anteriormente de la siguiente forma:
+
+```{r}
+airbnb_con_comunas <- airbnb_con_comunas %>%
+  st_intersection(caba)
+```
+
+Grafiquemos el resultado en su contexto:
+
+```{r}
+ggplot()+
+  geom_sf(data=comunas) +
+  geom_sf(data=airbnb_con_comunas, size=0.75, alpha = .3, color="dodgerblue3")
+```
+
+Listo, ya tenemos nuestro shape de Airbnb recortado a partir de una intersección espacial. Ahora miremos otros ejemplos de uso de esta herramienta.
+
+Ahora nos quedaremos solo con las observaciones pertenecientes a las Comunas con mayor cantidad de publicaciones a partir de una intersección espacial entre los datos de Airbnb y las Comunas que tienen una cantidad de datos mayor a la media:
+
+```{r}
+airbnb_con_comunas %>%
+  st_intersection(comunas %>% filter(cantidad>mean(cantidad))) %>%
+  ggplot() +
+  geom_sf(data=comunas) +
+  geom_sf(aes(color=comunas), size=0.4, alpha=0.3)
+```
+Lo primero que hicimos fue filtrar las comunas que en la columna cantidad tienen un valor mayor al promedio de las 15 comunas, y luego intersectamos estas Comunas con los datos de Airbnb, para quedarnos solo con los pertenecientes a estas.
+
+**Falta Completar**
+
+## Distancias
+
+El cálculo de distancias con `st_distance` es otro de los geoprocesos que vamos a aprender. Esta herramienta es muy útil para realizar análisis espaciales ya que nos permite comprender como se organizan y relacionan entre sí las entidades geográficas. Es decir que, nos permite sumar información a nuestros datos a partir de la relación especial que tienen con otro objeto.
+
+Como los datos que estamos analizando pertenecen a la oferta de alquileres turísticos, calculemos la distancia entre cada una de las propiedades publicadas y los hoteles de la Ciudad, para entender si tienen patrones/comportamientos similares o no. Esto es posible armando una función que nos permita calcular y filtrar la distancia de cada una de las propiedades publicadas en Airbnb al hotel más cercano.
+Con este análisis intentaremos comprender como es la distribución de la oferta de Airbnb y si tiene alguna relación con la ubicación de los hoteles en la ciudad.
+
+Primero cargamos el dataset de hoteles que está publicado en le portal de datos abiertos de GCBA:
+
+```{r}
+hoteles <- read.csv("http://cdn.buenosaires.gob.ar/datosabiertos/datasets/alojamientos-turisticos/alojamientos-turisticos.csv",
+                    encoding = "UTF-8")
+```
+
+Y lo convertimos a shape como ya aprendimos:
+
+```{r}
+hoteles <- hoteles %>% 
+    filter(!is.na(lat), !is.na(long)) %>% 
+    st_as_sf(coords = c("long", "lat"), crs = 4326)
+```
+
+Luego creamos una nueva columna en nuestro dataset donde calculamos la distancia de cada propiedad a cada hotel, pero nos quedamos únicamente con la distancia a la estación más cercana.
+
+```{r}
+airbnb_con_comunas <- airbnb_con_comunas %>%
+  mutate(dist_hotel = apply(st_distance(airbnb_con_comunas, hoteles), 1, function(x) min(x)))
+```
+
+Revisemos como se ve la nueva columna:
+
+```{r}
+airbnb_con_comunas %>%
+  select(room_type, name, dist_hotel) %>%
+  head()
+```
+
+Veamos y analicemos el resumen del resultado obtenido:
+
+```{r}
+summary(airbnb_con_comunas$dist_hotel)
+```
+
+Acá podemos ver que la mínima distancia entre una propiedad publicada en Airbnb y un hotel es de 1,4 metros y que la máxima es de 4828. Sin embargo, si miramos la media podemos ver que las propiedades se encuentran, en promedio, a 260 metros del hotel más cercano, lo cuál es muy cerca. A priori con estos datos, parecería ser que la localización de los Airbnb está muy relacionada con la de los hoteles.
+
+Visualicemos esto en un histograma para comprender mejor la distribución de los datos:
+
+```{r}
+ggplot(airbnb_con_comunas) + 
+    geom_histogram(aes(x = dist_hotel))
+```
+
+Se ve como la mayor parte de las observaciones se encuentra a menos de 250 metros de algun hotel.
+
+Por último, veamos esto en un mapa:
+
+```{r}
+airbnb_con_comunas %>%
+ggplot() +
+  geom_sf(data=comunas)+
+  geom_sf(aes(color=dist_hotel)) +
+  geom_sf(data=hoteles) +
+  scale_color_viridis_c(option = "plasma", direction = -1)
+```
+
+En el mapa se ve claramente que la distribución de la oferta de propiedades no es aleatoria, sino que responde a la demanda de los turistas ya que la mayor parte está ubicada cerca de hoteles (puntos negros). Los patrones de los 2 dataset son muy similares: gran concentración de puntos en Recoleta, Retiro y Microcento, extendiéndose hacia el corredor norte y siendo casi nula hacia el sur de la Ciudad.
+
+
+## Cálculo de extensión (longitud, área)
+
+```{r}
+barrios <- st_read("http://cdn.buenosaires.gob.ar/datosabiertos/datasets/barrios/barrios.geojson")
+```

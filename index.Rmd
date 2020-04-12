@@ -1,6 +1,6 @@
 --- 
 title: "Analítica Urbana"
-author: "Antonio Vazquez Brust"
+author: "Antonio Vazquez Brust & Angie Scetta"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
@@ -14,16 +14,16 @@ description: "Un manual para la obtención, procesamiento, análisis y visualiza
 
 Este libro fue escrito pensando en aquellas personas que trabajan, investigan y enseñan en áreas relacionadas al hábitat urbano y sus políticas públicas.
 
-Esperamos que el tono introductorio del texto, así como el esfuerzo puesto en explicar los conceptos con la mayor simplicidad posible, resulten de interés para un público amplio. (así decía en CDpGS, lo dejo como antecedente.. lo reescribimos)  
-
 
 ## Antes de empezar {-}
 
-Se requiere conocimiento básico del lenguaje de programación `R`, y del "paquete" de funciones para manipulación y visualización de datos llamado `Tidyverse`. Todo ello puede adquirirse pasando un tiempo con [Ciencia de Datos para Gente Sociable](https://bit.ly/datasoc), que además de gratuito y disponible en línea, es el manual que sirve como base para éste que están leyendo ahora.
+Se requiere conocimiento básico del lenguaje de programación `R`, y del "paquete" de funciones para manipulación y visualización de datos llamado `Tidyverse`. Todo ello puede adquirirse pasando un tiempo con [Ciencia de Datos para Gente Sociable](https://bit.ly/datasoc), que además de gratuito y disponible en línea, es el manual que sirve como base para éste que están leyendo ahora. [Ciencia de Datos para Gente Sociable](https://bit.ly/datasoc) vendría a ser la primera parte, que enseña los primeros pasos, y ahora entramos en técnicas especializadas.
 
 Para practicar los ejemplos que se explicarán a lo largo del libro es necesario instalar el [lenguaje de programación R](https://cloud.r-project.org/), y la interfaz gráfica [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/). 
 
 ```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
 # automatically create a bib database for R packages
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown'

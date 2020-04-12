@@ -2,19 +2,19 @@
 
 <div class=text-justify>
 
-En el siglo XXI la humanidad se volvió una especie urbana, con la mayor parte de la población mundial residiendo en ciudades. El proceso de migración en todo el mundo desde zonas rurales hacia aglomerados urbanos supone un enorme aumento en la demanda de los servicios que las ciudades brindan. Por lo tanto, será necesario que se lleve a cabo una gestión apropiada que permita sostener y mejorar la eficiencia y la calidad de estas prestaciones. Pero, ¿cómo podemos hacer frente a esta situación desde nuestro lugar de urbanistas?
+En el siglo XXI la humanidad se ha vuelto, de forma quizás definitiva, una especie urbana. La mayoría de las personas del planeta viven en ciudades, y muchísimas se han trasladado en los últimos años, en un proceso global de migración desde regiones rurales que aún continúa. Nuestras ciudades crecen muy rápido, superando nuestra capacidad de planificación, mientras el incremento de demanda generando una enorme presión sobre los servicios que las ciudades brindan. Es evidente que vamos a necesitar redoblar esfuerzos. Para llebar a cabo una gestión apropiada que permita sostener los servicios que las ciudades brindan, pero no sólo ello: también mejorar la calidad de vida de las personas que allí habitan, a la vez que preservamos el ambiente. ¿Cómo podemos prepararnos para semejante desafío desde nuestro lugar de urbanistas?
 
 Es aquí donde entran en juego los cambios tecnológicos ocurridos en los últimos años. Estos cambios presentan un gran desafío tanto en términos de gestión cómo de planificación urbana. Hasta ahora nunca habíamos podido acceder a tantos datos, ni a tanta capacidad para procesarlos, comprenderlos y utilizarlos para tomar mejores decisiones.
 
 Hoy en día todas las personas generamos datos en forma constante al interactuar con nuevas tecnologías. Cuando utilizamos el transporte público con algún sistema de boleto electrónico, cuando participamos en las redes sociales, o cuando utilizamos algún dispositivo digital, estamos generando una masiva cantidad de datos, que superan con creces el volumen, la variedad y la velocidad que existe en los clásicos registros administrativos que los gobiernos utilizan hace años.
 
-Entonces, entendiendo que las ciudades son los sitios donde más personas habitan, es lógico que allí se genere la mayor cantidad de información. Contar con estos grandes volúmenes de datos puede, y debe, servir para que los gobiernos tomen decisiones basadas en evidencia. Es decir, que puedan caracterizar, cuantificar, y comparar tanto los esfuerzos vertidos como los resultados logrados en los proyectos de gestión pública. Al contar con  resultados y alternativas comparables para elegir  la calidad vida de los ciudadanos. Pero ¿Cómo podemos hacer para aprovechar todos estos datos que se generan de forma masiva y constante? La respuesta es simple: Para comprender el presente y planificar el futuro aprovechando los datos de las ciudades debemos hacer uso de herramientas de **analítica urbana**, las cuales serán desarrolladas a lo largo de este libro. **EN PROCESO (SE PUEDE CAMBIAR)**
+Entonces, entendiendo que las ciudades son los sitios donde más personas habitan, es lógico que allí se genere la mayor cantidad de información. Contar con estos grandes volúmenes de datos puede, y debe, servir para que los gobiernos tomen decisiones basadas en evidencia. Es decir, que puedan caracterizar, cuantificar, y comparar tanto los esfuerzos vertidos como los resultados logrados en los proyectos de gestión pública. Al contar con  resultados y alternativas comparables para elegir  la calidad vida de los ciudadanos. Pero ¿Cómo podemos hacer para aprovechar todos estos datos que se generan de forma masiva y constante? La respuesta es simple: Para comprender el presente y planificar el futuro aprovechando los datos de las ciudades debemos hacer uso de herramientas de **analítica urbana**, las cuales serán desarrolladas a lo largo de este libro. 
 
 </div>
 
 ## Sobre la analítica urbana
 
-### ¿Qué es?
+#### ¿Qué es?
 
 <div class=text-justify>
 
@@ -22,7 +22,7 @@ La analítica urbana es un campo multidisciplinario que abarca conocimientos de 
 
 </div>
 
-### ¿Para qué se usa?
+#### ¿Para qué se usa?
 
 <div class=text-justify>
 
