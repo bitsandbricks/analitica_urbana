@@ -45,47 +45,59 @@ head(dptos_2016)
 El dataset contiene 29 columnas (mucha información!). Por lo tanto, debemos revisar las variables y hacer una preselección para incluir solo aquellas que consideremos relevantes para nuestro modelo:
 
 - La variable a predecir (dependiente) será el valor del m2 de los departamentos (U_S_M2) en CABA.
+
 - Las variables predictoras (independientes) serán: cantidad de ambientes (AMBIENTES), años de antiguedad de la construcción (ANTIGUEDAD), cantidad de baños (BAÑOS), superficie total (M2), superficie cubierta (M2CUB), barrio al que pertenece (BARRIO) y coordenadas (LATITUD, LONGITUD).
+
+Ahora si, seleccionemos únicamente las variables que queremos incluir:
 
 ```{r}
 dptos_2016 <- dptos_2016 %>%
-  select(-CALLE, -NUMERO, -ID_ZONAPRO, -OPERACION, -TIPO, -PRECIOTEXT, -PRECIOARS, -PRECIOARSM, -DOLARES, -DIRECCION, -LOCATION, -PUBLICADO, -PROCESADO, -URL, -REVISION, -NOTA, -DIRECCION_NORMALIZADA, -COMUNA, -CODIGO_POSTAL, -CODIGO_POSTAL_ARGENTINO)
+  select(M2, M2CUB, U_S_M2, AMBIENTES, ANTIGUEDAD, BAÑOS, BARRIO, LATITUD, LONGITUD)
 ```
 
-Ahora veamos un resumen del contenido:
+Y veamos un resumen del contenido:
 
 ```{r}
 summary(dptos_2016)
 ```
 
+El resumen nos muestra que las superficies totales de los departamentos relevados varían entre 15 y 730m2, siendo 70m2 la media. También podemos ver que las variables M2CUB, U_S_M2, AMBIENTES, ANTIGUEDAD y BAÑOS tienen valores mínimos de 0, lo cual resulta bastante extraño.
+
+Pero no importa, no nos preocupemos porque ya aprendimos varias formas de limpiar datos, así que manos a la obra.
+
+
 ## Paso 3: Limpiar los datos
 
 ### Imputar valores faltantes
 
-Es habitual que los algoritmos empleados para ML no acepten datos faltantes. Es por eso que la limpieza básica de un dataset casi siempre incluye la imputación de datos no disponibles, evitando descartar por incompletas filas que contienen información valiosa en sus campos si disponibles.
+Es habitual que los algoritmos empleados para ML no acepten datos faltantes. Es por eso que la limpieza básica de un dataset casi siempre incluye la imputación de datos no disponibles, evitando descartar por incompletas filas que contienen información valiosa en los campos que si están disponibles.
 
-Hasta acá pudimos observar varias inconsistencias en los datos como por ejemplo:
+Hasta acá pudimos observar varias inconsistencias en los datos cargados, como por ejemplo:
 
 - La variable M2CUB tiene valor 0 en algunos registros. Suponiendo que hubo un error en la carga de los datos, cuando M2CUB<15 vamos a imputar el valor de M2, asumiendo que esa propiedad no tiene m2 descubiertos.
 - Hay casos donde M2CUB>M2. Acá le imputaremos el valor del M2CUB al M2.
-- En la variable ANTIGUEDAD aparecen algunos registros con el valor 2016. Suponiendo que esas propiedades se construyeron en ese año, se imputará una antiguedad 0 ya que se fue en el mismo año del relevamiento.
-- Las variables AMBIENTES y BAÑOS tiene 0 en algunos registros. Imputaremos estos datos entendiendo que cuando AMBIENTES=0, es un monoambiente, y que cuando BAÑOS=0, es porque tienen 1 solo.
-- Hay 1382 valores faltantes en las columnas LONGITUD y LATITUD, y a su vez estos registros tampoco tienen comuna o barrio asignado, por lo tanto como nos va a resultar imposible ubicarlos en el espacio, debemos eliminarlos.
-- Por último, se puede ver que la variable a predecir (U_S_M2) varía entre 0 y 12500. Claramente ninguna propiedad puede tener un U_S_M2=0 o menos de 500 así que estos registros se filtrarán ya que son pocos casos.
+- En la variable ANTIGUEDAD aparecen algunos registros con el valor 2016. Suponiendo que esas propiedades se construyeron en ese año, se imputará una antiguedad 1 ya que fue construida en el mismo año del relevamiento. Del mismo modo, y bajo el mismo supuesto, todos los registos que tengan ANTIGUEDAD=0, serán reemplazados por ANTIGUEDAD=1.
+- Las variables AMBIENTES y BAÑOS tiene 0 en algunos casos. Imputaremos estos datos entendiendo que cuando AMBIENTES=0, es un monoambiente, y que cuando BAÑOS=0, es porque tienen 1 solo.
+- Hay 1.382 valores faltantes en las columnas LONGITUD y LATITUD, y a su vez estos registros tampoco tienen comuna o barrio asignado, por lo tanto como nos va a resultar imposible ubicarlos en el espacio, estos sí debemos eliminarlos.
+- Por último, se puede ver que la variable a predecir (U_S_M2) varía entre 0 y 12500. Claramente ninguna propiedad publicada en CABA puede tener U_S_M2=0 o menos de 500 así que estos registros, que son pocos casos, también se eliminarán.
+
+Para llevar a cabo todos los ajustes mencionados, utilizaremos las ya conocidadas `mutate` y `filter`:
 
 ```{r}
 dptos_2016 <- dptos_2016 %>%
   mutate(M2CUB=ifelse(M2CUB<15, M2, M2CUB),
          M2=ifelse(M2CUB>M2, M2CUB, M2),
-         ANTIGUEDAD=ifelse(ANTIGUEDAD==2016, 0, ANTIGUEDAD),
+         ANTIGUEDAD=ifelse(ANTIGUEDAD==2016, 1, ANTIGUEDAD),
+         ANTIGUEDAD=ifelse(ANTIGUEDAD==0, 1, ANTIGUEDAD),
          BAÑOS = ifelse(BAÑOS==0, 1, BAÑOS),
          AMBIENTES = ifelse(AMBIENTES==0, 1, AMBIENTES)) %>%
   filter(U_S_M2>500,
          !is.na(LATITUD), !is.na(LONGITUD))
 ```
 
-Ya tenemos preparadas las variables para nuestro modelo, pero aún estamos a tiempo de generar algunas nuevas que consideremos que lo mejorarían por tener capacidad predictiva sobre el valor del m2.
-Por ejemplo, probemos calculando los metros descubiertos (M2DESC) de cada propiedad, ya que, es muy probable que tener alguna expansión (balcón o terraza) le de un valor agregado al departamento.
+Listo, ya tenemos preparadas las variables para nuestro modelo, pero aún estamos a tiempo de generar algunas nuevas que consideremos que, por tener capacidad predictiva sobre el valor del m2, lo mejorarían.
+
+Por ejemplo, probemos sumar una nueva variable al modelo donde se calculen los metros descubiertos (M2DESC) de cada propiedad, ya que, es muy probable que tener alguna expansión (balcón o terraza) le de un valor agregado al departamento.
 
 ```{r}
 dptos_2016 <- dptos_2016 %>%
@@ -98,9 +110,9 @@ Ahora sí, volvamos a ver el resumen:
 summary(dptos_2016)
 ```
 
-Nos hemos librado de los `NA` y las inconsistencias que tenían los datos.
+Todo parece funcionar bien: Nos hemos librado de los `NA` y las inconsistencias que tenían los datos.
 
-Y espiemos la distribución de algunas variables, como el valor del m2:
+Pero antes de seguir con nuestro modelo, espiemos la distribución de algunas variables, como por ejemplo el valor del m2:
 
 ```{r}
 ggplot() +
@@ -128,15 +140,18 @@ ggplot() +
     geom_histogram(data = dptos_2016, aes(x = ANTIGUEDAD))
 ```
 
-El Barrio (dado que se trata de una variable categórica en lugar de continua, usamos un gráfico de barras en lugar de un histograma):
+Y el Barrio que, como se trata de una variable categórica en lugar de continua, lo veremos con un gráfico de barras en lugar de un histograma:
 
 ```{r}
 ggplot() +
-  geom_bar(data = dptos_2016, aes(x = BARRIO))
+  geom_bar(data = dptos_2016, aes(x = BARRIO))+
+  theme(axis.text.x = element_text(size = 6, angle = 90))
 ```
 
-Agreguemos una variable más: la distancia de los departamenteos a las estaciones de subte, ya que la cercanía a estas es muy probable que impacte en el valor del m2.
+Todavía podemos agregar una variable más: Probemos con la distancia de los departamentos a las estaciones de subte, ya que la cercanía a estas es muy probable que impacte en el valor del m2.
 Acá utilizaremos uno de los geoprocesos que aprendimos algunos capítulos atrás: `st_distance`
+
+Carguemos las estaciones:
 
 ```{r}
 subte_estaciones <- st_read("http://bitsandbricks.github.io/data/subte_estaciones.geojson")
@@ -162,9 +177,9 @@ Veamos un resumen de los resultados:
 summary(dptos_2016$DIST_SUBTE)
 ```
 
-El departamento ubicado a menor distancia de alguna estación de subte es a 1.35 metros y el que está a mayor distancia es a 5658 metros. Sin embargo, en promedio, las propiedades se ubican a 706 metros de alguna estación.
+Y saquemos conclusiones: El departamento ubicado a menor distancia de alguna estación de subte es a 1.35 metros y el que está a mayor distancia es a 5658 metros (56 cuadras). Sin embargo, en promedio, las propiedades se ubican a 706 metros (7 cuadras) de alguna estación.
 
-Nuestro dataset lo transformamos en espacial para medir distancias, pero como queremos utilizar LATITUD y LONGITUD para el modelo, debemos volver a separar las coordenadas y transformarlo en dataframe tradicional:
+En el paso anterior, transformamos nuestro dataset tradicional en un dataset espacial para poder medir distancias, pero como queremos utilizar los datos de LATITUD y LONGITUD para el modelo, debemos volver a separar las coordenadas y transformarlo en dataframe tradicional:
 
 ```{r}
 dptos_2016 <- dptos_2016 %>%
@@ -177,7 +192,7 @@ dptos_2016 <- dptos_2016 %>%
 ### Codificar variables categóricas
 
 Rara vez es posible utilizar columnas categóricas en modelos estadísticos, pero por suerte podemos recurrir a la alternativa de reemplazar una columna de datos categóricos por una serie de variables binarias, o "dummy".
-En nuestro dataset solo tenemos una variable categórica: BARRIO.
+En nuestro dataset seleccionamos solamente una variable categórica: BARRIO.
 
 Entonces, en lugar de...
 
@@ -189,7 +204,7 @@ Entonces, en lugar de...
 | C    | SAN TELMO          |
 
 
-... deberíamo tener algo así como:
+... deberíamos tener algo parecido a:
 
 
 | caso | PALERMO         | BELGRANO           | SAN TELMO          |
@@ -199,12 +214,16 @@ Entonces, en lugar de...
 | C    | 0               | 0                  | 1                  |
 
 
-
-Como buen lenguaje creado por y para practicantes del análisis estadístico, `R` trae una función específica para realizar ésta tarea, `model.matrix()`. Se usa así:
+Para evitar futuros problemas por tener espacios en los encabezados de las nuevas columnas, comencemos reemplazando los " " en los nombres de barrios por un "_". Por ejemplo, en vez de decir SAN TELMO, que pase a decir SAN_TELMO.
 
 ```{r}
 dptos_2016 <- dptos_2016 %>%
   mutate(BARRIO=str_replace_all(BARRIO, " ", "_"))
+```
+
+Como buen lenguaje creado por y para practicantes del análisis estadístico, `R` trae una función específica para realizar esta tarea: `model.matrix()` que se usa de la siguiente forma:
+
+```{r}
 matriz_categorias_barrios <- model.matrix(data = dptos_2016, ~ BARRIO - 1)
 ```
 
@@ -214,13 +233,14 @@ y el resultado es, ni más ni menos, una matriz de variables binarias que repres
 head(matriz_categorias_barrios)
 ```
 
-Pronto agregaremos la matriz a nuestro dataframe, pero antes terminemos con otros ajustes pendientes.
+En breves agregaremos la matriz a nuestro dataframe de departamentos, pero antes terminemos con algunos ajustes que nos quedaron pendientes.
+
 
 ### Unificar la escala de las variables numéricas
 
-Éste paso siempre es necesario cuando estamos trabajando con variables que utilizan distintas unidades de medida. Aquí tenemos superficies, ambientes, años de antigüedad... de todo. Muchos algoritmos asumen que todas las variables tienen escalas comparables, lo cual genera problemas con las que alcanzan los valores más altos (como m2, que a 730) versus las que tienen rangos mucho menores (como cantidad de baños, que llega a 6). Si las dejásemos así, varias de las técnicas habituales del ML adjudicarían mucho más peso a las variables con números grandes, "despreciando" a las que por su naturaleza se mueven en rango más reducidos.
+Este paso siempre es necesario cuando estamos trabajando con variables que utilizan distintas unidades de medida. Aquí tenemos superficies, ambientes, años de antigüedad... de todo. Muchos algoritmos asumen que todas las variables tienen escalas comparables, lo cual genera problemas con las que alcanzan los valores más altos (como m2, que llega a 730) versus las que tienen rangos mucho menores (como cantidad de baños, que llega a 6). Si las dejásemos así, varias de las técnicas habituales del ML adjudicarían mucho más peso a las variables con números grandes, "despreciando" a las que por su naturaleza se mueven en rango más reducidos.
 
-En todo caso, no importa lo disimiles que sean las unidades de medida, la solución es simple: convertimos todas las variables a la famosa "distribución Z", o función de estandarización, que convierte variables a una escala sin unidad de medida, que expresa cada valor como la cantidad de desvíos estándar que lo alejan de la media. Expresar todas las variables numéricas en forma de "z scores", o "valores z", las hace directamente comparables entre sí. 
+En todo caso, no importa lo disímiles que sean las unidades de medida, la solución es simple: convertimos todas las variables a la famosa "distribución Z", o función de estandarización, que convierte variables a una escala sin unidad de medida, que expresa cada valor como la cantidad de desvíos estándar que lo alejan de la media. Expresar todas las variables numéricas en forma de "z scores", o "valores z", las hace directamente comparables entre sí. 
 
 En `R` disponemos de la función `scale()`, que obtiene los z-scores. Tomaremos entonces nuestro dataframe y usaremos `mutate_all()` para aplicar una función a todas las columnas restantes de un tirón. Eso si, quitando antes ciertas variables: las variables categóricas (que no tiene sentido pasar a z-scores porque no son variables numéricas), y la variable que estamos intentando predecir, ya que su escala no afecta los modelos y podemos dejarla en su formato original fácil de interpretar.
 
@@ -231,9 +251,13 @@ dptos_2016 <- dptos_2016 %>%
     mutate(U_S_M2 = dptos_2016$U_S_M2)
 ```
 
-Y obsérvese que `scale()` mediante, ahora todas las variables tienen promedio igual a 0, y se mueven en el mismo rango
+```{r}
+summary(dptos_2016)
+```
 
-... y sin que esto haya cambiado la forma de las distribuciones. Compárense ahora con las que examinamos al inicio, 
+Obsérvese que `scale()` mediante, ahora todas las variables (menos U_S_M2) tienen promedio igual a 0, y se mueven en el mismo rango sin que esto haya cambiado la forma de las distribuciones.
+
+Comparemos los "nuevos" histogramas con los que examinamos al inicio:
 
 La superficie total:
 
@@ -263,7 +287,7 @@ ggplot() +
 
 Nos ha quedado por un lado un dataframe de variables numéricas estandarizadas, y por otro una matriz que representa la pertenencia de cada departamento a un barrio de la Ciudad. 
 
-Primero convertimos la matriz en dataframe (paso simple ya éstas estructura de datos son muy similares entre si), y luego unimos las columnas de ambos con la función `cbind()`:
+Primero convertimos la matriz de barrios en dataframe (paso simple ya que estas estructuras de datos son muy similares entre si), y luego unimos las columnas de ambos con la función `cbind()`:
 
 ```{r}
 matriz_categorias_barrios <- as.data.frame(matriz_categorias_barrios)
@@ -272,15 +296,16 @@ dptos_2016 <- dptos_2016 %>%
     cbind(matriz_categorias_barrios)
 ```
 
-Ya tenemos tenemos los datos limpios y en orden. 
+Ahora que ya tenemos tenemos los datos limpios y en orden, estamos en condiciones de comenzar con nuestro modelo predictivo.
+
 
 ## Paso 4: Crear sets de entrenamiento y de testeo
 
-Para poder evaluar la calidad de un modelo predictivo, es práctica común dividir los datos disponibles en dos porciones. Una parte será utilizada para "entrenar" el modelo de ML, es decir se le permitirá al algoritmo acceder a esos datos para establecer la forma en que cada variable predictora incide en la que se quiere predecir. El resto será preservado y utilizado para "tomarle examen" al modelo: se le mostraran sólo las variables predictoras de esos datos, pidiendo al modelo una predicción del valor a estimar para cada una. Por último, contrastando aciertos y errores, se podrá establecer el grado de precisión del modelo. 
+Para poder evaluar la calidad de un modelo predictivo, es práctica común dividir los datos disponibles en dos porciones. Una parte será utilizada para "entrenar" el modelo de ML, es decir se le permitirá al algoritmo acceder a esos datos para establecer/aprender la forma en que cada variable predictora incide en la que se quiere predecir. El resto será preservado y utilizado para "tomarle examen" al modelo: se le mostraran sólo las variables predictoras de esos datos y se le pedirá una predicción del valor para cada una. Por último, contrastando aciertos y errores, se podrá establecer el grado de precisión del modelo. 
 
 Incluso podríamos tener varios modelos distintos, obtenidos con distintas técnicas de ML. No es difícil, ya que una vez que los datos han sido obtenidos y preparados, nada impide usarlos como insumo de distintos algoritmos. En ese caso, se puede comparar la performance de los distintos modelos evaluando cual acierta mejor con la data de testeo.
 
-Definamos entonces cuales filas van al set de entrenamiento, y cuáles al de testeo, eligiéndolas al azar. De acuerdo a distintas recetas, a veces se separa el 90% de los datos para entrenamiento y el resto para testeo, otras veces es mitad y mitad... ya que siempre es más o menos arbitrario, aquí usaremos el 80% para entrenar, y el 20% para testear.
+Definamos entonces cuales son las filas que van a incluirse en el set de entrenamiento, y cuáles en el de testeo, eligiéndolas al azar. De acuerdo a distintas recetas, a veces se separa el 90% de los datos para entrenamiento y el resto para testeo, otras veces es mitad y mitad... ya que siempre es más o menos arbitrario, aquí usaremos el 80% para entrenar, y el 20% para testear.
 
 ```{r}
 #definimos a mano la "semilla" de aleatorización para obtener resultados reproducibles
@@ -302,6 +327,15 @@ testeo <- dptos_2016 %>%
     filter(!(row_number() %in% seleccion))
 ```
 
+Veamos cuantas observaciones quedaron en cada set de datos:
+
+```{r}
+dim(entrenamiento)
+```
+```{r}
+dim(testeo)
+```
+
 Ahora si, por fin, apliquemos un poco de machine learning.
 
 
@@ -320,7 +354,7 @@ modelo_RF <- randomForest(data = entrenamiento, U_S_M2 ~ .,
 modelo_RF
 ```
 
-Según dice allí, el modelo puede explicar casi el 80% de la varianza de valores encontrada entre los departamentos en venta en 2016 en base a las variables predictoras que empleamos.
+Según lo que dice aquí, el modelo puede explicar casi el 80% de la varianza de valores encontrada entre los departamentos en venta en 2016 en base a todas las variables predictoras que decidimos emplear.
 
 ¿Qué tiene dentro el modelo?
 
@@ -334,7 +368,11 @@ De todo! Por ejemplo, "type" nos emite confirmar qué tipo de análisis realizó
 modelo_RF$type
 ```
 
-O "importance", que contiene un ranking con la importancia relativa de cada predictor, es decir cuáles son los que más ayudan a estimar el valor a predecir:
+O "importance", que contiene un ranking con la importancia relativa de cada predictor, es decir cuáles son los que más ayudan a estimar el valor a predecir (U_S_M2):
+
+```{r echo=FALSE}
+options(scipen=999)
+```
 
 ```{r}
 modelo_RF$importance
@@ -342,7 +380,7 @@ modelo_RF$importance
 
 La columna "%IncMSE" representa el porcentaje de error promedio, la magnitud en la que el valor predicho por el modelo difiere del valor observado, cuando cada predictor se retira del modelo (es decir, cuanto peor sería la predicción si no se usara). Por eso los números mayores están asociados a los predictores de más peso, que en este caso son LONGITUD, LATITUD, M2DESC, ANTIGUEDAD y DIST_SUBTE. Además de encontrar la correlación esperable entre el valor del m2 y la superficie descubierta de las propiedades, los años de antiguedad y la distancia al subte, nuestro modelo ha encontrado que la ubicación (latitud y longitud) es la clave del valor de la propiedad... y sin saber nada de geografía ni urbanismo.
 
-En "predicted" tenemos la mediana del valor del m2 predicho para cada departamento:
+En "predicted" tenemos la mediana del valor del m2 predicho para cada observación:
 
 ```{r}
 head(modelo_RF$predicted)
@@ -355,12 +393,12 @@ ggplot() +
     geom_point(aes(x = modelo_RF$predicted, y = modelo_RF$y), alpha = 0.3) 
 ```
 
-Se ajusta bastante bien. Luego veremos una manera de cuantificar la precisión del modelo. 
+Se ajusta bastante bien. Pero ahora veremos una manera de cuantificar la precisión del modelo. 
 
 
 ### Midiendo la performance del modelo contra datos que no conoce
 
-Veamos ahora como se comporta nuestro modelo cuando debe predecir valores de distritos que no se han utilizado para el entrenamiento, los que reservamos para el set de testeo.
+Veamos ahora como se comporta nuestro modelo cuando debe predecir valores de observaciones que no se han utilizado para el entrenamiento, los que reservamos para el set de testeo.
 
 ```{r}
 predicciones_test <- predict(modelo_RF, newdata = testeo)
@@ -374,6 +412,9 @@ En un gráfico:
 ggplot() +
     geom_point(aes(x = predicciones_test, y = testeo$U_S_M2), alpha = 0.3) 
 ```
+
+El gráfico es muy similar e incluso parecería que se ajusta mejor que con los datos ya conocidos utilizados para el entreneamiento.
+
 
 ### Comparando performance
 
@@ -393,7 +434,7 @@ RMSE
 
 Eso significa que la diferencia promedio entre valor esperado y valor hallado para cada distrito fue de `r RMSE` dólares.
 
-Y en comparación, ¿qué tan bueno resultó el modelo cuando se aplicó a datos que no conocía?
+Y en comparación, ¿Qué tan bueno resultó el modelo cuando se aplicó a datos que no conocía?
 
 ```{r}
 RMSE_test <- sqrt(mean((predicciones_test - testeo$U_S_M2)^2))
@@ -405,19 +446,31 @@ Con un valor medio de error de `r RMSE_test` dólares, el modelo ha funcionado m
 
 Esto indica que no sufre de "overfitting", la condición de estar excesivamente ajustado a los datos con los que fue entrenado. Por eso el modelo no pierde precisión cuando lidia con datos nuevos.
 
-Como despedida, volvamos al examen visual. Representamos en un gráfico cada valor predicho y cada valor observado para los datos de entrenamiento:
+Como despedida, hagamos un exámen visual y representamos en un gráfico cada valor predicho y cada valor observado para los datos de entrenamiento:
 
 ```{r}
 ggplot() +
     geom_point(aes(x = 1:length(predicciones_test), y = predicciones_test), 
                color = "salmon",
                alpha = .5,
-               size = .5) +
+               size = .75) +
     geom_point(aes(x = 1:nrow(testeo), y = testeo$U_S_M2), 
-               color = "lightblue",
+               color = "lightblue3",
                alpha = .5,
-               size = .5) +
+               size = .75) +
     labs(x = "valores predichos",
          y = "valores observados") +
     theme_minimal()
 ```
+
+
+## Ejercicios
+
+**Examinando y prediciendo dinámicas urbanas**
+
+I. Elegir algun dataset relacionado a temas urbanos que contenga una variable que les resulte de interés como variable a predecir. Por ejemplo: valor del m2, población, etc.
+
+II. Realizar un modelo de árboles de decisión (Random Forest) a partir de los siguientes pasos:
+a. Realizar el análisis de variables y la limpieza necesaria.
+b. Crear set de entrenamiento y de testeo.
+c. Entrenar y testear el modelo: Medir la performance.
