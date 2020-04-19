@@ -2,7 +2,7 @@
 
 Cuando tenemos información geográfica y queremos manipularla para generar nuevos datos que nos permitan hacer análisis espaciales, debemos utilizar diferentes herramientas de geoprocesamiento.
 
-Los geoprocesos son operaciones que se con capas geográficas, que para nosotros toman la forma de dataframes espaciales. Algunas de estas operaciones se aplican a una sola capa geográfica (como agregar un área de influencia alrededor de un polígono), y otras a varias (como calcular la interseción entre una línea y in porlígono, o estimar la distancia entre dos puntos). Existen operaciones para unir, recortar, disolver, borrar, fusionar, interseccionar, y calcular áreas de influencia (llamadas _buffers_), entre otras. En este capítulo aprenderemos a usar varias de ellas, incluidas en el paquete `sf`.
+Los geoprocesos son operaciones que se llevan a cabo con capas geográficas, que para nosotros toman la forma de dataframes espaciales. Algunas de estas operaciones se aplican a una sola capa geográfica (como agregar un área de influencia alrededor de un polígono), y otras a varias (como calcular la interseción entre una línea y un polígono, o estimar la distancia entre dos puntos). Existen operaciones para unir, recortar, disolver, borrar, fusionar, interseccionar, y calcular áreas de influencia (llamadas _buffers_), entre otras. En este capítulo aprenderemos a usar varias de ellas, incluidas en el paquete `sf`.
 
 ## Cruces espaciales 
 
@@ -25,9 +25,9 @@ Uno contiene los alojamientos ofrecidos por Airbnb en Buenos Aires en Julio 2017
 
 ```{r primer_chunk_de_geoproc}
 airbnb <- read.csv("https://query.data.world/s/55amvafrknrgkeyeiu54yb2c6u6brc",
-                   stringsAsFactors = FALSE)
+                   stringsAsFactors = FALSE,
+                   encoding = "UTF-8")
 names(airbnb)
-
 ```
 
 Y el otro contiene los polígonos de las comunas porteñas:
@@ -112,113 +112,271 @@ ggplot() +
 
 ### Coropletas
 
-Hasta acá obtuvimos un dataframe espacial con la geometría de puntos proveniente de los datos de Airbnb y generamos una nueva columna que indica a que Comuna pertenece cada registro. Sin embargo, cuando tenemos muchos puntos concentrados en un mapa resulta difícil realizar un análisis visual que nos permita sacar conclusiones de los mismos. Para estos casoos sirven los mapas coropléticos, que muestran áreas geográficas (polígonos) coloreadas según alguna de las variables incluidas en el dataset.
+Hasta acá obtuvimos un dataframe espacial con la geometría de puntos proveniente de los datos de Airbnb y generamos una nueva columna que indica a que Comuna pertenece cada uno de los registros. Sin embargo, cuando tenemos muchos puntos concentrados en un mapa resulta difícil realizar un análisis visual que nos permita sacar conclusiones de los datos. Para esto nos sirven las coropletas o mapas coropléticos, que muestran áreas geográficas (polígonos) coloreadas según alguna de las variables incluidas en el dataset.
 
-Entonces, ¿Cómo podemos hacer un mapa coroplético dándole color cada Comunas según la cantidad de propiedades que se alquilan?
+Continuando con el análisis de Airbnb, haremos un mapa coroplético dándole color a cada Comuna según la cantidad de propiedades que hay en alquiler.
 
 Veamos esto en detalle:
-Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentro de CABA y agruparlas por Comuna calculando la cantidad de observaciones que contiene cada una. Luego tenemos que hacer un `left_join()` entre el shape original con los polígonos de las Comunas y los datos que agrupamos:
+Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentro de CABA y agruparlas por Comuna calculando la cantidad de observaciones que contiene cada una:
+
+```{r}
+comunas_airbnb <- airbnb_con_comunas %>%
+  filter(!is.na(comunas)) %>%
+  group_by(comunas) %>%
+  summarise(cantidad=n())
+```
+
+Ahora quitemos la geometría de los puntos (columna geometry), que ya no la necesitaremos, y dejemos nuestro dataframe espacial como un dataframe tradicional:
+
+```{r}
+comunas_airbnb <- comunas_airbnb %>%
+  st_set_geometry(NULL)
+```
+
+```{r}
+head(comunas_airbnb)
+```
+
+Listo, juntemos la información que nos interesa de ambos dataframes a partir de un `left_join()` entre el shape original con los polígonos de las Comunas y los datos que agrupamos en el paso anterior:
 
 ```{r}
 comunas <- comunas %>%
-  left_join(airbnb_con_comunas %>%
-  filter(!is.na(comunas)) %>%
-  group_by(comunas) %>%
-  summarise(cantidad=n()) %>%
-  st_set_geometry(NULL),
-  by="comunas")
+  left_join(comunas_airbnb, by="comunas")
 ```
 
-Ahora sí, ya estamos en condiciones de hacer nuestro primer mapa coroplético a partir de la unión de datos espaciales y no espaciales:
+```{r}
+head(comunas)
+```
+
+Ya estamos en condiciones de hacer nuestro primer mapa coroplético a partir de la unión de un dataframe espacial y un dataframe tradicional. Para reconocer fácilmente las comunas, agreguemos etiquetas con `geom_sf_text()`:
 
 ```{r}
 ggplot() +
   geom_sf(data = comunas, aes(fill=cantidad)) +
-    labs(title = "Airbnb por Comuna",
+  geom_sf_text(data=comunas, aes(label = comunas), size=2.5, colour = "black") +
+    labs(title = "Oferta de Airbnb por Comuna",
          subtitle = "Propiedades publicadas",
          fill = "Cantidad",
-         caption= "Fuente: Airbnb 2017") +
+         caption= "Fuente: Airbnb 2017",
+         y="",
+         x="") +
   scale_fill_gradient(low="khaki2", high="deeppink4")
 ```
 
-Tal como se ve en el mapa, la Comuna 14 donde se encuentra solo el barrio de Palermo es la que más cantidad de propiedades tiene publicadas en Airbnb. Esto tiene sentido ya que Airbnb es un servicio orientado a turistas y Palermo es uno de los barrios donde más cantidad de atracciones turísticas hay.
+Tal como se ve en el mapa, a lo largo del corredor Norte de la Ciudad, y más específicamente en la Comuna 14, es donde Airbnb tiene la mayor cantidad de propiedades publicadas. Esto tiene sentido ya que Airbnb es un servicio orientado a turistas, y estas Comunas son las que tienen la mayor cantidad de atracciones turísticas.
 
-Sin embargo, para que estos datos sean comparables entre las 15 Comunas, lo correcto sería dividir la cantidad de observaciones por la superficie (ha) de cada una.
+Sin embargo, para que estos datos sean comparables entre las 15 Comunas, relacionemos la cantidad de observaciones que tienen con la superficie (ha) de cada una:
 
 ```{r}
 ggplot() +
   geom_sf(data = comunas, aes(fill=(cantidad/area)*10000)) +
-    labs(title = "Airbnb por Comuna",
+  geom_sf_text(data=comunas, aes(label = comunas), size=2.5, colour = "black")+
+    labs(title = "Oferta de Airbnb por Comuna",
          subtitle = "Densidad de propiedades publicadas",
          fill = "Cantidad por ha",
-         caption= "Fuente: Airbnb 2017") +
+         caption= "Fuente: Airbnb 2017",
+         y="",
+         x="") +
   scale_fill_gradient(low="khaki2", high="deeppink4")
 ```
 
-Aquí pudimos ver que los resultados son similares a los del primer mapa coroplético ya que el corredor norte de la Ciudad sigue siendo la zona donde se concentra la mayor parte de la oferta. Pero si tenemos en cuenta la superficie total de las Comunas, la 2 (Recoleta) es la que más densidad de observaciones tiene, seguida por la Comuna 1.
+Aquí pudimos ver que los resultados son similares a los del primer mapa coroplético, y que el corredor Norte sigue siendo la zona donde se concentra la mayor parte de la oferta. Pero si tenemos en cuenta la superficie total de las Comunas, notamos que la 2 (Recoleta) es la que más densidad de observaciones tiene, seguida por la Comuna 14.
+
 
 ## Uniones
 
-Para unir capas de información geográfica utilizaremos `st_union`, que tiene 2 funcionalidades:
-1. Combina la información de dos capas que se superponen, generando una capa única que contiene la suma de los atributos de ambas. **Falta Ejemplo**
-2. Combina registros de una misma capa, generando una única capa con un solo dato. Veamos un ejemplo de esto donde transformaremos el shape de comunas en un shape con un único polígono del contorno de la Ciudad:
+Cuando realizamos análisis espaciales, es muy común que nos encontremos con la necesidad de combinar información geográfica. Esto se resuelve fácilmente a partir de un geoproceso llamado unión, que en el paquete `sf` lo encontraremos como `st_union`. Esta herramienta tiene 2 funcionalidades:
+
+1. Unir registros de una misma capa, generando un único dato.
+
+2. Unir las geometrías de dos capas, generando una capa única que contenga la información de ambas.
+
+Empecemos combinando los registros de nuestro dataframe espacial de comunas de manera tal que generemos un nuevo dataframe que contenga un único polígono de la Ciudad:
 
 ```{r}
 caba <- comunas %>%
-  st_union()
+  st_union() %>% 
+  st_as_sf(crs = 4326)
 ```
+
+Veamos cuantos registros tiene el dataframe de comunas:
+
+```{r}
+dim(comunas)
+```
+
+Revisemos el resultado de nuestra unión:
+
+```{r}
+dim(caba)
+```
+
+Efectivamente, pasamos de tener registros para las 15 comunas, a tener tan solo 1. Pero veamos esto en un mapa para entender mejor como funciona la unión:
+
+```{r}
+ggplot()+
+  geom_sf(data=caba)
+```
+
+Tal como lo imaginamos, en el mapa vemos que se unieron las 15 Comunas y ya no aparecen sus límites. Quedó un solo polígono con la forma de toda la Ciudad.
+
+Pero esto no es todo. Como se mencionó anteriormente, también se pueden combinar/unir capas diferentes, generando un único dataframe espacial. Por ejemplo, seleccionemos las 2 comunas con mayor densidad de publicaciones de Airbnb y generamos un dataframe para cada una:
+
+```{r}
+comuna_2 <- comunas %>%
+  filter(comunas==2)
+
+comuna_14 <- comunas %>%
+  filter(comunas==14)
+```
+
+Veamos como lucen:
+
+```{r}
+ggplot()+
+  geom_sf(data=comuna_2)+
+  geom_sf_text(data=comuna_2, aes(label = comunas), size=4, colour = "black")+
+  geom_sf(data=comuna_14)+
+  geom_sf_text(data=comuna_14, aes(label = comunas), size=4, colour = "black")
+```
+
+Y ahora unamos:
+
+```{r}
+comuna_14_2 <- st_union(comuna_14, comuna_2)
+```
+```{r}
+ggplot()+
+  geom_sf(data=comuna_14_2, fill="orange")
+```
+
+Como se puede ver en el mapa, al aplicar `st_union` se combinaron las 2 comunas que estaban en dataframes separados y se generó un único dataframe espacial con toda la información.
+
+
+## Intersecciones
+
+Muchas veces nos encontramos con que 2 capas geográficas se solapan y queremos obtener como resultado los datos que se intersectan. Para este tipo de análisis, utilizamos `st_intersection` de nuestro ya conocido paquete `sf`.
+Hacer una intersección entre 2 capas significa que ambas geometrías serán recortadas, generando una nueva capa que contenga solo las entidades que se encuentran superpuestas.
+
+Llevemos esto a datos reales y veamos un ejemplo de como crear un dataframe que contenga solo las observaciones de Airbnb que intersecten con el polígono de CABA creado en el paso anterior, y así eliminar todos los registros ubicados en AMBA.
+
+```{r}
+dim(airbnb_con_comunas)
+```
+
+Antes de aplicar la función, nos encontramos con que hay un total de 9.923 observaciones. Veamos que sucede después:
+
+```{r}
+airbnb_con_comunas <- st_intersection(airbnb_con_comunas, caba)
+```
+
+```{r}
+dim(airbnb_con_comunas)
+```
+
+Según los resultados obtenidos, son 9.713 las observaciones que pertenecen a la Ciudad. Veamos esto en un mapa:
 
 ```{r}
 ggplot()+
   geom_sf(data=caba) +
-  geom_sf(data=airbnb_con_comunas, size=0.75, alpha=.3)
+  geom_sf(data=airbnb_con_comunas, size=0.75, alpha = .3, color="orange")
 ```
 
-En el mapa se ve que ya no aparecen los límites de las comunas (se disolvieron) y quedó un solo polígono con la forma total de la Ciudad.
+Listo, todo funcionó bien asi que ya tenemos nuestro dataframe espacial de Airbnb recortado a partir de una intersección espacial con CABA.
 
-**Falta Continuar**
-
-## Intersecciones
-
-Hacer una intersección entre capas significa que dos geometrías serán recortadas, generando una capa única que contenga solo las entidades que se encuentran superpuestas. Para esto podemos utilizar `st_intersection`.
-Veamos un ejemplo.
-¿Cómo podríamos, a partir de un geoproceso, filtrar y quedarnos solo las observaciones pertenecientes a CABA, eliminando las de AMBA?
-Podríamos hacer una intersección espacial entre los datos de Airbnb y el shape del contorno de CABA que unimos anteriormente de la siguiente forma:
+Ahora hagamos una prueba más e intersectemos solo con las observaciones localizadas en las Comunas 2 y 14 filtradas anteriormente:
 
 ```{r}
-airbnb_con_comunas <- airbnb_con_comunas %>%
-  st_intersection(caba)
+airbnb_comuna_14_2 <- airbnb_con_comunas %>%
+  st_intersection(comuna_14_2)
 ```
 
-Grafiquemos el resultado en su contexto:
-
 ```{r}
-ggplot()+
+ggplot() +
   geom_sf(data=comunas) +
-  geom_sf(data=airbnb_con_comunas, size=0.75, alpha = .3, color="dodgerblue3")
+  geom_sf(data=airbnb_comuna_14_2, aes(color=comunas), size=0.4, alpha=0.3)
 ```
-
-Listo, ya tenemos nuestro shape de Airbnb recortado a partir de una intersección espacial. Ahora miremos otros ejemplos de uso de esta herramienta.
-
-Ahora nos quedaremos solo con las observaciones pertenecientes a las Comunas con mayor cantidad de publicaciones a partir de una intersección espacial entre los datos de Airbnb y las Comunas que tienen una cantidad de datos mayor a la media:
 
 ```{r}
-airbnb_con_comunas %>%
-  st_intersection(comunas %>% filter(cantidad>mean(cantidad))) %>%
-  ggplot() +
-  geom_sf(data=comunas) +
-  geom_sf(aes(color=comunas), size=0.4, alpha=0.3)
+dim(airbnb_comuna_14_2)
 ```
-Lo primero que hicimos fue filtrar las comunas que en la columna cantidad tienen un valor mayor al promedio de las 15 comunas, y luego intersectamos estas Comunas con los datos de Airbnb, para quedarnos solo con los pertenecientes a estas.
 
-**Falta Completar**
+De las 9.713 observaciones que vimos que caen en CABA, 4.940 caen en las comunas analizadas. Tal como era de esperar, esto representa más de un 50% de la muestra.
+
 
 ## Distancias
 
-El cálculo de distancias con `st_distance` es otro de los geoprocesos que vamos a aprender. Esta herramienta es muy útil para realizar análisis espaciales ya que nos permite comprender como se organizan y relacionan entre sí las entidades geográficas. Es decir que, nos permite sumar información a nuestros datos a partir de la relación especial que tienen con otro objeto.
+Ahora veamos como calcular distancias euclideanas entre datos espaciales, lo cual resulta muy útil a la hora de comprender como se organizan y relacionan entre sí diferentes entidades geográficas. Es decir que, esta herramienta nos permitirá agregar información a nuestros datos a partir de la relación espacial que tienen con otros datos. En `sf`, esto lo encontraremos bajo el nombre de `st_distance`.
 
-Como los datos que estamos analizando pertenecen a la oferta de alquileres turísticos, calculemos la distancia entre cada una de las propiedades publicadas y los hoteles de la Ciudad, para entender si tienen patrones/comportamientos similares o no. Esto es posible armando una función que nos permita calcular y filtrar la distancia de cada una de las propiedades publicadas en Airbnb al hotel más cercano.
-Con este análisis intentaremos comprender como es la distribución de la oferta de Airbnb y si tiene alguna relación con la ubicación de los hoteles en la ciudad.
+Comencemos con algo simple: Calculemos la distancia que hay entre los centroides de las 2 comunas con mayor densidad de oferta de Airbnb. Para establecer un único punto en cada comuna y poder realizar el cálculo, vamos a utilizar sus centroides que los calcularemos con la función `st_centroid`:
+
+```{r}
+comuna_2 <- comuna_2 %>%
+  st_centroid()
+
+comuna_14 <- comuna_14 %>%
+  st_centroid()
+```
+
+Veamos el resultado en un mapa:
+
+```{r}
+ggplot()+
+  geom_sf(data=comunas, color="gray")+
+  geom_sf(data=comuna_2, color="red", shape=4, stroke=2, size=1)+
+  geom_sf(data=comuna_14, color="blue", shape=4, stroke=2, size=1)
+```
+
+Y ahora calculemos la distancia entre ambos:
+
+```{r}
+st_distance(comuna_2, comuna_14)
+```
+
+Nos encontramos con que la distancia lineal entre el centroide de la Comuna 2 y el de la Comuna 14 es de 2.847,48 metros, es decir, unas 28 cuadras aproximadamente.
+
+Veamos un ejemplo más: Veamos a cuántos metros del centroide de la Comuna 2 se encuentran el resto de propiedades publicadas. Calcularemos el resultado en una nueva columna de nuestro dataframe llamada dist_comuna2:
+
+```{r}
+airbnb_con_comunas <- airbnb_con_comunas %>%
+  mutate(dist_comuna2 = st_distance(airbnb_con_comunas, comuna_2))
+```
+
+Analicemos los resultados:
+
+```{r}
+summary(airbnb_con_comunas$dist_comuna2)
+```
+
+Vemos que las propiedades más cercanas, se ubican a 21,92 metros, y las más lejanas a 13.963,07 metros. En promedio, todos los registros están ubicados a 3.202,8 metros del centroide de la Comuna 2, es decir, aproximadamente 32 cuadras.
+
+Revisemos la distribución en un histograma:
+
+```{r}
+ggplot(airbnb_con_comunas)+
+  geom_histogram(aes(x=as.numeric(dist_comuna2)))
+```
+
+Y en un mapa:
+
+```{r}
+ggplot()+
+  geom_sf(data=caba, color="gray")+
+  geom_sf(data=airbnb_con_comunas, aes(color=as.numeric(dist_comuna2)))+
+  geom_sf(data=comuna_2, fill=NA, shape=4, stroke=2, size=1.5)+
+  scale_color_viridis_c(direction = -1)+
+  labs(title="Distancia a la Comuna 2",
+       subtitle="Oferta Airbnb 2017",
+       color="Distancia",
+       x="",
+       y="")
+```
+
+Tanto en el histograma como en el mapa se aprecia perfectamente como la mayoría de las propiedaddes se ubican a menos de 5.000 metros del centroide de la Comuna.
+
+
+**Bonus Track**
+Hagamos un poco más complejo el análisis aprovechando que los datos que estamos analizando en este capítulo pertenecen a la oferta de alquileres turísticos, y calculemos la distancia entre cada una de las propiedades publicadas en Airbnb y cada uno de los hoteles de la Ciudad, para entender si hay similitudes en como se distribuyen ambas ofertas en el territorio. Esto será posible a partir del armado de una función que nos permita calcular y filtrar la distancia de cada una de las propiedades publicadas en Airbnb al hotel más cercano.
 
 Primero cargamos el dataset de hoteles que está publicado en le portal de datos abiertos de GCBA:
 
@@ -235,14 +393,14 @@ hoteles <- hoteles %>%
     st_as_sf(coords = c("long", "lat"), crs = 4326)
 ```
 
-Luego creamos una nueva columna en nuestro dataset donde calculamos la distancia de cada propiedad a cada hotel, pero nos quedamos únicamente con la distancia a la estación más cercana.
+Luego creamos una nueva columna en donde calculamos la distancia de cada propiedad a cada hotel, pero nos quedamos únicamente con la distancia a la estación más cercana.
 
 ```{r}
 airbnb_con_comunas <- airbnb_con_comunas %>%
   mutate(dist_hotel = apply(st_distance(airbnb_con_comunas, hoteles), 1, function(x) min(x)))
 ```
 
-Revisemos como se ve la nueva columna:
+Revisemos como se ve el resultado obtenido:
 
 ```{r}
 airbnb_con_comunas %>%
@@ -250,13 +408,11 @@ airbnb_con_comunas %>%
   head()
 ```
 
-Veamos y analicemos el resumen del resultado obtenido:
-
 ```{r}
 summary(airbnb_con_comunas$dist_hotel)
 ```
 
-Acá podemos ver que la mínima distancia entre una propiedad publicada en Airbnb y un hotel es de 1,4 metros y que la máxima es de 4828. Sin embargo, si miramos la media podemos ver que las propiedades se encuentran, en promedio, a 260 metros del hotel más cercano, lo cuál es muy cerca. A priori con estos datos, parecería ser que la localización de los Airbnb está muy relacionada con la de los hoteles.
+La mínima distancia entre una propiedad publicada en Airbnb y un hotel es de 1,4 metros y la máxima es de 4.828 metros. Sin embargo, si miramos la media podemos ver que las propiedades se encuentran, en promedio, a 260 metros del hotel más cercano, lo cuál es muy cerca. A priori con estos datos, parecería ser que la localización de los Airbnb está muy relacionada con la de los hoteles.
 
 Visualicemos esto en un histograma para comprender mejor la distribución de los datos:
 
@@ -265,9 +421,7 @@ ggplot(airbnb_con_comunas) +
     geom_histogram(aes(x = dist_hotel))
 ```
 
-Se ve como la mayor parte de las observaciones se encuentra a menos de 250 metros de algun hotel.
-
-Por último, veamos esto en un mapa:
+La mayor parte de las observaciones se encuentra a menos de 250 metros de algun hotel. Veamos esto en un mapa:
 
 ```{r}
 airbnb_con_comunas %>%
@@ -278,11 +432,149 @@ ggplot() +
   scale_color_viridis_c(option = "plasma", direction = -1)
 ```
 
-En el mapa se ve claramente que la distribución de la oferta de propiedades no es aleatoria, sino que responde a la demanda de los turistas ya que la mayor parte está ubicada cerca de hoteles (puntos negros). Los patrones de los 2 dataset son muy similares: gran concentración de puntos en Recoleta, Retiro y Microcento, extendiéndose hacia el corredor norte y siendo casi nula hacia el sur de la Ciudad.
+En el mapa se ve como la distribución de la oferta de propiedades no es aleatoria, sino que responde a la demanda de los turistas ya que la mayor parte está ubicada cerca de hoteles (puntos negros). Los patrones de los 2 dataset son muy similares: gran concentración de puntos en Recoleta, Retiro y Microcento, extendiéndose hacia el corredor norte y siendo casi nula hacia el sur de la Ciudad.
 
 
 ## Cálculo de extensión (longitud, área)
 
+Otras herramientas muy importantes a la hora de realizar un análisis espacial son los cálculos de extensión de geometrías, esto hace referencia a calcular áreas o longitudes.
+
+En la analítica urbana, el cálculo de áreas suele utilizarse para medir superficies de comunas, barrios, radios censales o cualquier otro polígono que se ubique en el territorio. Y el cálculo de longitud suele realizarse para medir el perímetro de alguno de estos polígonos o la extensión de la red de subte, FFCC, etc. Para ambas herramientas, tenemos una función del paquete `sf`: estas son `st_area` y `st_length`.
+
+Veamos de que se tratan estas funciones y comencemos calculando la superficie y el perímetro de todo el polígono de la Ciudad de Buenos Aires. Para esto agreguemos 2 columnas al dataframe de CABA con el que veníamos trabajando previamente:
+
 ```{r}
-barrios <- st_read("http://cdn.buenosaires.gob.ar/datosabiertos/datasets/barrios/barrios.geojson")
+caba <- caba %>%
+  mutate(superficie=st_area(caba),
+         perimetro=st_length(caba))
 ```
+
+```{r}
+caba$superficie
+caba$perimetro
+```
+
+Los resultados de área y perímetro se expresan en m2 y m, pasemoslos a ha y km respectivamente:
+
+```{r}
+caba <- caba %>%
+  mutate(superficie_ha=round(as.numeric(superficie)/10000, 2),
+         perimetro_km=round(as.numeric(perimetro)/1000, 2))
+```
+
+```{r}
+caba$superficie_ha
+caba$perimetro_km
+```
+
+Listo! Con pocas líneas código ya pudimos conocer ambos resultados. Según nuestros cálculos, la superficie de toda la Ciudad de Buenos Aires es de 20.367,8 ha y el perímetro de 128,61 km.
+
+Veamos algunos ejemplos más: Calculemos la superficie de cada uno de los 48 barrios de la Ciudad y veamos cuales son los de mayor tamaño. Para esto comencemos cargando el geoJSON de barrios:
+
+```{r}
+barrios <- st_read("https://raw.githubusercontent.com/angiescetta/datos-geo/master/barrios.geojson")
+```
+
+Creemos una nueva columna para calcular las superficies:
+
+```{r}
+barrios <- barrios %>%
+  mutate(superficie=st_area(barrios))
+```
+
+```{r}
+head(barrios)
+```
+
+Nuevamente los resultados están en m2, hagamos una conversión a ha para facilitar la lectura de los mismos:
+
+```{r}
+barrios <- barrios %>%
+  mutate(superficie_ha=round(as.numeric(superficie)/10000, 2))
+```
+
+```{r}
+select(barrios, barrio, superficie_ha) %>%
+  summary()
+```
+
+Ahora si, podemos ver que, las superficies de los barrios son bastante variadas: van desde 123 ha a 1.584 ha, siendo el promedio 424 ha.
+
+Entremos más en detalle y veamos cuántos son los barrios que tienen una superficie por encima de la media y cuántos por debajo. Para esto creemos una nueva columna llamada categoría:
+
+```{r}
+barrios <- barrios %>%
+  mutate(categoria=ifelse(superficie_ha>mean(superficie_ha),"MAYOR SUPERFICIE","MENOR SUPERFICIE"))
+```
+
+```{r}
+barrios %>%
+  group_by(categoria) %>%
+  summarise(cantidad=n())
+```
+
+La mayoría de los barrios (28) tienen una superficie por debajo de la media, mientras que el resto (20) tienen una superficie por encima de la misma. Veamos esto en un mapa:
+
+```{r}
+ggplot()+
+  geom_sf(data=barrios, aes(fill=categoria))+
+  labs(title="Barrios de CABA según superficie (ha)")
+```
+
+A simple vista, y en términos generales, se podría decir que, los barrios del Norte y Sur de la Ciudad son los que tienen la mayor superficie, mientras que los del Centro son los que tienen la menor.
+
+Veamos un último ejemplo: Calculemos la extensión de todas las líneas que componen la red de subterráneos de CABA para ver cuales son las que tienen mayor cobertura. Carguemos el geoJSON:
+
+```{r}
+subte_lineas <- st_read("http://bitsandbricks.github.io/data/subte_lineas.geojson")
+```
+
+Y calculemos longitud:
+
+```{r}
+subte_lineas <- subte_lineas %>%
+  mutate(longitud=st_length(subte_lineas))
+```
+
+```{r}
+head(subte_lineas)
+```
+
+Aquí podemos ver que en el shape, cada línea de subte está construida por varias geometrías (líneas). Para calcular la longitud total de cada línea debemos sumar las longitudes de cada uno de los tramos que la componen:
+
+```{r}
+subte_lineas <- subte_lineas %>%
+  group_by(LINEASUB) %>%
+  summarise(longitud=sum(as.numeric(longitud))) %>%
+  arrange(desc(longitud))
+
+subte_lineas
+```
+
+De las 6 líneas que aparecen en el dataframe, la que tiene mayor cobertura es la Línea B, seguida por la D. Y la que tiene menor cobertura es la C. También se puede ver que las líneas A y E tienen una longitud muy similar, con una diferencia de solo 2km.
+
+Llevemos esta información a un mapa:
+
+```{r}
+ggplot()+
+  geom_sf(data=caba)+
+  geom_sf(data=subte_lineas, aes(color=longitud), size=1)+
+  geom_sf_label(data=subte_lineas, aes(label = LINEASUB), size=1.5)+
+  scale_color_viridis_c(option = "plasma", direction=-1)+
+  labs(title="Líneas de SUBTE según longitud (km)")
+```
+
+
+## Ejercicios
+
+Adquiriendo open data urbana + Calculando y mapeando agregados por área
+
+I. Elegir una ciudad en cualquier parte del mundo que les interese y que disponga de un portal de datos abiertos que ofrece un shapefile con sus barrios.
+
+II. Del mismo portal de datos, o de otra fuente si la tienen, elegir un dataset con registros geo-referenciados. Por ejemplo, las escuelas de la ciudad (o las comisarías, o las propiedades en alquiler, o...) con sus coordenadas.
+
+III. Realizar un join espacial, asignando a cada registro geo-referenciado el barrio que le corresponde.
+
+IV. Utilizando ggplot() realizar:
+- Un gráfico (barras, puntos, o el que prefieran) para mostrar los resultados de cantidad por barrio.
+- Un mapa con los límites de los barrios, cuyo color de relleno indique la cantidad encontrada en cada uno.
