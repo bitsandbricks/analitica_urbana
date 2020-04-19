@@ -29,7 +29,7 @@ install.packages("osmdata")
 También vamos a hacer uso del paquete `leaflet`, que nos va a permitir generar de forma muy rápida mapas interactivos. 
 
 ```{r eval=FALSE}
-install.packages("osmdata")
+install.packages("leaflet")
 ```
 
 Y los activamos junto a otros paquetes que vamos a utilizar:
@@ -53,7 +53,7 @@ library(leaflet)
 
 ### Definiendo el lugar 
 
-Antes de descargar información, definimos el lugar que queremos consultar. Éste puede ser un barrio, un municipio, un país, un continente... en éste caso, lo intentaremos con la ciudad de Rosario.
+Antes de descargar información, definimos el lugar que queremos consultar. Éste puede ser un barrio, un municipio, un país, un continente... en este caso, lo intentaremos con la ciudad de Rosario.
 
 Las funciones de `osmdata` nos permiten realizar consultas a Overpass (http://overpass-api.de/), una interfaz que permite extraer información de la base de datos global de OpenStreetMap. Overpass requiere que se especifique una "bounding box", es decir las coordenadas de un rectángulo que abarque la zona de interés.
 
@@ -124,7 +124,7 @@ En cuanto se completa, ya tenemos calles:
 rosario
 ```
 
-La consulta devolvió toda la información de puntos, líneas y polígonos disponibles en la base de OSM. A nos otros nos interesan las líneas, "_osm_lines_", que demarcan la traza de las calles. Los registros con otras geometrías, como polígonos, pueden representar elementos asociados a las calles como bulevares o áreas de vereda que no vamos a usar por el momento.
+La consulta devolvió toda la información de puntos, líneas y polígonos disponibles en la base de OSM. A nos otros nos interesan las líneas, _"osm_lines"_, que demarcan la traza de las calles. Los registros con otras geometrías, como polígonos, pueden representar elementos asociados a las calles como bulevares o áreas de vereda que no vamos a usar por el momento.
 
 Del conjunto de datos disponibles, extraemos el dataframe con líneas, y chequeamos los atributos disponibles. Todos han sido recopilados por la comunidad de OpenStreetMap.
 
@@ -302,3 +302,14 @@ ggplot() +
        caption = "fuente: OpenStreetMap",
        color = "Ofrecen baile")
 ```
+
+
+## Ejercicios
+
+**Explorando y mapeando información georreferenciada de OpenStreetMap**
+
+I. Descargar de OpenStreetMap la grilla de calles para la Ciudad elegida en el capítulo 2 (Geoprocesamiento) y mapearla por uno de sus atributos (velocidad mínima, velocidad máxima, cantidad de carriles, etc).
+
+II. Descargar de OpenStreetMap una (o más) capas de datos de tipo puntos o polígonos. Ver catálogo de categorías en [este link](https://wiki.openstreetmap.org/wiki/Map_Features)
+a. Proyectar los datos descargados en un mapa y comentar los resultados: ¿Cómo se distribuyen en la Ciudad?
+b. Hacer un conteo de los ítems de la capa descargada por barrio, mapearlo y compararlo con el conteo de los ítems descargados en el ejercicio anterior: ¿La distribución es similar o hay diferencias? ¿A qué se puede deber?

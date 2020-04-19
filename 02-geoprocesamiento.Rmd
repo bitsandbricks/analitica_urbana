@@ -567,7 +567,7 @@ ggplot()+
 
 ## Ejercicios
 
-Adquiriendo open data urbana + Calculando y mapeando agregados por área
+**Adquiriendo open data urbana + Calculando y mapeando agregados por área**
 
 I. Elegir una ciudad en cualquier parte del mundo que les interese y que disponga de un portal de datos abiertos que ofrece un shapefile con sus barrios.
 
@@ -576,5 +576,5 @@ II. Del mismo portal de datos, o de otra fuente si la tienen, elegir un dataset 
 III. Realizar un join espacial, asignando a cada registro geo-referenciado el barrio que le corresponde.
 
 IV. Utilizando ggplot() realizar:
-- Un gráfico (barras, puntos, o el que prefieran) para mostrar los resultados de cantidad por barrio.
-- Un mapa con los límites de los barrios, cuyo color de relleno indique la cantidad encontrada en cada uno.
+a. Un gráfico (barras, puntos, o el que prefieran) para mostrar los resultados de cantidad por barrio.
+b. Un mapa con los límites de los barrios, cuyo color de relleno indique la cantidad encontrada en cada uno.

@@ -2,20 +2,22 @@
 
 ## Investigando con social media
 
-Los contenidos generados en las redes sociales son producidos y recopilados por por usuarios individuales (o representeantes de organizaciones) que participan en plataformas de acceso público tales como Twitter, Facebook, o Instagram. Si bien esas tres son las más populares, existen muchísimas otras plataformas funcionan como repositorios de información online como Yelp (reseñas de restoranes) o Properati (listados de propiedades en venta y alquiler), entre tantos otros. 
+Los contenidos generados en las redes sociales son producidos y recopilados por usuarios individuales (o representeantes de organizaciones) que participan en plataformas de acceso público tales como Twitter, Facebook, o Instagram. Si bien esas tres son las más populares, existen muchísimas otras plataformas que funcionan como repositorios de información online, como Yelp (reseñas de restoranes) o Properati (listados de propiedades en venta y alquiler), entre tantos otros. 
 
-La información producida en redes sociales llama la atención de investigadores en temas sociales por el nivel de detalle que encierra. Los usuarios registran y transmiten en forma pública un amplio abanico de datos personales: su paradero, estado de ánimo, intenciones futuras, etc. Es por eso que la "minería" de datos capturados _online_ se utiliza para estudiar procesos sociales, políticos, y hasta meteorológicos ( monitoreando menciones a eventos climáticos).
+La información producida en redes sociales llama la atención de investigadores en temas sociales por el nivel de detalle que encierra. Los usuarios registran y transmiten en forma pública un amplio abanico de datos personales: su paradero, estado de ánimo, intenciones futuras, etc. Es por eso que la "minería" de datos capturados _online_ se utiliza para estudiar procesos sociales, políticos, y hasta meteorológicos (monitoreando menciones a eventos climáticos).
 
 
 ### Los desafíos de trabajar con información de repositorios sociales
 
-Por supuesto, no todo son ventajas. El análsis de datos extraidos de redes sociales se enfrenta a varios obstáculos, entre ellos:
+Por supuesto, no todo son ventajas. El análisis de datos extraidos de redes sociales se enfrenta a varios obstáculos, entre ellos:
 
-* __"Suciedad" de los datos__. Los contenidos publicados en redes sociales suelen combinar texto, imágenes y video, lo cual requiere un esfuerzo considerable para identificar y clasificar los tipos de contenido disponibles. Incluso el contenido más fácil de tratar, el texto, requiere de limpieza previa: hay que lidiar con abreviaciones, emojis, puntuación inusual, etc. 
+* __"Suciedad" de los datos__. Los contenidos publicados en redes sociales suelen combinar texto, imágenes y video, lo cual requiere un esfuerzo considerable para identificar y clasificar los tipos de contenido disponibles. Incluso el contenido más fácil de tratar, el texto, requiere de limpieza previa: hay que lidiar con abreviaciones, emojis, puntuación inusual, etc.
+
 * __Inconsistencia__. Los regisros capturados desde repositorios online suelen ser inconsistentes: Muchas veces, uno o más de los valores de sus atributos (tales como "usario", "mensaje", "idioma", etc) faltan en muchos de los registros. Por ejemplo, algunos contienen coordenadas espaciales que permiten ubicarlos en el espacio, pero en muchos casos no están georreferenciados. Eso dificulta saber dónde está siendo producida la información, desde donde se emite.
+
 * __Sesgo y veracidad dudosa__. Al analizar los datos, es tentador realizar inferencias acerca de lo que la población en general hace o quiere. Pero hay que tener en cuenta que las personas que producen contenidos online son un grupo particular, que tiende a ser más joven y de nivel socioeconómico mayor a la media. Por otra parte, que algo se haya dicho online dista mucho de ser cierto o sincero. Ni siquiera podemos asumir que los usuarios son individuos humanos; las redes sociales son utilizadas en creciente medida por "bots", software automático que publica contenidos en gran volumen simulando ser una persona, o un grupo de personas, con el fin de manipular la opinión pública. 
 
-* __Volumen__. Cuando uno decide acumular los datos que obtiene de redes sociales, durante meses o años, el volumen alcanzado no es trivial. Resguardar, ordenar, clasificar y extraer sentido de  decenas o centenas de millones de registros es un desafío de big data.
+* __Volumen__. Cuando uno decide acumular los datos que obtiene de redes sociales, durante meses o años, el volumen alcanzado no es trivial. Resguardar, ordenar, clasificar y extraer sentido de decenas o centenas de millones de registros es un desafío de _big data_.
 
 * __Limitaciones de acceso__: Las empresas que controlan los repositorios de datos producidos en redes sociales vigilan con cuidado a quienes acceden, y limitan la cantidad de información que puede extraerse. En el caso de Twitter, las consultas permitidas a su base de datos se limitan al contenido producido en la última semana, y no entrega más de 18,000 tweets por consulta. 
 
@@ -83,7 +85,7 @@ tweets <- readRDS("data/tweets_inflacion.RDS")
 
 El parámetro n = 3000 es para limitar la búsqueda a los primeros 3000 tweets hallados.
 
-También puede hacerse una búsqueda por múltiples términos. Por ejemplo, buscando "ciudad+universitaria" hace que twitter devuelva resultados donde las palabras aparecen juntas y en ese orden; como alternativa, al optar por "ciudad universitaria" se obtienen tweets donde aparezcan esas palabras en cualquier parte del texto, sin importar su orden o si aparecen contiguas. 
+También puede hacerse una búsqueda por múltiples términos. Por ejemplo, buscando "ciudad+universitaria" hace que Twitter devuelva resultados donde las palabras aparecen juntas y en ese orden; como alternativa, al optar por "ciudad universitaria" se obtienen tweets donde aparezcan esas palabras en cualquier parte del texto, sin importar su orden o si aparecen contiguas. 
 
 El resultado es un dataframe de 3000 observaciones -el número máximo que habíamos solicitado- y 88 columnas. `rtweet` incluye `users_data()`, una función que muestra detalles de los usuarios que han producido los tweets que capturamos: 
 
@@ -147,7 +149,7 @@ Nota: Si no estamos interesados en capturar retweets, podemos evitarlos al momen
 
 ### La hora del día a la que se producen los tweets
 
-`rtweet()` provee una funció que hace facil mostrar la evolución temporal de nuestros tweets: `ts_plot()`. Podemos ver la frecuencia de tweets por segundo, hora, día, semana, mes o año eligiendo el parámetro correspondiente ("secondss", "minutess", "hours", "days", "weeks", "months", o "years")
+`rtweet()` provee una funció que hace facil mostrar la evolución temporal de nuestros tweets: `ts_plot()`. Podemos ver la frecuencia de tweets por segundo, hora, día, semana, mes o año eligiendo el parámetro correspondiente ("seconds", "minutes", "hours", "days", "weeks", "months", o "years")
 
 ```{r}
 ts_plot(tweets, "minutes")
@@ -187,7 +189,7 @@ tweets %>%
 
 ## Escuchando tweets en tiempo real
 
-Como alternativa a consultar el archivo "histórico" de Twitter, es posible conectar a su API de streaming, que entrega tweets en tiempo real al instante en que se producen. La función `stream_tweets()` permite iniciar una conección y capturar tweets hasta concluya el tiempo dispuesto por el parámetro "timeout", expresado en segundos.
+Como alternativa a consultar el archivo "histórico" de Twitter, es posible conectar a su API de streaming, que entrega tweets en tiempo real al instante en que se producen. La función `stream_tweets()` permite iniciar una conexión y capturar tweets hasta que concluya el tiempo dispuesto por el parámetro "timeout", expresado en segundos.
 
 Por ejemplo, para "escuchar" el stream de Twitter por un minuto (60 segundos), y capturar mensajes que incluyan los  términos _accidente_ y _tránsito_: 
 
@@ -244,7 +246,7 @@ Y con eso concluye el proceso. Ya estamos listos para analizar el contenido.
 
 Imaginemos ahora que queremos obtener tweets originados en un lugar en particular. En un barrio, una ciudad, o un país. Para ello podemos aprovechar que Twitter permite realizar búsquedas por área geográfica.
 
-Por ejemeplo, iniciemos la descarga de tweets que mencionen el nombre que se le da en Buenos Aires al metro:  "subte". La clave está en que además de los términos de búsqueda vamos a especificar un radio de 20 millas (~32 km) en torno al área céntrica (el _downtown_) de la Ciudad:
+Por ejemeplo, iniciemos la descarga de tweets que mencionen el nombre que se le da en Buenos Aires al metro: "subte". La clave está en que además de los términos de búsqueda vamos a especificar un radio de 20 millas (~32 km) en torno al área céntrica (el _downtown_) de la Ciudad:
 
 ```{r eval=FALSE}
 tweets_transporte <- search_tweets(q = "subte",
@@ -275,7 +277,7 @@ Esto trae dos problemas:
 
 * No podemos guardar el dataframe en formato .csv, el favorito de los que comparten datos, porque no hay forma estandarizada de indicar que algunos campos contienen una lista de datos en lugar de un valor único. `write.csv` y `write_csv` intentan guardar el dataframe en un archivo .csv, pero fallan al encontrar la primera columna que contiene listas.
 
-La solución es simple: usamos la función `lat_lng()`, que agrega al dataframe dos columnas adicionales llamadas "lat" y "lng",  conteniendo latitud y longitud para los tweets que traen posición exacta.
+La solución es simple: usamos la función `lat_lng()`, que agrega al dataframe dos columnas adicionales llamadas "lat" y "lng", conteniendo latitud y longitud para los tweets que traen posición exacta.
 
 ```{r}
 tweets_transporte <- lat_lng(tweets_transporte)
@@ -335,7 +337,7 @@ bbox <- make_bbox(lon = tweets_transporte_geo$lng, lat = tweets_transporte_geo$l
 bbox
 ```
 
-Con eso podemos descargar un mapa del área. Como opción por defecto, `ggmap` solicita los mapas a Google Maps, pero ésta ha dejado de ser la alternativa ideal: desde octubre de 2018, Google exige a los usarios registrarse y proveer una tarjeta de crédito para descargar información mediante porgramas propios. Por eso vamos a usar otra de las fuentes habilitadas por `ggmap`, el servicio de mapas de [Stamen Design](http://maps.stamen.com).
+Con eso podemos descargar un mapa del área. Como opción por defecto, `ggmap` solicita los mapas a Google Maps, pero esta ha dejado de ser la alternativa ideal: desde octubre de 2018, Google exige a los usarios registrarse y proveer una tarjeta de crédito para descargar información mediante porgramas propios. Por eso vamos a usar otra de las fuentes habilitadas por `ggmap`, el servicio de mapas de [Stamen Design](http://maps.stamen.com).
 
 
 Lo descargamos entregando la bounding box del área que nos interesa y un nivel de zoom. El nivel de zoom -un número de 1 a 20- indica el detalle que tendrá el mapa descargado. Para un área metropolitana un zoom de entre 10 y 12 es adecuado.  
@@ -375,7 +377,7 @@ ggmap(mapa_BA)
 ```
 
  
-Ahora agregamos capas de puntos mostrando la posición de los tweets. La sintaxis es la misma que aprendimos para `ggplot`; de hecho, `ggmap` es una llamada a `ggplot` que tras bambalinas se encarga de los ajustes necesarios para mostrar el mapa como findo. Habiendo revisado la data de Moreno, sabemos que las columnas de longitud y latitud de los puntos georeferenciados se llaman "lon" y "lat". Al graficar los puntos, las usaremos como posición x e y respectivamente.
+Ahora agregamos capas de puntos mostrando la posición de los tweets. La sintaxis es la misma que aprendimos para `ggplot`; de hecho, `ggmap` es una llamada a `ggplot` que tras bambalinas se encarga de los ajustes necesarios para mostrar el mapa como fondo. Habiendo revisado la data de Moreno, sabemos que las columnas de longitud y latitud de los puntos georeferenciados se llaman "lon" y "lat". Al graficar los puntos, las usaremos como posición x e y respectivamente.
 
 
 ```{r}
@@ -392,7 +394,7 @@ ggmap(mapa_BA) +
     scale_color_distiller(palette = "Spectral")
 ```
 
-¿Qué pasó aquí? Tenemos un escala de colores que llega hasta 600.000, en el tono rojo, pero en el mapa solo vemos puntos azules, los que indican una cantidad baja de seguidores. La explicación está en la relativa rareza de usuarios de Twitter con cientos de miles de seguidores. Dado que la inmensa mayoría de usuarios de la red sólo tienen un puñado de seguidores, ocurre que puntitos que los representan suelen tapar a los esporádicos usuarios ultra populares. Si lo que queremos es mostrar los tweets de éstos últimos, podemos recurrir a un pequeño truco. Dado que las filas de un data rame se grafican en orden, si ordenamos las observaciones en orden creciente de "followers_count" los usuarios populares serán graficados al final, garantizando que su color aparezca por encima de otros.
+¿Qué pasó aquí? Tenemos un escala de colores que llega hasta 600.000, en el tono rojo, pero en el mapa solo vemos puntos azules, los que indican una cantidad baja de seguidores. La explicación está en la relativa rareza de usuarios de Twitter con cientos de miles de seguidores. Dado que la inmensa mayoría de usuarios de la red sólo tienen un puñado de seguidores, ocurre que puntitos que los representan suelen tapar a los esporádicos usuarios ultra populares. Si lo que queremos es mostrar los tweets de éstos últimos, podemos recurrir a un pequeño truco. Dado que las filas de un data frame se grafican en orden, si ordenamos las observaciones en orden creciente de "followers_count" los usuarios populares serán graficados al final, garantizando que su color aparezca por encima de otros.
 
 ```{r}
 tweets_transporte_geo <- arrange(tweets_transporte_geo, followers_count)
@@ -403,7 +405,7 @@ ggmap(mapa_BA) +
     scale_color_distiller(palette = "Spectral")
 ```
 
-Tambien podemos usemos usar el tamaño de cada punto para representar la repercusión de los tweets, en base a la cantidad de "retweets" que han obtenido:
+Tambien podemos usar el tamaño de cada punto para representar la repercusión de los tweets, en base a la cantidad de "retweets" que han obtenido:
 
 ```{r}
 
@@ -488,7 +490,7 @@ leaflet(tweets_transporte_geo) %>%
 ```
 
 
-Para sumar una dimensión más a la visualización, podemos usar el color para indicar la cantidad de seguidores del autor de cada tweet. Para codificar por color, `leaflet` requiere definir una paleta de colores para aplicar a nuestros datos. Al crear una paleta debemos elegir la función correspondiente al tipo de datos que vamos a mostrar: `colorFactor()` para variables categóricas, `colorNumeric()` para variabes numéricas, o `colorQuantile()` también para variables numéricas, pero agrupadas en cuantiles. La función requere al menos dos parámetros. Uno es "palette", para definir los tonos a usar. Aquí funcionan nuestros amigos _viridis_, _magma_, _plasma_ e _inferno_, y también las [paletas Brewer](https://data.library.virginia.edu/files/pal_fig_3.png), como _"Spectral_ o _Accent_). El parametro restante es "domain", que simplemente toma un vector con los datos que vamos a representar con la paleta.
+Para sumar una dimensión más a la visualización, podemos usar el color para indicar la cantidad de seguidores del autor de cada tweet. Para codificar por color, `leaflet` requiere definir una paleta de colores para aplicar a nuestros datos. Al crear una paleta debemos elegir la función correspondiente al tipo de datos que vamos a mostrar: `colorFactor()` para variables categóricas, `colorNumeric()` para variabes numéricas, o `colorQuantile()` también para variables numéricas, pero agrupadas en cuantiles. La función requiere al menos dos parámetros. Uno es "palette", para definir los tonos a usar. Aquí funcionan nuestros amigos _viridis_, _magma_, _plasma_ e _inferno_, y también las [paletas Brewer](https://data.library.virginia.edu/files/pal_fig_3.png), como _"Spectral_ o _Accent_). El parametro restante es "domain", que simplemente toma un vector con los datos que vamos a representar con la paleta.
 
 Como la cantidad de seguidores es una variable numérica, podemos usar:
 
@@ -542,3 +544,16 @@ leaflet(tweets_transporte_geo) %>%
 
 Esto es sólo una introducción a la producción de mapas interactivos. 
 Para acceder a un recorrido por muchas otras opciones disponibles con `leaflet`, podemos visitar https://rstudio.github.io/leaflet/
+
+
+## Ejercicios
+
+**Capturando y explorando datos de Twitter**
+
+I. Descargar tweets que se originen en los alrededores de la Ciudad con la que trabajaron en los capítulos anteriores, y explorar las columnas/variables que contiene.
+
+II. Analizar:
+a. ¿Cuáles son los mensajes con más repercusión? ¿Qué dicen?
+b. ¿En qué momento del día se realiza la mayor cantidad de tweets? Graficar.
+c. ¿Cómo se distribuye la popularidad de los usuarios? ¿Quiénes son los 5 que más seguidores tienen? Graficar.
+d. Aislando los tweets que poseen coordenadas geográficas (lat y long), crear mapas que muestren posición de los tweets y cantidad de seguidores del usuario que tuitea.

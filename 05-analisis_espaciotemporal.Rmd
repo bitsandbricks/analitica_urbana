@@ -19,9 +19,9 @@ Mirando el resumen nos enteramos de que la hora más habitual para un delito son
 
 ### Trabajando con fechas
 
-La fecha es un tipo de dato que puede ser expresado de muchas maneras, dependiendo de que nos interese teer en cuenta el día de la semana al que corresponde, el mes, el año, etc. El paquete `lubridate` hace facil extraer de fechas en cualquier formato (por ejemplo "20/07/2018") el atributo relacionado que deseemos (como "viernes" o "Julio").
+La fecha es un tipo de dato que puede ser expresado de muchas maneras, dependiendo de que nos interese tener en cuenta: el día de la semana al que corresponde, el mes, el año, etc. El paquete `lubridate` hace fácil extraer fechas en cualquier formato (por ejemplo "20/07/2018") o el atributo relacionado que deseemos (como "viernes" o "Julio").
 
-Para empezar, convertimos el campo "fecha" al tipo de dato especializado que se llama... fecha (_date_). Aquí tenemos que prestar atención al formato en que aparecen, en general algo como  "2018-07-21" (mes, día y año) o "2018-07-21 12:14:24" (mes, día, año y hora, minutos, segundos). Con nuestros datos se da el primer caso, por lo cual la función para convertir ese campo en fecha es `ymd()`; para el segundo caso, seria `ymd_hms()`
+Para empezar, convertimos el campo "fecha" al tipo de dato especializado que se llama... fecha (_date_). Aquí tenemos que prestar atención al formato en que aparecen, en general algo como "2018-07-21" (mes, día y año) o "2018-07-21 12:14:24" (mes, día, año y hora, minutos, segundos). Con nuestros datos se da el primer caso, por lo cual la función para convertir ese campo en fecha es `ymd()`; para el segundo caso, seria `ymd_hms()`
 
 ```{r}
 library(tidyverse)
@@ -43,7 +43,7 @@ muestra_de_fechas <- delitos %>%
 muestra_de_fechas
 ```
 
-Mediante las funciones diponibles en lubridate, podemos extraer:
+Mediante las funciones diponibles en `lubridate`, podemos extraer:
 
 - El día de la semana al que corresponde cada fecha:
 
@@ -166,7 +166,7 @@ ggplot(conteo) +
 
 ```
 
-Como algunas categorías están mucho menos representadas, y quedan "aplastadas" en el gráfico con lo que se dificulta su legibilidad. Vamos a comparar porcentajes en lugar de valores absolutos.
+Como algunas categorías están mucho menos representadas, quedan "aplastadas" en el gráfico con lo que se dificulta su legibilidad. Vamos a comparar porcentajes en lugar de valores absolutos.
 
 ```{r}
 conteo <-  conteo  %>% 
@@ -244,7 +244,7 @@ Para los delitos relacionados con automóviles, el "prime time" es como el de la
 
 ## Mirando al espacio
 
-Pasemos a hora al análisis espacial de nuestros datos. Para facilitar la visualización vamos a usar el paquete `ggmap`, que incluye varias funciones que facilitan la creación de mapas.
+Pasemos ahora al análisis espacial de nuestros datos. Para facilitar la visualización vamos a usar el paquete `ggmap`, que incluye varias funciones que facilitan la creación de mapas.
 
 ```{r}
 library(ggmap)
@@ -283,7 +283,7 @@ ggmap(CABA) +
     geom_point(data = delitos, aes(x = longitud, y = latitud))
 ```
 
-Aquí nos topamos con un problema, habitual al trabajar con grandes volúmenes de datos. Hay tantos puntos proyectados sobre el mapa, que se hace imposible interepretar donde existen más o menos. Hacemos algunso ajustes: un color más llamativo, un tamaño de punto más pequeño, y aplicación de una ligera transparencia, vía los atributos "color", "size" y "alpha". ¿Cuál es el valor ideal para cada uno? En general, no queda otra que recurrir a la prueba y error para encontrar la receta justa.
+Aquí nos topamos con un problema, habitual al trabajar con grandes volúmenes de datos. Hay tantos puntos proyectados sobre el mapa, que se hace imposible interepretar donde existen más o menos. Hacemos algunos ajustes: un color más llamativo, un tamaño de punto más pequeño, y aplicación de una ligera transparencia, vía los atributos "color", "size" y "alpha". ¿Cuál es el valor ideal para cada uno? En general, no queda otra que recurrir a la prueba y error para encontrar la receta justa.
 
 ```{r dpi=150}
 ggmap(CABA) +
@@ -303,7 +303,7 @@ ggmap(CABA) +
                aes(x = longitud, y = latitud))
 ```
 
-Ahora si, resaltan las áreas de mayor concentración de incidentes. Se puede mejorar un poco el gráfico usando una mayot cantidad de celdas para aumentar la resolución. También empleando una escala de colores diseñada para ayudar a detectar diferencias por tonalidad, como viridis.
+Ahora si, resaltan las áreas de mayor concentración de incidentes. Se puede mejorar un poco el gráfico usando una mayor cantidad de celdas para aumentar la resolución. También empleando una escala de colores diseñada para ayudar a detectar diferencias por tonalidad, como viridis.
 
 ```{r dpi=150}
 ggmap(CABA) +
@@ -321,7 +321,7 @@ ggmap(CABA) +
 
 ### Visualizando multiples categorías
 
-Hasta aquí hemos analizado la distribución espacil del delito en su totalidad, sin diferenciar su tipo. Veamos ahora las difrencias por categoría. Podemos reintentar el mapa de puntos, esta vez filtrando los tipos de delito para incluir sólo los más frecuentes, y diferenciándolos por color.
+Hasta aquí hemos analizado la distribución espacial del delito en su totalidad, sin diferenciar su tipo. Veamos ahora las diferencias por categoría. Podemos reintentar el mapa de puntos, esta vez filtrando los tipos de delito para incluir sólo los más frecuentes, y diferenciándolos por color.
 
 ```{r dpi=150}
 ggmap(CABA) +
@@ -334,9 +334,9 @@ Aquí tenemos dos problemas:
 
 * La leyenda ("tipo_delito") es difícil de leer, dado que muestra los puntos tal como los definimos: pequeños y con mucha transparencia. Esos atributos son útiles en el mapa, donde tenemos cientos de miles de puntos, pero muy poco prácticos para la leyenda, donde sólo hay uno por etiqueta.
 
-* Los puntos sobre el mapa se superponen en tal medida que es dificil discenir patrones espaciales distintos según su categoría.
+* Los puntos sobre el mapa se superponen en tal medida que es dificil discernir patrones espaciales distintos según su categoría.
 
-El primer problema se resuelve fijando "a mano" los atributos de la lyenda, asi:
+El primer problema se resuelve fijando "a mano" los atributos de la leyenda, asi:
 
 ```{r dpi=150}
 ggmap(CABA) +
@@ -358,7 +358,7 @@ ggmap(CABA) +
     facet_wrap(~tipo_delito)
 ```
 
-El facetado ayuda. Se hacie evidente, por ejemplo, que el patrón espacial de las lesiones en seguridad vial es muy distinto al de hurto automotor.
+El facetado ayuda. Se hace evidente, por ejemplo, que el patrón espacial de las lesiones en seguridad vial es muy distinto al de hurto automotor.
 
 Para hacer las diferencias aún mas nítidas, podemos facetar una estimación de densidad:
 
@@ -375,7 +375,7 @@ ggmap(CABA) +
 
 El facetado también nos permite visualizar el cambio de posición a través del tiempo.
 
-Por ejemplo, podemos comparar dos tipos de delito (hurto sin violencia y hurto de rueda) mostrando dónde ocuren en cada día de la semana.
+Por ejemplo, podemos comparar dos tipos de delito (hurto sin violencia y hurto de rueda) mostrando dónde ocurren en cada día de la semana.
 
 ```{r dpi=150}
 delitos <- delitos %>% 
@@ -408,3 +408,17 @@ ggmap(CABA) +
          subtitle = "según hora del día")
 ```
 
+
+## Ejercicios
+
+**Descubriendo patrones temporales y espaciales en los datos**
+
+I. Utilizar los tweets que se descargaron en el capítulo anterior o elegir algún dataset open data de la Ciudad que tenga tanto coordenadas como fecha. Quienes se animen pueden trabajar con ambos y luego compararlos entre sí.
+
+II. Realizar 2 gráficos que les permitan analizar la temporalidad de los datos. ¿Detectan algún patrón temporal? ¿A qué puede deberse?
+
+III. Analizar la distribución espacial de los datos a partir de:
+a. Un mapa de densidad que muestre donde se concentran la mayor cantidad de observaciones.
+b. Un facetado del mapa del punto III.a. que permita discernir patrones espaciales dentro de las categorías de una variable. ¿El patrón espacial de los datos elegidos se mantiene o varía según las categorías?
+
+IV. Comparar la densidad de los datos en el tiempo (facetar). ¿Los patrones espaciales de los datos elegidos se mantienen o varían en el tiempo?

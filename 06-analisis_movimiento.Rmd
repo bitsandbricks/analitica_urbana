@@ -4,7 +4,7 @@ Los sistemas urbanos se caracterizan por dinámicas continuas de flujo, como el 
 
 ## Estimando rutas
 
-En general, los datos de flujo disponibles en datasets a escala metropolitana (en contraste con los datos personales como los de GPS) son simples pares origen/destino. Una ejemplo de datos abiertos de este tipo, es el de la ubicación y intercambio entre estaciones de sistemas de bicicletas compartidas.
+En general, los datos de flujo disponibles en datasets a escala metropolitana (en contraste con los datos personales como los de GPS) son simples pares origen/destino. Una ejemplo de datos abiertos de este tipo, es el de la ubicación e intercambio entre estaciones de sistemas de bicicletas compartidas.
 
 Por ejemplo, el portal de datos abiertos de la [Ciudad de Buenos Aires ofrece datasets con los trayectos realizados por los usuarios del sistema de bicicletas públicas, así como la ubicación de las estaciones](https://data.buenosaires.gob.ar/datasets?query=bicicletas).
 
@@ -93,7 +93,7 @@ ggplot() +
 
 ```
 
-El gráfico revela una característica de los datos: la numeración de la estaciones es discontinua. Crece secuencialmente hasta casi 200, pero por alguna hay un par de estaciones numeradas por encima de 500. Lo verificamos:
+El gráfico revela una característica de los datos: la numeración de la estaciones es discontinua. Crece secuencialmente hasta casi 200, pero por alguna razón hay un par de estaciones numeradas por encima de 500. Lo verificamos:
 
 ```{r}
 unique(conteo$ORIGEN_ESTACION)
@@ -160,7 +160,7 @@ Para quienes deseen hacer uso de las múltiples funciones que Google ofrece a tr
 
 Para resolver el problema del ejercicio, nosotros optaremos por el ruteo vía OSRM que no requiere permiso ni tarjetas de crédito. 
 
-Para encontrar una ruta, usamos la función `osrmRoute`, que requiere origen y destino en forma de vectores conteniendo un identificador (nombre del lugar o posición), longitud y latitud. Por ejemplo, para rutear entre dos lugares en Buenos Aires como Parque centenario y la estación Retiro:
+Para encontrar una ruta, usamos la función `osrmRoute`, que requiere origen y destino en forma de vectores conteniendo un identificador (nombre del lugar o posición), longitud y latitud. Por ejemplo, para rutear entre dos lugares en Buenos Aires como Parque Centenario y la Estación Retiro:
 
 ```{r}
 pcentenario <- c(nombre = "Parque Centenario",
@@ -357,3 +357,29 @@ recorridos
 ```
 
 
+## Ejercicios
+
+**Analizando y visualizando flujos de viajes urbanos**
+
+I. Elegir UNA SOLA de las siguientes opciones:
+a. Un dataset que contenga viajes origen-destino (por ejemplo bicicletas públicas) de la Ciudad con la que están trabajando.
+b. Un dataset que contenga servicios esenciales (hospitales, escuelas, comisarías, etc) de la Ciudad con la que están trabajando. En este caso deberán elegir un barrio céntrico y uno periférico del shape de barrios y calcular ambos centroides.
+Los datos pueden ser descargados del portal open data de la ciudad o de OSM y deben tener ubicación geográfica.
+
+II. Según la opción elegida en el punto I, deberán:
+a. Viajes origen-destino: Analizar la cantidad de viajes entre los puntos a partir de un mapa de calor (heatmap) y calcular los 10 recorridos más realizados. Describir los resultados obtenidos y hacer el siguiente mapa:
+- Mapa con los ruteos de los 10 recorridos más realizados.
+b. Servicios esenciales: Estimar la distancia entre los centroides calculados en el punto I y los ítems que componen la capa descargada. Describir los resultados obtenidos y hacer los siguientes mapas:
+- Mapa con los ruteos del centroide del barrio céntrico a los ítems de servicios esenciales elegido.
+- Mapa con los ruteos del centroide del barrio periférico a los ítems de servicios esenciales elegido.
+
+PRO TIP!
+Si bajan datos de OpenStreetMap -por ejemplo, escuelas de una ciudad- los tendrán en formato sf.
+Un dataframe sf tiene sus coordenadas en una sola columna, "geometry". Pero que pasa si quieren los datos en dos columnas, lat y long, para que puedan aprovechar los ejemplos de funciones de ruteo que vimos en clase?
+
+Muy simple.
+Si su dataframe en formato sf se llama "misdatos", así es como obtienen columnas con lat y long:
+
+misdatos <- misdatos %>%
+mutate(lat = unlist(map(misdatos$geometry,1)),
+long = unlist(map(misdatos$geometry,2)))
