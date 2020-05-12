@@ -2,7 +2,7 @@
 
 Para entender datasets con datos en gran volumen que poseen atributos de posición y tiempo, es útil visualizar el ritmo en el que ocurren (diario, mensual, anual, etc) y la forma en la que se disrtibuyen en el espacio.
 
-Para prácticar, trabajaremos con un dataset de delitos registrados en la Ciudad de Buenos Aires. Los datos fueron publicados por el Gobierno de la Ciudad como parte de http://mapa.seguridadciudad.gob.ar/, y recopilados en un repositorio descargable por @orramiro en https://github.com/ramadis/delitos-caba.
+Para prácticar, trabajaremos con un dataset de delitos registrados en la Ciudad de Buenos Aires. Los datos fueron publicados por el Gobierno de la Ciudad como parte de http://mapa.seguridadciudad.gob.ar/, y luego recopilados en un repositorio descargable disponible en https://github.com/ramadis/delitos-caba.
 
 
 ```{r cache=TRUE}
@@ -256,16 +256,21 @@ Para obtener un mapa de fondo, obtenemos el "bounding box" de nuestros datos, y 
 
 
 ```{r}
+# Nos quedamos solo con los puntos ubicados en el hemisferio donde se ubica Buenos Aires
+# (con eso eliminamos algunos puntos mal localizados)
+
 delitos <- delitos %>% 
     filter(latitud <0, longitud <0)
 
-bbox <- c(min(delitos$longitud, na.rm = TRUE),
-          min(delitos$latitud, na.rm = TRUE),
-          max(delitos$longitud, na.rm = TRUE),
-          max(delitos$latitud, na.rm = TRUE))
+# con la funcion make_bbox() generamos un rectángulo de coordenadas 
+# que contiene todas las ubicaciones, que nos sirve para solicitar un mapa base
+# en el próximo paso
 
-CABA <- get_stamenmap(bbox = bbox, 
-                      maptype = "toner-lite")
+bbox <- make_bbox(delitos$longitud, delitos$latitud)
+
+
+# Descargamos el mapa base!
+CABA <- get_stamenmap(bbox = bbox, maptype = "toner-lite", zoom = 12)
 ```
 
 Para verlo:
