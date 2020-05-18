@@ -252,24 +252,26 @@ library(ggmap)
 
 ### Obteniendo un mapa base
 
-Para obtener un mapa de fondo, obtenemos el "bounding box" de nuestros datos, y luego se los pasamos a `get_stamenmap()`. Para más detalles sobre la descarga de mapas base, ver http://rpubs.com/HAVB/mapeo_tweets.
+Para obtener un mapa de fondo o "mapa base" necesitamos obtener una "bounding box" de nuestros datos, que luego pasamos a `get_stamenmap()`, como ya hicimos en el capítulo anterior cuando mapeamos _tweets_.
 
+Como suele ocurrir, hace falta un poco de limpieza previa: nos quedamos solo con los puntos ubicados en el hemisferio donde se ubica Buenos Aires, y con eso eliminamos algunos puntos mal localizados.
 
 ```{r}
-# Nos quedamos solo con los puntos ubicados en el hemisferio donde se ubica Buenos Aires
-# (con eso eliminamos algunos puntos mal localizados)
-
 delitos <- delitos %>% 
     filter(latitud <0, longitud <0)
+```
 
-# con la funcion make_bbox() generamos un rectángulo de coordenadas 
-# que contiene todas las ubicaciones, que nos sirve para solicitar un mapa base
-# en el próximo paso
+Con los datos depurados, usamos la funcion `make_bbox()` que nos devuelve el rectángulo de coordenadas que contiene todas las ubicaciones en nuestra base:
 
+```{r}
 bbox <- make_bbox(delitos$longitud, delitos$latitud)
 
+bbox
+```
 
-# Descargamos el mapa base!
+Y en base a la "bounding box" solicitamos nuestro mapa base:
+
+```{r}
 CABA <- get_stamenmap(bbox = bbox, maptype = "toner-lite", zoom = 12)
 ```
 

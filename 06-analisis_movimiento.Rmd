@@ -28,7 +28,7 @@ viajes
 También descargamos un archivo de información geográfica con la posición de cada estación de bicicletas públicas:
 
 ```{r}
-estaciones <- read.csv("https://bitsandbricks.github.io/data/estaciones_BA_bici.csv")
+estaciones <- read_csv("https://bitsandbricks.github.io/data/estaciones_BA_bici.csv")
 
 estaciones
 ```
