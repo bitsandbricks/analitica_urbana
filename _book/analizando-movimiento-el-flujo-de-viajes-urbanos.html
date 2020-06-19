@@ -24,7 +24,7 @@
 <meta name="author" content="Antonio Vazquez Brust &amp; Angie Scetta" />
 
 
-<meta name="date" content="2020-05-18" />
+<meta name="date" content="2020-06-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -148,16 +148,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#sobre-la-analítica-urbana"><i class="fa fa-check"></i><b>1.1</b> Sobre la analítica urbana</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html"><i class="fa fa-check"></i><b>2</b> Geoprocesamiento</a><ul>
-<li class="chapter" data-level="2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>2.1</b> Cruces espaciales</a></li>
-<li class="chapter" data-level="2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>2.2</b> Dataframes tradicionales y dataframes espaciales</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>2.2.1</b> Combinando datasets con información espacial</a></li>
-<li class="chapter" data-level="2.2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>2.2.2</b> Coropletas</a></li>
+<li class="chapter" data-level="2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>2.1</b> Cruces espaciales</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>2.1.1</b> Dataframes tradicionales y dataframes espaciales</a></li>
+<li class="chapter" data-level="2.1.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>2.1.2</b> Combinando datasets con información espacial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>2.1.3</b> Coropletas</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>2.3</b> Uniones</a></li>
-<li class="chapter" data-level="2.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>2.4</b> Intersecciones</a></li>
-<li class="chapter" data-level="2.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>2.5</b> Distancias</a></li>
-<li class="chapter" data-level="2.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>2.6</b> Cálculo de extensión (longitud, área)</a></li>
-<li class="chapter" data-level="2.7" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#ejercicios"><i class="fa fa-check"></i><b>2.7</b> Ejercicios</a></li>
+<li class="chapter" data-level="2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>2.2</b> Uniones</a></li>
+<li class="chapter" data-level="2.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>2.3</b> Intersecciones</a></li>
+<li class="chapter" data-level="2.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>2.4</b> Distancias</a></li>
+<li class="chapter" data-level="2.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>2.5</b> Cálculo de extensión (longitud, área)</a></li>
+<li class="chapter" data-level="2.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#ejercicios"><i class="fa fa-check"></i><b>2.6</b> Ejercicios</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><i class="fa fa-check"></i><b>3</b> Acceso a información urbana georeferenciada en repositorios <em>online</em></a><ul>
 <li class="chapter" data-level="3.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#openstreetmap-desde-r"><i class="fa fa-check"></i><b>3.1</b> OpenStreetMap desde R</a><ul>
@@ -408,21 +408,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## Simple feature collection with 1 feature and 4 fields
 ## geometry type:  LINESTRING
 ## dimension:      XY
-## bbox:           xmin: -58.4355 ymin: -34.60568 xmax: -58.37324 ymax: -34.57317
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## bbox:           xmin: -58.43689 ymin: -34.60636 xmax: -58.37422 ymax: -34.59099
+## CRS:            EPSG:4326
 ##                                                 src             dst duration
-## Parque Centenario_Estación Retiro Parque Centenario Estación Retiro 32.39333
+## Parque Centenario_Estación Retiro Parque Centenario Estación Retiro 84.83333
 ##                                   distance                       geometry
-## Parque Centenario_Estación Retiro   9.0622 LINESTRING (-58.4355 -34.60...</code></pre>
+## Parque Centenario_Estación Retiro   6.9386 LINESTRING (-58.43598 -34.6...</code></pre>
 <p>Podemos revisar rápidamente la ruta hallada usando <code>leaflet</code>:</p>
 <div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb243-1" data-line-number="1"><span class="kw">library</span>(leaflet)</a>
 <a class="sourceLine" id="cb243-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb243-3" data-line-number="3"><span class="kw">leaflet</span>(centenario_a_retiro) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb243-4" data-line-number="4"><span class="st">    </span><span class="kw">addTiles</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb243-5" data-line-number="5"><span class="st">    </span><span class="kw">addPolylines</span>(<span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)</a></code></pre></div>
-<div id="htmlwidget-d98ee0f4d440a696433d" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d98ee0f4d440a696433d">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["OpenStreetMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addPolylines","args":[[[[{"lng":[-58.4355,-58.43549,-58.43534,-58.43532,-58.43492,-58.4349,-58.43482,-58.43465,-58.4345,-58.43425,-58.4341,-58.43385,-58.43381,-58.4337,-58.43355,-58.43344,-58.43331,-58.4332,-58.43305,-58.43273,-58.43261,-58.43314,-58.43321,-58.4338,-58.43389,-58.43401,-58.43449,-58.43489,-58.43522,-58.43532,-58.43487,-58.43436,-58.43342,-58.43329,-58.43398,-58.43409,-58.43487,-58.43379,-58.43271,-58.43161,-58.43052,-58.42918,-58.42816,-58.4272,-58.42607,-58.42515,-58.42414,-58.42319,-58.42237,-58.42142,-58.42052,-58.42032,-58.41953,-58.41937,-58.41874,-58.41859,-58.41792,-58.4169,-58.41653,-58.41496,-58.41406,-58.41343,-58.41258,-58.41146,-58.41038,-58.41029,-58.41026,-58.41022,-58.41017,-58.40979,-58.40975,-58.40948,-58.40895,-58.40863,-58.4085,-58.40842,-58.40794,-58.40771,-58.40713,-58.40689,-58.40668,-58.40603,-58.40528,-58.40507,-58.40498,-58.40488,-58.40476,-58.40455,-58.40441,-58.40431,-58.40379,-58.40282,-58.40269,-58.40226,-58.40199,-58.40174,-58.40114,-58.40069,-58.40053,-58.40001,-58.39991,-58.39959,-58.39946,-58.39937,-58.39909,-58.39613,-58.3944,-58.39435,-58.39432,-58.3943,-58.39428,-58.39427,-58.39426,-58.39426,-58.39426,-58.39426,-58.39426,-58.39428,-58.39438,-58.39439,-58.39441,-58.39441,-58.39441,-58.39442,-58.39441,-58.39441,-58.39439,-58.39434,-58.39385,-58.39279,-58.39251,-58.39112,-58.39044,-58.38871,-58.38837,-58.38821,-58.388,-58.38778,-58.38748,-58.38715,-58.38686,-58.38643,-58.38611,-58.38567,-58.38527,-58.38478,-58.38423,-58.38384,-58.38337,-58.38287,-58.38229,-58.38194,-58.38156,-58.38076,-58.37976,-58.3786,-58.37793,-58.37716,-58.37623,-58.37501,-58.3736,-58.37324,-58.37333,-58.37365,-58.37367,-58.37375,-58.37388,-58.37407,-58.37412,-58.37453],"lat":[-34.60529,-34.60529,-34.60454,-34.60447,-34.60455,-34.60455,-34.60457,-34.60462,-34.60468,-34.60477,-34.60486,-34.60502,-34.60505,-34.60514,-34.60526,-34.60536,-34.6055,-34.60568,-34.60562,-34.60548,-34.60544,-34.60443,-34.6043,-34.60313,-34.60295,-34.60278,-34.60231,-34.60194,-34.60159,-34.6015,-34.60118,-34.60087,-34.60029,-34.60021,-34.59946,-34.59933,-34.59851,-34.59781,-34.59712,-34.59643,-34.59574,-34.59485,-34.59419,-34.59354,-34.59277,-34.59214,-34.59148,-34.59083,-34.59026,-34.58966,-34.58909,-34.58896,-34.58849,-34.58839,-34.58801,-34.58793,-34.58751,-34.58692,-34.5867,-34.58578,-34.58513,-34.58465,-34.58406,-34.58325,-34.5825,-34.58246,-34.58237,-34.58222,-34.58208,-34.58113,-34.58103,-34.58112,-34.58075,-34.58056,-34.58046,-34.58037,-34.57983,-34.57956,-34.57891,-34.57872,-34.57852,-34.57782,-34.57702,-34.57678,-34.57668,-34.57658,-34.57644,-34.57621,-34.57604,-34.57594,-34.57534,-34.57428,-34.57414,-34.5737,-34.57342,-34.57317,-34.57386,-34.57433,-34.57449,-34.57493,-34.57501,-34.57521,-34.57529,-34.57534,-34.57549,-34.57706,-34.57798,-34.57801,-34.57803,-34.57806,-34.57808,-34.57811,-34.57813,-34.57815,-34.57818,-34.5782,-34.57822,-34.57824,-34.57841,-34.57843,-34.57845,-34.57847,-34.57849,-34.57851,-34.57852,-34.57854,-34.57857,-34.5786,-34.57885,-34.57939,-34.57953,-34.58024,-34.58059,-34.58148,-34.58167,-34.58174,-34.58185,-34.58198,-34.58216,-34.58237,-34.58257,-34.5829,-34.58315,-34.5835,-34.58386,-34.58424,-34.58466,-34.58492,-34.58521,-34.5855,-34.58583,-34.58602,-34.5862,-34.58655,-34.58702,-34.58751,-34.58782,-34.5882,-34.58864,-34.58924,-34.58992,-34.59012,-34.59024,-34.59065,-34.59068,-34.59077,-34.59095,-34.59104,-34.59108,-34.59158]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":5,"opacity":0.5,"fill":false,"fillColor":"red","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-34.60568,-34.57317],"lng":[-58.4355,-58.37324]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-50681e10470cc29ff925" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-50681e10470cc29ff925">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["OpenStreetMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addPolylines","args":[[[[{"lng":[-58.43598,-58.43598,-58.43604,-58.43611,-58.43622,-58.43622,-58.43635,-58.43636,-58.43637,-58.43636,-58.4363,-58.43622,-58.43618,-58.43615,-58.43624,-58.43637,-58.43648,-58.43689,-58.43666,-58.4365,-58.43638,-58.4364,-58.43652,-58.43515,-58.43495,-58.43475,-58.43389,-58.43332,-58.43314,-58.43229,-58.43213,-58.43186,-58.4317,-58.43151,-58.43112,-58.43104,-58.43036,-58.43023,-58.43016,-58.43009,-58.42966,-58.42923,-58.42916,-58.42852,-58.42798,-58.42688,-58.42677,-58.42658,-58.42644,-58.42623,-58.42496,-58.42466,-58.42462,-58.42383,-58.42374,-58.42366,-58.42356,-58.42348,-58.42336,-58.42316,-58.42305,-58.42296,-58.42291,-58.42284,-58.42277,-58.42176,-58.42149,-58.4212,-58.42088,-58.42066,-58.42017,-58.41895,-58.41727,-58.41714,-58.41598,-58.41462,-58.41437,-58.41326,-58.41312,-58.41191,-58.41028,-58.4102,-58.40942,-58.40816,-58.40805,-58.40664,-58.40655,-58.40559,-58.40557,-58.40518,-58.40401,-58.40386,-58.40365,-58.40345,-58.40209,-58.4013,-58.40067,-58.39903,-58.39886,-58.39872,-58.39854,-58.3983,-58.39787,-58.39756,-58.39754,-58.39735,-58.39589,-58.39455,-58.39337,-58.39305,-58.39274,-58.3922,-58.39167,-58.39117,-58.39102,-58.38973,-58.38821,-58.38697,-58.38555,-58.38412,-58.3841,-58.38375,-58.38356,-58.3835,-58.3835,-58.38351,-58.38351,-58.38351,-58.3835,-58.3835,-58.38349,-58.38348,-58.38346,-58.38344,-58.38343,-58.38336,-58.38318,-58.38284,-58.38279,-58.38268,-58.38269,-58.38231,-58.38214,-58.38208,-58.38197,-58.38185,-58.38155,-58.38145,-58.38147,-58.38147,-58.38148,-58.38101,-58.38092,-58.38084,-58.38081,-58.38066,-58.38062,-58.38049,-58.38035,-58.38025,-58.37995,-58.37885,-58.37851,-58.37835,-58.37825,-58.37816,-58.37802,-58.37792,-58.37785,-58.37785,-58.37785,-58.37782,-58.37776,-58.37767,-58.37764,-58.37758,-58.37751,-58.37741,-58.37726,-58.377,-58.37693,-58.37578,-58.37569,-58.37562,-58.37527,-58.37525,-58.37523,-58.37531,-58.37496,-58.37485,-58.37475,-58.37463,-58.37459,-58.37426,-58.37424,-58.37422,-58.37427,-58.37458,-58.37466,-58.37473],"lat":[-34.60636,-34.60634,-34.60628,-34.60629,-34.60635,-34.60635,-34.60631,-34.60627,-34.60622,-34.60616,-34.6061,-34.60606,-34.60603,-34.606,-34.60594,-34.60571,-34.60543,-34.60459,-34.6045,-34.60447,-34.60445,-34.60442,-34.60428,-34.60359,-34.6035,-34.6034,-34.60295,-34.60269,-34.60259,-34.60214,-34.60204,-34.60173,-34.60154,-34.60132,-34.60087,-34.60077,-34.59999,-34.59984,-34.59977,-34.5997,-34.59935,-34.59898,-34.59893,-34.59865,-34.59842,-34.59798,-34.59794,-34.5979,-34.59789,-34.59788,-34.59786,-34.59785,-34.59785,-34.59782,-34.59782,-34.59781,-34.5978,-34.59778,-34.59775,-34.59773,-34.59771,-34.59771,-34.59771,-34.5977,-34.59771,-34.59773,-34.59774,-34.59774,-34.59775,-34.59776,-34.59776,-34.5978,-34.59784,-34.59784,-34.59786,-34.59791,-34.59792,-34.59796,-34.59797,-34.59803,-34.59812,-34.59812,-34.59811,-34.59808,-34.59808,-34.59807,-34.59807,-34.59806,-34.59801,-34.59724,-34.59745,-34.59748,-34.59752,-34.59755,-34.59778,-34.59792,-34.59803,-34.59832,-34.59835,-34.59838,-34.59841,-34.59846,-34.59852,-34.59857,-34.59857,-34.5986,-34.59872,-34.59871,-34.59872,-34.59871,-34.59869,-34.59866,-34.59863,-34.59859,-34.59858,-34.59849,-34.59839,-34.5983,-34.5982,-34.5981,-34.59803,-34.5977,-34.59753,-34.59747,-34.59747,-34.59745,-34.59744,-34.59742,-34.59741,-34.59741,-34.5974,-34.5974,-34.59739,-34.5974,-34.5974,-34.59734,-34.59718,-34.59687,-34.59682,-34.59681,-34.59669,-34.59666,-34.59665,-34.59665,-34.59664,-34.59664,-34.59661,-34.59606,-34.59558,-34.59552,-34.59537,-34.59535,-34.59534,-34.59533,-34.59533,-34.59532,-34.59532,-34.59531,-34.59531,-34.5953,-34.59527,-34.59519,-34.59516,-34.59514,-34.59513,-34.59512,-34.5951,-34.59508,-34.59508,-34.59502,-34.59497,-34.59488,-34.59476,-34.59463,-34.59459,-34.59453,-34.59449,-34.59445,-34.59438,-34.59444,-34.59442,-34.59304,-34.59292,-34.59288,-34.59276,-34.59251,-34.59245,-34.59241,-34.59198,-34.59184,-34.59171,-34.59155,-34.5915,-34.5911,-34.59109,-34.5911,-34.59116,-34.59099,-34.5911,-34.59119]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":5,"opacity":0.5,"fill":false,"fillColor":"red","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-34.60636,-34.59099],"lng":[-58.43689,-58.37422]}},"evals":[],"jsHooks":[]}</script>
 <p>Ahora, lo intentamos con los datos de viajes en bicicleta. Hacemos un <em>join</em> del dataframe con el conteo de viajes contra el de posición de estaciones, para agregar las coordenadas.</p>
 <p>De origen:</p>
 <div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" data-line-number="1">top10 &lt;-<span class="st"> </span>top10 <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -482,24 +481,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## Simple feature collection with 1 feature and 4 fields
 ## geometry type:  LINESTRING
 ## dimension:      XY
-## bbox:           xmin: -58.40488 ymin: -34.59253 xmax: -58.37324 ymax: -34.57317
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## bbox:           xmin: -58.39231 ymin: -34.59263 xmax: -58.37486 ymax: -34.58301
+## CRS:            EPSG:4326
 ##                                            src    dst duration distance
-## FACULTAD DE DERECHO_RETIRO FACULTAD DE DERECHO RETIRO 15.24167   5.4226
+## FACULTAD DE DERECHO_RETIRO FACULTAD DE DERECHO RETIRO 24.15667    2.002
 ##                                                  geometry
-## FACULTAD DE DERECHO_RETIRO LINESTRING (-58.39256 -34.5...</code></pre>
+## FACULTAD DE DERECHO_RETIRO LINESTRING (-58.39231 -34.5...</code></pre>
 <div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb250-1" data-line-number="1"><span class="kw">leaflet</span>(fderecho_a_retiro) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb250-2" data-line-number="2"><span class="st">    </span><span class="kw">addTiles</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb250-3" data-line-number="3"><span class="st">    </span><span class="kw">addPolylines</span>(<span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)</a></code></pre></div>
-<div id="htmlwidget-19b0de00a71d45c263a3" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-19b0de00a71d45c263a3">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["OpenStreetMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addPolylines","args":[[[[{"lng":[-58.39256,-58.39293,-58.39297,-58.39318,-58.39353,-58.39477,-58.39501,-58.39584,-58.39599,-58.39648,-58.39777,-58.39794,-58.39813,-58.39991,-58.4001,-58.40031,-58.40072,-58.40088,-58.40136,-58.40143,-58.40209,-58.40251,-58.40261,-58.40336,-58.40346,-58.40357,-58.40376,-58.40391,-58.40414,-58.40467,-58.40481,-58.40488,-58.40476,-58.40455,-58.40441,-58.40431,-58.40379,-58.40282,-58.40269,-58.40226,-58.40199,-58.40174,-58.40114,-58.40069,-58.40053,-58.40001,-58.39991,-58.39959,-58.39946,-58.39937,-58.39909,-58.39613,-58.3944,-58.39435,-58.39432,-58.3943,-58.39428,-58.39427,-58.39426,-58.39426,-58.39426,-58.39426,-58.39426,-58.39428,-58.39438,-58.39439,-58.39441,-58.39441,-58.39441,-58.39442,-58.39441,-58.39441,-58.39439,-58.39434,-58.39385,-58.39279,-58.39251,-58.39112,-58.39044,-58.38871,-58.38837,-58.38821,-58.388,-58.38778,-58.38748,-58.38715,-58.38686,-58.38643,-58.38611,-58.38567,-58.38527,-58.38478,-58.38423,-58.38384,-58.38337,-58.38287,-58.38229,-58.38194,-58.38156,-58.38076,-58.37976,-58.3786,-58.37793,-58.37716,-58.37623,-58.37501,-58.3736,-58.37324,-58.37333,-58.37365,-58.37367,-58.37375,-58.37388,-58.37394,-58.37407,-58.37409,-58.37408,-58.37408,-58.37409,-58.37412,-58.37415,-58.37421,-58.37428,-58.37433,-58.37442,-58.37451,-58.3746,-58.37469,-58.37488,-58.37493],"lat":[-34.5833,-34.58313,-34.58312,-34.58302,-34.58285,-34.58224,-34.58213,-34.58175,-34.58168,-34.58146,-34.58087,-34.58079,-34.58071,-34.57983,-34.57973,-34.57961,-34.57937,-34.57928,-34.57899,-34.57894,-34.57856,-34.5783,-34.57823,-34.57769,-34.57762,-34.57754,-34.5774,-34.57729,-34.57712,-34.57674,-34.57664,-34.57658,-34.57644,-34.57621,-34.57604,-34.57594,-34.57534,-34.57428,-34.57414,-34.5737,-34.57342,-34.57317,-34.57386,-34.57433,-34.57449,-34.57493,-34.57501,-34.57521,-34.57529,-34.57534,-34.57549,-34.57706,-34.57798,-34.57801,-34.57803,-34.57806,-34.57808,-34.57811,-34.57813,-34.57815,-34.57818,-34.5782,-34.57822,-34.57824,-34.57841,-34.57843,-34.57845,-34.57847,-34.57849,-34.57851,-34.57852,-34.57854,-34.57857,-34.5786,-34.57885,-34.57939,-34.57953,-34.58024,-34.58059,-34.58148,-34.58167,-34.58174,-34.58185,-34.58198,-34.58216,-34.58237,-34.58257,-34.5829,-34.58315,-34.5835,-34.58386,-34.58424,-34.58466,-34.58492,-34.58521,-34.5855,-34.58583,-34.58602,-34.5862,-34.58655,-34.58702,-34.58751,-34.58782,-34.5882,-34.58864,-34.58924,-34.58992,-34.59012,-34.59024,-34.59065,-34.59068,-34.59077,-34.59095,-34.59112,-34.59128,-34.5913,-34.59137,-34.5914,-34.59144,-34.59153,-34.59157,-34.59165,-34.59174,-34.59181,-34.59192,-34.59203,-34.59214,-34.59225,-34.59248,-34.59253]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":5,"opacity":0.5,"fill":false,"fillColor":"red","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-34.59253,-34.57317],"lng":[-58.40488,-58.37324]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-277a94f97c18a5ff7d71" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-277a94f97c18a5ff7d71">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["OpenStreetMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addPolylines","args":[[[[{"lng":[-58.39231,-58.39219,-58.39165,-58.39162,-58.39159,-58.39153,-58.39155,-58.39133,-58.39128,-58.39123,-58.39111,-58.39101,-58.39028,-58.39021,-58.39002,-58.38928,-58.38915,-58.38921,-58.38913,-58.38865,-58.38771,-58.38737,-58.38728,-58.3865,-58.38594,-58.38564,-58.38553,-58.38551,-58.38535,-58.38457,-58.3844,-58.38425,-58.38398,-58.38311,-58.38191,-58.3795,-58.37943,-58.37928,-58.37913,-58.37903,-58.37892,-58.37863,-58.37786,-58.37771,-58.37666,-58.3765,-58.37632,-58.3762,-58.37588,-58.37585,-58.37555,-58.37551,-58.37543,-58.37537,-58.37531,-58.37523,-58.37517,-58.3751,-58.37503,-58.37497,-58.3749,-58.37486],"lat":[-34.58319,-34.58301,-34.58327,-34.58327,-34.58326,-34.58353,-34.58355,-34.58364,-34.58368,-34.58371,-34.58377,-34.58379,-34.58411,-34.58421,-34.58428,-34.58462,-34.58467,-34.5848,-34.58483,-34.58507,-34.58555,-34.58583,-34.58587,-34.58626,-34.58634,-34.58643,-34.58649,-34.5865,-34.58657,-34.58692,-34.58701,-34.58711,-34.58731,-34.58778,-34.58846,-34.58978,-34.58983,-34.58994,-34.59007,-34.59016,-34.59027,-34.5906,-34.59112,-34.59122,-34.59189,-34.5918,-34.5919,-34.59194,-34.59215,-34.5922,-34.59237,-34.5924,-34.59244,-34.59245,-34.59241,-34.59245,-34.59248,-34.59252,-34.59256,-34.59259,-34.59263,-34.59257]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":5,"opacity":0.5,"fill":false,"fillColor":"red","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-34.59263,-34.58301],"lng":[-58.39231,-58.37486]}},"evals":[],"jsHooks":[]}</script>
 <p>Si queremos ver el trayecto en un mapa estático, podemos usar <code>ggmap()</code> con <code>geom_sf()</code>:</p>
 <div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" data-line-number="1"><span class="kw">ggmap</span>(mapa_base) <span class="op">+</span></a>
 <a class="sourceLine" id="cb251-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data =</span> estaciones, <span class="kw">aes</span>(<span class="dt">x =</span> X, <span class="dt">y =</span> Y), <span class="dt">color =</span> <span class="st">&quot;limegreen&quot;</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb251-3" data-line-number="3"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> fderecho_a_retiro, <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb251-4" data-line-number="4"><span class="st">    </span><span class="kw">theme_nothing</span>()</a></code></pre></div>
-<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-205-1.png" width="672" /></p>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-206-1.png" width="672" /></p>
 <p>Calcular todos los recorridos y juntarlos en un sólo dataframe puede ser muy fácil o bastante engorroso, dependiendo de cuanta práctica tengamos en la automatización de tareas repetitivas. Por lo pronto, podemos descargar un dataset ya calculado con los recorridos detallados entre todas las estaciones de nuestro top 10:</p>
 <div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb252-1" data-line-number="1">recorridos &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;https://bitsandbricks.github.io/data/recorridos_BA_bici.geojson&quot;</span>)</a></code></pre></div>
 <pre><code>## Reading layer `recorridos_BA_bici&#39; from data source `https://bitsandbricks.github.io/data/recorridos_BA_bici.geojson&#39; using driver `GeoJSON&#39;
@@ -507,15 +505,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## geometry type:  LINESTRING
 ## dimension:      XY
 ## bbox:           xmin: -58.42635 ymin: -34.62158 xmax: -58.36573 ymax: -34.5627
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs</code></pre>
+## CRS:            4326</code></pre>
 <div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb254-1" data-line-number="1">recorridos</a></code></pre></div>
 <pre><code>## Simple feature collection with 10 features and 6 fields
 ## geometry type:  LINESTRING
 ## dimension:      XY
 ## bbox:           xmin: -58.42635 ymin: -34.62158 xmax: -58.36573 ymax: -34.5627
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ##    ORIGEN_ESTACION DESTINO_ESTACION src dst  duration distance
 ## 1                1                2   1   2 16.005000   5.4228
 ## 2                1               44   1  44  6.741667   2.7496
@@ -546,7 +542,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb257-1" data-line-number="1"><span class="kw">ggmap</span>(mapa_base) <span class="op">+</span></a>
 <a class="sourceLine" id="cb257-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> recorridos, <span class="kw">aes</span>(<span class="dt">color =</span> ID), <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb257-3" data-line-number="3"><span class="st">    </span><span class="kw">theme_nothing</span>()</a></code></pre></div>
-<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-208-1.png" width="672" /></p>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-209-1.png" width="672" /></p>
 <p>Si queremos que el grosor de la línea represente la cantidad de veces que se realizó cada recorrido, primero agregamos la cantidad de viajes por recorrido, mediante el cruce con los datos que calculamos en “conteo”:</p>
 <div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb258-1" data-line-number="1">recorridos &lt;-<span class="st"> </span>recorridos <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb258-2" data-line-number="2"><span class="st">    </span><span class="kw">left_join</span>(conteo)</a></code></pre></div>
@@ -554,7 +550,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" data-line-number="1"><span class="kw">ggmap</span>(mapa_base) <span class="op">+</span></a>
 <a class="sourceLine" id="cb259-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> recorridos, <span class="kw">aes</span>(<span class="dt">color =</span> ID, <span class="dt">size =</span> total), <span class="dt">alpha =</span> <span class="fl">0.7</span>, <span class="dt">inherit.aes =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb259-3" data-line-number="3"><span class="st">    </span><span class="kw">theme_nothing</span>()</a></code></pre></div>
-<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-210-1.png" width="672" /></p>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-211-1.png" width="672" /></p>
 <p>También podemos usar el color para indicar el volumen de viajes:</p>
 <div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb260-1" data-line-number="1"><span class="kw">ggmap</span>(mapa_base, <span class="dt">darken =</span> <span class="fl">0.7</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb260-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> recorridos, <span class="kw">aes</span>(<span class="dt">color =</span> total, <span class="dt">group =</span> ID), </a>
@@ -562,7 +558,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb260-4" data-line-number="4">              <span class="dt">alpha =</span> <span class="fl">0.7</span>, <span class="dt">size =</span> <span class="fl">1.5</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb260-5" data-line-number="5"><span class="st">    </span><span class="kw">scale_color_viridis_c</span>(<span class="dt">option =</span> <span class="st">&quot;inferno&quot;</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb260-6" data-line-number="6"><span class="st">    </span><span class="kw">theme_nothing</span>() </a></code></pre></div>
-<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-211-1.png" width="672" /></p>
+<p><img src="analitica_urbana_files/figure-html/unnamed-chunk-212-1.png" width="672" /></p>
 </div>
 <div id="extra-cómo-obtener-las-rutas-de-todos-los-recorridos" class="section level2">
 <h2><span class="header-section-number">6.4</span> EXTRA: Cómo obtener las rutas de todos los recorridos</h2>
@@ -589,8 +585,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## geometry type:  LINESTRING
 ## dimension:      XY
 ## bbox:           xmin: -58.42635 ymin: -34.62158 xmax: -58.36573 ymax: -34.5627
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ##    ORIGEN_ESTACION DESTINO_ESTACION src dst  duration distance      ID total
 ## 1                1                2   1   2 16.005000   5.4228   1 - 2   333
 ## 2                1               44   1  44  6.741667   2.7496  1 - 44   146
@@ -617,12 +612,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="ejercicios-4" class="section level2">
 <h2><span class="header-section-number">6.5</span> Ejercicios</h2>
 <p><strong>Analizando y visualizando flujos de viajes urbanos</strong></p>
-<p>I. Elegir UNA SOLA de las siguientes opciones:
-a. Un dataset que contenga viajes origen-destino (por ejemplo bicicletas públicas) de la Ciudad con la que están trabajando.
-b. Un dataset que contenga servicios esenciales (hospitales, escuelas, comisarías, etc) de la Ciudad con la que están trabajando. En este caso deberán elegir un barrio céntrico y uno periférico del shape de barrios y calcular ambos centroides.
-Los datos pueden ser descargados del portal open data de la ciudad o de OSM y deben tener ubicación geográfica.</p>
+<p>I. Elegir alguna de las siguientes opciones:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Un dataset que contenga viajes origen-destino (por ejemplo bicicletas públicas) de la Ciudad con la que están trabajando.</li>
+<li>Un dataset que contenga servicios esenciales (hospitales, escuelas, comisarías, etc) de la Ciudad con la que están trabajando. En este caso deberán elegir un barrio céntrico y uno periférico del shape de barrios y calcular ambos centroides.
+Los datos pueden ser descargados del portal open data de la ciudad o de OSM y deben tener ubicación geográfica.</li>
+</ol>
 <ol start="2" style="list-style-type: upper-roman">
-<li>Según la opción elegida en el punto I, deberán:</li>
+<li>Según la opción elegida en el punto I, resolver:</li>
 </ol>
 <ol style="list-style-type: lower-alpha">
 <li>Viajes origen-destino: Analizar la cantidad de viajes entre los puntos a partir de un mapa de calor (heatmap) y calcular los 10 recorridos más realizados. Describir los resultados obtenidos y hacer el siguiente mapa:</li>
@@ -637,13 +634,13 @@ Los datos pueden ser descargados del portal open data de la ciudad o de OSM y de
 <li>Mapa con los ruteos del centroide del barrio céntrico a los ítems de servicios esenciales elegido.</li>
 <li>Mapa con los ruteos del centroide del barrio periférico a los ítems de servicios esenciales elegido.</li>
 </ul>
-<p>PRO TIP!
-Si bajan datos de OpenStreetMap -por ejemplo, escuelas de una ciudad- los tendrán en formato sf.
-Un dataframe sf tiene sus coordenadas en una sola columna, “geometry”. Pero que pasa si quieren los datos en dos columnas, lat y long, para que puedan aprovechar los ejemplos de funciones de ruteo que vimos en clase?</p>
-<p>Muy simple.
-Si su dataframe en formato sf se llama “misdatos”, así es como obtienen columnas con lat y long:</p>
-<p>misdatos &lt;- misdatos %&gt;%
-mutate(lat = unlist(map(misdatos<span class="math inline">\(geometry,1)), long = unlist(map(misdatos\)</span>geometry,2)))</p>
+<p>Consejos:
+Si bajamos datos de OpenStreetMap -por ejemplo, escuelas de una ciudad- los obetenemos en formato <code>sf</code>.
+Un dataframe <code>sf</code> tiene sus coordenadas en una sola columna, llamada “geometry”. Pero que pasa si queremos los datos en dos columnas, lat y long, para aprovechar los ejemplos de funciones de ruteo que hemos visto? Muy simple.</p>
+<p>Si su dataframe en formato sf se llama “misdatos”, así es como obtienen columnas con lat y long:</p>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" data-line-number="1">misdatos &lt;-<span class="st"> </span>misdatos <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb264-2" data-line-number="2"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">lat =</span> <span class="kw">unlist</span>(<span class="kw">map</span>(misdatos<span class="op">$</span>geometry,<span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb264-3" data-line-number="3">           <span class="dt">long =</span> <span class="kw">unlist</span>(<span class="kw">map</span>(misdatos<span class="op">$</span>geometry,<span class="dv">2</span>)))</a></code></pre></div>
 
 </div>
 </div>

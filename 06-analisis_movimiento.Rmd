@@ -153,6 +153,9 @@ Y lo activamos:
 ```{r}
 library(osrm)
 ```
+```{r echo=FALSE}
+options(osrm.server = "http://127.0.0.1:5000/")
+```
 
 Para poder recibir información de ruteo desde los servidores de Google, la compañía exige el uso de una _API key_, una clave de autorización. Tal como con Twitter, el proceso de adquirir una clave es instantáneo, pero desde mediados de 2018 Google entrega API key sólo a usuarios que brinden información de una tarjeta de crédito, para cobrar el uso que supere ciertos umbrales. 
 
@@ -361,25 +364,30 @@ recorridos
 
 **Analizando y visualizando flujos de viajes urbanos**
 
-I. Elegir UNA SOLA de las siguientes opciones:
+I. Elegir alguna de las siguientes opciones:
+
 a. Un dataset que contenga viajes origen-destino (por ejemplo bicicletas públicas) de la Ciudad con la que están trabajando.
 b. Un dataset que contenga servicios esenciales (hospitales, escuelas, comisarías, etc) de la Ciudad con la que están trabajando. En este caso deberán elegir un barrio céntrico y uno periférico del shape de barrios y calcular ambos centroides.
 Los datos pueden ser descargados del portal open data de la ciudad o de OSM y deben tener ubicación geográfica.
 
-II. Según la opción elegida en el punto I, deberán:
+II. Según la opción elegida en el punto I, resolver:
+
 a. Viajes origen-destino: Analizar la cantidad de viajes entre los puntos a partir de un mapa de calor (heatmap) y calcular los 10 recorridos más realizados. Describir los resultados obtenidos y hacer el siguiente mapa:
 - Mapa con los ruteos de los 10 recorridos más realizados.
 b. Servicios esenciales: Estimar la distancia entre los centroides calculados en el punto I y los ítems que componen la capa descargada. Describir los resultados obtenidos y hacer los siguientes mapas:
 - Mapa con los ruteos del centroide del barrio céntrico a los ítems de servicios esenciales elegido.
 - Mapa con los ruteos del centroide del barrio periférico a los ítems de servicios esenciales elegido.
 
-PRO TIP!
-Si bajan datos de OpenStreetMap -por ejemplo, escuelas de una ciudad- los tendrán en formato sf.
-Un dataframe sf tiene sus coordenadas en una sola columna, "geometry". Pero que pasa si quieren los datos en dos columnas, lat y long, para que puedan aprovechar los ejemplos de funciones de ruteo que vimos en clase?
+Consejos:
+Si bajamos datos de OpenStreetMap -por ejemplo, escuelas de una ciudad- los obetenemos en formato `sf`.
+Un dataframe `sf` tiene sus coordenadas en una sola columna, llamada "geometry". Pero que pasa si queremos los datos en dos columnas, lat y long, para aprovechar los ejemplos de funciones de ruteo que hemos visto? Muy simple.
 
-Muy simple.
 Si su dataframe en formato sf se llama "misdatos", así es como obtienen columnas con lat y long:
 
+```{r eval=FALSE}
 misdatos <- misdatos %>%
-mutate(lat = unlist(map(misdatos$geometry,1)),
-long = unlist(map(misdatos$geometry,2)))
+    mutate(lat = unlist(map(misdatos$geometry,1)),
+           long = unlist(map(misdatos$geometry,2)))
+
+```
+

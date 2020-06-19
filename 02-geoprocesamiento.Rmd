@@ -17,7 +17,7 @@ library(tidyverse)
 library(sf)
 ```
 
-## Dataframes tradicionales y dataframes espaciales
+### Dataframes tradicionales y dataframes espaciales
 
 Vamos a trabajar con dos datasets.
 

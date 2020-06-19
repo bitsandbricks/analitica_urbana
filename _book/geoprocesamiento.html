@@ -24,7 +24,7 @@
 <meta name="author" content="Antonio Vazquez Brust &amp; Angie Scetta" />
 
 
-<meta name="date" content="2020-05-18" />
+<meta name="date" content="2020-06-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -148,16 +148,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#sobre-la-analítica-urbana"><i class="fa fa-check"></i><b>1.1</b> Sobre la analítica urbana</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html"><i class="fa fa-check"></i><b>2</b> Geoprocesamiento</a><ul>
-<li class="chapter" data-level="2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>2.1</b> Cruces espaciales</a></li>
-<li class="chapter" data-level="2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>2.2</b> Dataframes tradicionales y dataframes espaciales</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>2.2.1</b> Combinando datasets con información espacial</a></li>
-<li class="chapter" data-level="2.2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>2.2.2</b> Coropletas</a></li>
+<li class="chapter" data-level="2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>2.1</b> Cruces espaciales</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>2.1.1</b> Dataframes tradicionales y dataframes espaciales</a></li>
+<li class="chapter" data-level="2.1.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>2.1.2</b> Combinando datasets con información espacial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>2.1.3</b> Coropletas</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>2.3</b> Uniones</a></li>
-<li class="chapter" data-level="2.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>2.4</b> Intersecciones</a></li>
-<li class="chapter" data-level="2.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>2.5</b> Distancias</a></li>
-<li class="chapter" data-level="2.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>2.6</b> Cálculo de extensión (longitud, área)</a></li>
-<li class="chapter" data-level="2.7" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#ejercicios"><i class="fa fa-check"></i><b>2.7</b> Ejercicios</a></li>
+<li class="chapter" data-level="2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>2.2</b> Uniones</a></li>
+<li class="chapter" data-level="2.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>2.3</b> Intersecciones</a></li>
+<li class="chapter" data-level="2.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>2.4</b> Distancias</a></li>
+<li class="chapter" data-level="2.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>2.5</b> Cálculo de extensión (longitud, área)</a></li>
+<li class="chapter" data-level="2.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#ejercicios"><i class="fa fa-check"></i><b>2.6</b> Ejercicios</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><i class="fa fa-check"></i><b>3</b> Acceso a información urbana georeferenciada en repositorios <em>online</em></a><ul>
 <li class="chapter" data-level="3.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#openstreetmap-desde-r"><i class="fa fa-check"></i><b>3.1</b> OpenStreetMap desde R</a><ul>
@@ -257,9 +257,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Paquetes que vamos a usar:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(sf)</a></code></pre></div>
-</div>
-<div id="dataframes-tradicionales-y-dataframes-espaciales" class="section level2">
-<h2><span class="header-section-number">2.2</span> Dataframes tradicionales y dataframes espaciales</h2>
+<div id="dataframes-tradicionales-y-dataframes-espaciales" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Dataframes tradicionales y dataframes espaciales</h3>
 <p>Vamos a trabajar con dos datasets.</p>
 <p>Uno contiene los alojamientos ofrecidos por Airbnb en Buenos Aires en Julio 2017.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">airbnb &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://query.data.world/s/55amvafrknrgkeyeiu54yb2c6u6brc&quot;</span>,</a>
@@ -282,12 +281,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
 ## bbox:           xmin: -58.53152 ymin: -34.70529 xmax: -58.33514 ymax: -34.52754
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs</code></pre>
+## CRS:            4326</code></pre>
 <p>Notemos que tenemos dos tipos de dataframe distintos. El de Airbnb es un dataframe “tradicional”, dado que todas sus columnas contiene valores simples: un número, un texto, un factor, etc.</p>
 <p>El dataframe de comunas es especial porque es “espacial”. Contiene una columna distinta a las demás, llamada “geometry” que en lugar de una observación simple contiene una lista con múltiples posiciones. Estas posiciones son los vértices que definen el polígono de cada comuna, y permiten la proyección en mapas y el cálculo de estadísticas espaciales.</p>
+</div>
 <div id="combinando-datasets-con-información-espacial" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Combinando datasets con información espacial</h3>
+<h3><span class="header-section-number">2.1.2</span> Combinando datasets con información espacial</h3>
 <p>Si lo único que queremos es visualizar en forma combinada la información que contienen, no hay problema en que un dataframe sea espacial y otro no, siempre y cuando éste último incluya una columna con latitud y otra con longitud para identificar la posición de cada registro.</p>
 <p>Dado que los datos de Airbnb incluyen lat/long, es fácil visualizarlos en conjunto con el dataframe espacial de las comunas:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
@@ -321,8 +320,7 @@ Ahora que ambos dataframes son de tipo espacial, ambos se grafican con geom_sf()
 ## geometry type:  POINT
 ## dimension:      XY
 ## bbox:           xmin: -58.41829 ymin: -34.62068 xmax: -58.37914 ymax: -34.59101
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            EPSG:4326
 ##    room_id   host_id    room_type country city neighborhood
 ## 1 15125458  95870458 Private room      NA   NA           NA
 ## 2  1691316   3380366 Private room      NA   NA           NA
@@ -387,27 +385,26 @@ Ahora que ambos dataframes son de tipo espacial, ambos se grafican con geom_sf()
 ## geometry type:  GEOMETRY
 ## dimension:      XY
 ## bbox:           xmin: -58.7976 ymin: -34.82524 xmax: -58.18856 ymax: -34.41952
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            EPSG:4326
 ## # A tibble: 16 x 3
 ##    comunas cantidad                                                     geometry
-##  * &lt;fct&gt;      &lt;int&gt;                                               &lt;GEOMETRY [°]&gt;
-##  1 1           2100 MULTIPOINT (-58.39242 -34.60016, -58.39235 -34.60115, -58.3…
-##  2 10            18 MULTIPOINT (-58.52669 -34.62379, -58.52227 -34.61793, -58.5…
-##  3 11            34 MULTIPOINT (-58.52372 -34.60679, -58.51784 -34.61295, -58.5…
-##  4 12           163 MULTIPOINT (-58.51262 -34.58124, -58.50698 -34.56917, -58.5…
-##  5 13           670 MULTIPOINT (-58.47438 -34.53906, -58.47433 -34.55242, -58.4…
-##  6 14          3281 MULTIPOINT (-58.44776 -34.56799, -58.44745 -34.56847, -58.4…
-##  7 15           500 MULTIPOINT (-58.49529 -34.593, -58.48774 -34.58506, -58.486…
-##  8 2           1659 MULTIPOINT (-58.41587 -34.59755, -58.41514 -34.5967, -58.41…
-##  9 3            468 MULTIPOINT (-58.41385 -34.61058, -58.41363 -34.60651, -58.4…
-## 10 4            136 MULTIPOINT (-58.4205 -34.64693, -58.42022 -34.64792, -58.41…
-## 11 5            422 MULTIPOINT (-58.4313 -34.6024, -58.43129 -34.60154, -58.431…
-## 12 6            184 MULTIPOINT (-58.45786 -34.60974, -58.45726 -34.61023, -58.4…
-## 13 7             62 MULTIPOINT (-58.47123 -34.62169, -58.47018 -34.62031, -58.4…
+##    &lt;fct&gt;      &lt;int&gt;                                               &lt;GEOMETRY [°]&gt;
+##  1 1           2100 MULTIPOINT ((-58.39242 -34.60016), (-58.39235 -34.60115), (…
+##  2 10            18 MULTIPOINT ((-58.52669 -34.62379), (-58.52227 -34.61793), (…
+##  3 11            34 MULTIPOINT ((-58.52372 -34.60679), (-58.51784 -34.61295), (…
+##  4 12           163 MULTIPOINT ((-58.51262 -34.58124), (-58.50698 -34.56917), (…
+##  5 13           670 MULTIPOINT ((-58.47438 -34.53906), (-58.47433 -34.55242), (…
+##  6 14          3281 MULTIPOINT ((-58.44776 -34.56799), (-58.44745 -34.56847), (…
+##  7 15           500 MULTIPOINT ((-58.49529 -34.593), (-58.48774 -34.58506), (-5…
+##  8 2           1659 MULTIPOINT ((-58.41587 -34.59755), (-58.41514 -34.5967), (-…
+##  9 3            468 MULTIPOINT ((-58.41385 -34.61058), (-58.41363 -34.60651), (…
+## 10 4            136 MULTIPOINT ((-58.4205 -34.64693), (-58.42022 -34.64792), (-…
+## 11 5            422 MULTIPOINT ((-58.4313 -34.6024), (-58.43129 -34.60154), (-5…
+## 12 6            184 MULTIPOINT ((-58.45786 -34.60974), (-58.45726 -34.61023), (…
+## 13 7             62 MULTIPOINT ((-58.47123 -34.62169), (-58.47018 -34.62031), (…
 ## 14 8              1                                  POINT (-58.46999 -34.66616)
-## 15 9             15 MULTIPOINT (-58.5287 -34.64678, -58.52213 -34.63636, -58.51…
-## 16 &lt;NA&gt;         210 MULTIPOINT (-58.7976 -34.66354, -58.69091 -34.47598, -58.68…</code></pre>
+## 15 9             15 MULTIPOINT ((-58.5287 -34.64678), (-58.52213 -34.63636), (-…
+## 16 &lt;NA&gt;         210 MULTIPOINT ((-58.7976 -34.66354), (-58.69091 -34.47598), (-…</code></pre>
 <p>El resultado de un join espacial también es un dataframe espacial, así que podemos visualizarlo de la manera habitual (y ahora tenemos más variables para graficar).</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">ggplot</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb14-2" data-line-number="2"><span class="st">    </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> comunas) <span class="op">+</span></a>
@@ -415,7 +412,7 @@ Ahora que ambos dataframes son de tipo espacial, ambos se grafican con geom_sf()
 <p><img src="analitica_urbana_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="coropletas" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Coropletas</h3>
+<h3><span class="header-section-number">2.1.3</span> Coropletas</h3>
 <p>Hasta acá obtuvimos un dataframe espacial con la geometría de puntos proveniente de los datos de Airbnb y generamos una nueva columna que indica a que Comuna pertenece cada uno de los registros. Sin embargo, cuando tenemos muchos puntos concentrados en un mapa resulta difícil realizar un análisis visual que nos permita sacar conclusiones de los datos. Para esto nos sirven las coropletas o mapas coropléticos, que muestran áreas geográficas (polígonos) coloreadas según alguna de las variables incluidas en el dataset.</p>
 <p>Continuando con el análisis de Airbnb, haremos un mapa coroplético dándole color a cada Comuna según la cantidad de propiedades que hay en alquiler.</p>
 <p>Veamos esto en detalle:
@@ -445,8 +442,7 @@ Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentr
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
 ## bbox:           xmin: -58.4627 ymin: -34.6625 xmax: -58.33514 ymax: -34.56935
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ##                                                                        barrios
 ## 1 CONSTITUCION - MONSERRAT - PUERTO MADERO -  RETIRO - SAN NICOLAS - SAN TELMO
 ## 2                                                                     RECOLETA
@@ -490,7 +486,7 @@ Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentr
 </div>
 </div>
 <div id="uniones" class="section level2">
-<h2><span class="header-section-number">2.3</span> Uniones</h2>
+<h2><span class="header-section-number">2.2</span> Uniones</h2>
 <p>Cuando realizamos análisis espaciales, es muy común que nos encontremos con la necesidad de combinar información geográfica. Esto se resuelve fácilmente a partir de un geoproceso llamado unión, que en el paquete <code>sf</code> lo encontraremos como <code>st_union</code>. Esta herramienta tiene 2 funcionalidades:</p>
 <ol style="list-style-type: decimal">
 <li><p>Unir registros de una misma capa, generando un único dato.</p></li>
@@ -532,7 +528,7 @@ Lo primero que debemos hacer es filtrar solo las propiedades que se ubican dentr
 <p>Como se puede ver en el mapa, al aplicar <code>st_union</code> se combinaron las 2 comunas que estaban en dataframes separados y se generó un único dataframe espacial con toda la información.</p>
 </div>
 <div id="intersecciones" class="section level2">
-<h2><span class="header-section-number">2.4</span> Intersecciones</h2>
+<h2><span class="header-section-number">2.3</span> Intersecciones</h2>
 <p>Muchas veces nos encontramos con que 2 capas geográficas se solapan y queremos obtener como resultado los datos que se intersectan. Para este tipo de análisis, utilizamos <code>st_intersection</code> de nuestro ya conocido paquete <code>sf</code>.
 Hacer una intersección entre 2 capas significa que ambas geometrías serán recortadas, generando una nueva capa que contenga solo las entidades que se encuentran superpuestas.</p>
 <p>Llevemos esto a datos reales y veamos un ejemplo de como crear un dataframe que contenga solo las observaciones de Airbnb que intersecten con el polígono de CABA creado en el paso anterior, y así eliminar todos los registros ubicados en AMBA.</p>
@@ -560,7 +556,7 @@ Hacer una intersección entre 2 capas significa que ambas geometrías serán rec
 <p>De las 9.713 observaciones que vimos que caen en CABA, 4.940 caen en las comunas analizadas. Tal como era de esperar, esto representa más de un 50% de la muestra.</p>
 </div>
 <div id="distancias" class="section level2">
-<h2><span class="header-section-number">2.5</span> Distancias</h2>
+<h2><span class="header-section-number">2.4</span> Distancias</h2>
 <p>Ahora veamos como calcular distancias euclideanas entre datos espaciales, lo cual resulta muy útil a la hora de comprender como se organizan y relacionan entre sí diferentes entidades geográficas. Es decir que, esta herramienta nos permitirá agregar información a nuestros datos a partir de la relación espacial que tienen con otros datos. En <code>sf</code>, esto lo encontraremos bajo el nombre de <code>st_distance</code>.</p>
 <p>Comencemos con algo simple: Calculemos la distancia que hay entre los centroides de las 2 comunas con mayor densidad de oferta de Airbnb. Para establecer un único punto en cada comuna y poder realizar el cálculo, vamos a utilizar sus centroides que los calcularemos con la función <code>st_centroid</code>:</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">comuna_<span class="dv">2</span> &lt;-<span class="st"> </span>comuna_<span class="dv">2</span> <span class="op">%&gt;%</span></a>
@@ -585,13 +581,8 @@ Hacer una intersección entre 2 capas significa que ambas geometrías serán rec
 <a class="sourceLine" id="cb48-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dist_comuna2 =</span> <span class="kw">st_distance</span>(airbnb_con_comunas, comuna_<span class="dv">2</span>))</a></code></pre></div>
 <p>Analicemos los resultados:</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw">summary</span>(airbnb_con_comunas<span class="op">$</span>dist_comuna2)</a></code></pre></div>
-<pre><code>##        V1          
-##  Min.   :   21.92  
-##  1st Qu.: 1786.36  
-##  Median : 2928.83  
-##  Mean   : 3202.80  
-##  3rd Qu.: 4149.21  
-##  Max.   :13963.07</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##    21.92  1786.36  2928.83  3202.80  4149.21 13963.07</code></pre>
 <p>Vemos que las propiedades más cercanas, se ubican a 21,92 metros, y las más lejanas a 13.963,07 metros. En promedio, todos los registros están ubicados a 3.202,8 metros del centroide de la Comuna 2, es decir, aproximadamente 32 cuadras.</p>
 <p>Revisemos la distribución en un histograma:</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="kw">ggplot</span>(airbnb_con_comunas)<span class="op">+</span></a>
@@ -630,8 +621,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  POINT
 ## dimension:      XY
 ## bbox:           xmin: -58.41829 ymin: -34.62068 xmax: -58.37914 ymax: -34.59101
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            EPSG:4326
 ##      room_type                                name dist_hotel
 ## 1 Private room      Habitacion privada en Recoleta  142.02029
 ## 2 Private room Palermo Cozy room wprivate bathroom  162.42654
@@ -665,7 +655,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 <p>En el mapa se ve como la distribución de la oferta de propiedades no es aleatoria, sino que responde a la demanda de los turistas ya que la mayor parte está ubicada cerca de hoteles (puntos negros). Los patrones de los 2 dataset son muy similares: gran concentración de puntos en Recoleta, Retiro y Microcento, extendiéndose hacia el corredor norte y siendo casi nula hacia el sur de la Ciudad.</p>
 </div>
 <div id="cálculo-de-extensión-longitud-área" class="section level2">
-<h2><span class="header-section-number">2.6</span> Cálculo de extensión (longitud, área)</h2>
+<h2><span class="header-section-number">2.5</span> Cálculo de extensión (longitud, área)</h2>
 <p>Otras herramientas muy importantes a la hora de realizar un análisis espacial son los cálculos de extensión de geometrías, esto hace referencia a calcular áreas o longitudes.</p>
 <p>En la analítica urbana, el cálculo de áreas suele utilizarse para medir superficies de comunas, barrios, radios censales o cualquier otro polígono que se ubique en el territorio. Y el cálculo de longitud suele realizarse para medir el perímetro de alguno de estos polígonos o la extensión de la red de subte, FFCC, etc. Para ambas herramientas, tenemos una función del paquete <code>sf</code>: estas son <code>st_area</code> y <code>st_length</code>.</p>
 <p>Veamos de que se tratan estas funciones y comencemos calculando la superficie y el perímetro de todo el polígono de la Ciudad de Buenos Aires. Para esto agreguemos 2 columnas al dataframe de CABA con el que veníamos trabajando previamente:</p>
@@ -692,8 +682,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  POLYGON
 ## dimension:      XY
 ## bbox:           xmin: -58.53152 ymin: -34.70529 xmax: -58.33515 ymax: -34.52649
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs</code></pre>
+## CRS:            4326</code></pre>
 <p>Creemos una nueva columna para calcular las superficies:</p>
 <div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1">barrios &lt;-<span class="st"> </span>barrios <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb74-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">superficie=</span><span class="kw">st_area</span>(barrios))</a></code></pre></div>
@@ -702,8 +691,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  POLYGON
 ## dimension:      XY
 ## bbox:           xmin: -58.50617 ymin: -34.63064 xmax: -58.41192 ymax: -34.57829
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ##             barrio comuna                       geometry    superficie
 ## 1        CHACARITA     15 POLYGON ((-58.45282 -34.595... 3115708 [m^2]
 ## 2         PATERNAL     15 POLYGON ((-58.46558 -34.596... 2229830 [m^2]
@@ -735,11 +723,10 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
 ## bbox:           xmin: -58.53152 ymin: -34.70529 xmax: -58.33515 ymax: -34.52649
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ## # A tibble: 2 x 3
 ##   categoria     cantidad                                                geometry
-## * &lt;chr&gt;            &lt;int&gt;                                      &lt;MULTIPOLYGON [°]&gt;
+##   &lt;chr&gt;            &lt;int&gt;                                      &lt;MULTIPOLYGON [°]&gt;
 ## 1 MAYOR SUPERF…       20 (((-58.43492 -34.64624, -58.43354 -34.64562, -58.43348…
 ## 2 MENOR SUPERF…       28 (((-58.44978 -34.68061, -58.44863 -34.68152, -58.44451…</code></pre>
 <p>La mayoría de los barrios (28) tienen una superficie por debajo de la media, mientras que el resto (20) tienen una superficie por encima de la misma. Veamos esto en un mapa:</p>
@@ -755,8 +742,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  MULTILINESTRING
 ## dimension:      XY
 ## bbox:           xmin: -58.48639 ymin: -34.64331 xmax: -58.36993 ymax: -34.55564
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs</code></pre>
+## CRS:            4326</code></pre>
 <p>Y calculemos longitud:</p>
 <div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1">subte_lineas &lt;-<span class="st"> </span>subte_lineas <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb86-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">longitud=</span><span class="kw">st_length</span>(subte_lineas))</a></code></pre></div>
@@ -765,8 +751,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  MULTILINESTRING
 ## dimension:      XY
 ## bbox:           xmin: -58.45649 ymin: -34.58516 xmax: -58.41596 ymax: -34.56231
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ##   ID LINEASUB                       geometry      longitud
 ## 1  1  LINEA D MULTILINESTRING ((-58.45213...  803.7500 [m]
 ## 2  2  LINEA D MULTILINESTRING ((-58.45649...  599.8831 [m]
@@ -785,8 +770,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 ## geometry type:  MULTILINESTRING
 ## dimension:      XY
 ## bbox:           xmin: -58.48639 ymin: -34.64331 xmax: -58.36993 ymax: -34.55564
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 ## # A tibble: 6 x 3
 ##   LINEASUB longitud                                                     geometry
 ##   &lt;fct&gt;       &lt;dbl&gt;                                        &lt;MULTILINESTRING [°]&gt;
@@ -807,7 +791,7 @@ Hagamos un poco más complejo el análisis aprovechando que los datos que estamo
 <p><img src="analitica_urbana_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
 </div>
 <div id="ejercicios" class="section level2">
-<h2><span class="header-section-number">2.7</span> Ejercicios</h2>
+<h2><span class="header-section-number">2.6</span> Ejercicios</h2>
 <p><strong>Adquiriendo open data urbana + Calculando y mapeando agregados por área</strong></p>
 <p>I. Elegir una ciudad en cualquier parte del mundo que les interese y que disponga de un portal de datos abiertos que ofrece un shapefile con sus barrios.</p>
 <ol start="2" style="list-style-type: upper-roman">

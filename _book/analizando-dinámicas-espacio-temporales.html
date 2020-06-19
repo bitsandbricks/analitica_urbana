@@ -24,7 +24,7 @@
 <meta name="author" content="Antonio Vazquez Brust &amp; Angie Scetta" />
 
 
-<meta name="date" content="2020-05-18" />
+<meta name="date" content="2020-06-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -148,16 +148,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.1" data-path="intro.html"><a href="intro.html#sobre-la-analítica-urbana"><i class="fa fa-check"></i><b>1.1</b> Sobre la analítica urbana</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html"><i class="fa fa-check"></i><b>2</b> Geoprocesamiento</a><ul>
-<li class="chapter" data-level="2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>2.1</b> Cruces espaciales</a></li>
-<li class="chapter" data-level="2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>2.2</b> Dataframes tradicionales y dataframes espaciales</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>2.2.1</b> Combinando datasets con información espacial</a></li>
-<li class="chapter" data-level="2.2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>2.2.2</b> Coropletas</a></li>
+<li class="chapter" data-level="2.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cruces-espaciales"><i class="fa fa-check"></i><b>2.1</b> Cruces espaciales</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#dataframes-tradicionales-y-dataframes-espaciales"><i class="fa fa-check"></i><b>2.1.1</b> Dataframes tradicionales y dataframes espaciales</a></li>
+<li class="chapter" data-level="2.1.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#combinando-datasets-con-información-espacial"><i class="fa fa-check"></i><b>2.1.2</b> Combinando datasets con información espacial</a></li>
+<li class="chapter" data-level="2.1.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#coropletas"><i class="fa fa-check"></i><b>2.1.3</b> Coropletas</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>2.3</b> Uniones</a></li>
-<li class="chapter" data-level="2.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>2.4</b> Intersecciones</a></li>
-<li class="chapter" data-level="2.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>2.5</b> Distancias</a></li>
-<li class="chapter" data-level="2.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>2.6</b> Cálculo de extensión (longitud, área)</a></li>
-<li class="chapter" data-level="2.7" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#ejercicios"><i class="fa fa-check"></i><b>2.7</b> Ejercicios</a></li>
+<li class="chapter" data-level="2.2" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#uniones"><i class="fa fa-check"></i><b>2.2</b> Uniones</a></li>
+<li class="chapter" data-level="2.3" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#intersecciones"><i class="fa fa-check"></i><b>2.3</b> Intersecciones</a></li>
+<li class="chapter" data-level="2.4" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#distancias"><i class="fa fa-check"></i><b>2.4</b> Distancias</a></li>
+<li class="chapter" data-level="2.5" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#cálculo-de-extensión-longitud-área"><i class="fa fa-check"></i><b>2.5</b> Cálculo de extensión (longitud, área)</a></li>
+<li class="chapter" data-level="2.6" data-path="geoprocesamiento.html"><a href="geoprocesamiento.html#ejercicios"><i class="fa fa-check"></i><b>2.6</b> Ejercicios</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><i class="fa fa-check"></i><b>3</b> Acceso a información urbana georeferenciada en repositorios <em>online</em></a><ul>
 <li class="chapter" data-level="3.1" data-path="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html"><a href="acceso-a-información-urbana-georeferenciada-en-repositorios-online.html#openstreetmap-desde-r"><i class="fa fa-check"></i><b>3.1</b> OpenStreetMap desde R</a><ul>
@@ -341,14 +341,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb190-2" data-line-number="2"><span class="st">    </span><span class="kw">count</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb190-3" data-line-number="3"><span class="st">    </span><span class="kw">top_n</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb190-4" data-line-number="4"><span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
-<pre><code>## # A tibble: 5 x 2
-##   tipo_delito               n
-##   &lt;chr&gt;                 &lt;int&gt;
-## 1 Robo (Con violencia)  90393
+<pre><code>##             tipo_delito     n
+## 1  Robo (Con violencia) 90393
 ## 2 Hurto (Sin violencia) 41205
-## 3 Lesiones Seg Vial     12791
-## 4 Hurto De Rueda         9904
-## 5 Hurto Automotor        9144</code></pre>
+## 3     Lesiones Seg Vial 12791
+## 4        Hurto De Rueda  9904
+## 5       Hurto Automotor  9144</code></pre>
 <p>Luce razonable. Guardamos la lista de delitos más frecuentes para referenciar luego.</p>
 <div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb192-1" data-line-number="1">delitos_frecuentes &lt;-<span class="st"> </span>delitos <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb192-2" data-line-number="2"><span class="st">    </span><span class="kw">count</span>(tipo_delito) <span class="op">%&gt;%</span><span class="st"> </span></a>
